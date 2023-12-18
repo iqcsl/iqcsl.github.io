@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>align.getMotor &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="align.getPowerMeter" href="align.getPowerMeter.html" />
+    <link rel="prev" title="align.fit_cos" href="align.fit_cos.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="align.html">align</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="align.Yesno.html">align.Yesno</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.align_polarizer.html">align.align_polarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.antialign_polarizer.html">align.antialign_polarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.check_consistency.html">align.check_consistency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.cos_func.html">align.cos_func</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.find_fast_axis.html">align.find_fast_axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.find_slm_horizontal.html">align.find_slm_horizontal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.fit_cos.html">align.fit_cos</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">align.getMotor</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#align.getMotor"><code class="docutils literal notranslate"><span class="pre">getMotor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="align.getPowerMeter.html">align.getPowerMeter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.getSLM.html">align.getSLM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.get_max_intensity_angle.html">align.get_max_intensity_angle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.get_min_intensity_angle.html">align.get_min_intensity_angle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.get_r2.html">align.get_r2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.hwp_alignment_routine.html">align.hwp_alignment_routine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.max_index.html">align.max_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.min_index.html">align.min_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.pol_alignment_routine.html">align.pol_alignment_routine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.printProgressBar.html">align.printProgressBar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.print_devices.html">align.print_devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.print_variation.html">align.print_variation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.promptContinue.html">align.promptContinue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.promptEnter.html">align.promptEnter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.promptSkip.html">align.promptSkip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.quit.html">align.quit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.repl.html">align.repl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.rotate_and_measure.html">align.rotate_and_measure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.send_motor.html">align.send_motor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.setup_motor.html">align.setup_motor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.showgrating.html">align.showgrating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="align.Data.html">align.Data</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="align.html">align</a></li>
+      <li class="breadcrumb-item active">align.getMotor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/align.getMotor.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="align-getmotor">
+<h1>align.getMotor<a class="headerlink" href="#align-getmotor" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="align.getMotor">
+<span class="sig-prename descclassname"><span class="pre">align.</span></span><span class="sig-name descname"><span class="pre">getMotor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Pick</span> <span class="pre">a</span> <span class="pre">motor:</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/align.html#getMotor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#align.getMotor" title="Permalink to this definition"></a></dt>
+<dd><p>Prompt user to select a motor</p>
+<p>Prints a line formatted as <code class="docutils literal notranslate"><span class="pre">{shortcut}:</span> <span class="pre">{serial</span> <span class="pre">number}</span></code> for each visible
+motor, followed by a prompt.
+For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="p">:</span> <span class="mi">12345678</span>
+<span class="n">b</span><span class="p">:</span> <span class="mi">24681012</span>
+<span class="n">c</span><span class="p">:</span> <span class="mi">31415926</span>
+<span class="n">Pick</span> <span class="n">a</span> <span class="n">motor</span><span class="p">:</span> 
+</pre></div>
+</div>
+<p>The user can input either a shortcut or a full serial number.
+The function then connects to the specified motor if necessary, and returns it.
+If the user inputs something invalid, the function loops until it successfully connects to a motor.</p>
+<p>Modifies global variable <code class="docutils literal notranslate"><span class="pre">motors</span></code> in order to remember already-connected devices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>prompt</strong> – The prompt to print (usually a question)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="control.hardware.motors_linux.DDR25.html#control.hardware.motors_linux.DDR25" title="control.hardware.motors_linux.DDR25"><code class="xref py py-class docutils literal notranslate"><span class="pre">DDR25</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>motor instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="align.fit_cos.html" class="btn btn-neutral float-left" title="align.fit_cos" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="align.getPowerMeter.html" class="btn btn-neutral float-right" title="align.getPowerMeter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

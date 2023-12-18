@@ -1,0 +1,6 @@
+control.messages.message
+========================
+
+.. currentmodule:: control.messages
+
+.. autofunction:: message

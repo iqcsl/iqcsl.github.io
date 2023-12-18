@@ -1,0 +1,37 @@
+control.hardware.servo.MG90S
+============================
+
+.. currentmodule:: control.hardware.servo
+
+.. autoclass:: MG90S
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~MG90S.cleanup
+      ~MG90S.goto
+      ~MG90S.setup
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MG90S.dutyhi
+      ~MG90S.dutylo
+      ~MG90S.dutylowercap
+      ~MG90S.dutyuppercap
+      ~MG90S.period
+   
+   

@@ -1,0 +1,6 @@
+control.decorategraph.BadHeaderException
+========================================
+
+.. currentmodule:: control.decorategraph
+
+.. autoexception:: BadHeaderException

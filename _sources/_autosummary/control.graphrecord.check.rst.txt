@@ -1,0 +1,6 @@
+control.graphrecord.check
+=========================
+
+.. currentmodule:: control.graphrecord
+
+.. autofunction:: check

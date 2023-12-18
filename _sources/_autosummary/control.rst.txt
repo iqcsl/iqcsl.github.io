@@ -1,0 +1,47 @@
+﻿control
+=======
+
+.. automodule:: control
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   control.config
+   control.decorategraph
+   control.devices
+   control.experiments
+   control.graphrecord
+   control.gui
+   control.hardware
+   control.hwpstair
+   control.inputwidget
+   control.jsonwrappers
+   control.messages
+   control.myio
+   control.record
+   control.settings
+   control.templates
+   control.timestamp
+   control.tkwrappers
+   control.typechecking
+

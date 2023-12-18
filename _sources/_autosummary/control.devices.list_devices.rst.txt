@@ -1,0 +1,6 @@
+control.devices.list\_devices
+=============================
+
+.. currentmodule:: control.devices
+
+.. autofunction:: list_devices

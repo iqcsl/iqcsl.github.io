@@ -1,0 +1,6 @@
+align.Yesno
+===========
+
+.. currentmodule:: align
+
+.. autofunction:: Yesno

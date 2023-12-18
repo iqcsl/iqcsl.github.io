@@ -1,0 +1,6 @@
+control.myio.puts
+=================
+
+.. currentmodule:: control.myio
+
+.. autofunction:: puts

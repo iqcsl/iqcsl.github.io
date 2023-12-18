@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hardware.motors_linux.DDR25 &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="control.hardware.pattern" href="control.hardware.pattern.html" />
+    <link rel="prev" title="control.hardware.motors_linux.initMotor" href="control.hardware.motors_linux.initMotor.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="control.html">control</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="control.config.html">control.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.decorategraph.html">control.decorategraph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.devices.html">control.devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.experiments.html">control.experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.graphrecord.html">control.graphrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.gui.html">control.gui</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="control.hardware.html">control.hardware</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.flipper.html">control.hardware.flipper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.iris.html">control.hardware.iris</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.motors.html">control.hardware.motors</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="control.hardware.motors_linux.html">control.hardware.motors_linux</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="control.hardware.motors_linux.initMotor.html">control.hardware.motors_linux.initMotor</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">control.hardware.motors_linux.DDR25</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.pattern.html">control.hardware.pattern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.power.html">control.hardware.power</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.servo.html">control.hardware.servo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.shutter.html">control.hardware.shutter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.slm.html">control.hardware.slm</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="control.hwpstair.html">control.hwpstair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.inputwidget.html">control.inputwidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.jsonwrappers.html">control.jsonwrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.messages.html">control.messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.myio.html">control.myio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.record.html">control.record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.settings.html">control.settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.templates.html">control.templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.timestamp.html">control.timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.tkwrappers.html">control.tkwrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.typechecking.html">control.typechecking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="control.html">control</a></li>
+          <li class="breadcrumb-item"><a href="control.hardware.html">control.hardware</a></li>
+          <li class="breadcrumb-item"><a href="control.hardware.motors_linux.html">control.hardware.motors_linux</a></li>
+      <li class="breadcrumb-item active">control.hardware.motors_linux.DDR25</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/control.hardware.motors_linux.DDR25.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="control-hardware-motors-linux-ddr25">
+<h1>control.hardware.motors_linux.DDR25<a class="headerlink" href="#control-hardware-motors-linux-ddr25" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">control.hardware.motors_linux.</span></span><span class="sig-name descname"><span class="pre">DDR25</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/motors_linux.html#DDR25"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.motors_linux.DDR25" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Thorlabs DDR25 rotation stage</p>
+<p>Typically connected to a controller (e.x. KBD101)</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">control.hardware.motors</span> <span class="kn">import</span> <span class="n">DDR25</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">motor</span> <span class="o">=</span> <span class="n">DDR25</span><span class="p">(</span><span class="mi">12345678</span><span class="p">)</span> <span class="c1"># connect to motor/controller with serial number 12345678</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="c1"># home motor</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">max_velocity</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1"># set maximum velocity to 100 deg/sec</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">acceleration</span> <span class="o">=</span> <span class="mi">150</span> <span class="c1"># set acceleration to 150 deg/sec^2</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span> <span class="c1"># go to 123 degrees</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="c1"># should print something close to 123</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">jog_max_velocity</span> <span class="o">=</span> <span class="mi">200</span> <span class="c1"># set maximum jog velocity to 200 deg/sec</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">jog_acceleration</span> <span class="o">=</span> <span class="mi">500</span> <span class="c1"># set jog acceleration to 500 deg/sec</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">jog</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># jog backwards</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># wait for it to get up to speed</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span> <span class="c1"># should print something close to -200</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span> <span class="c1"># stop in a profiled manner</span>
+</pre></div>
+</div>
+<p>See below for a comprehensive description of all functionalities</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sn</strong> (<em>int</em><em> or </em><em>str</em>) – serial number (usually found on the controller, not the rotation stage itself)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – if fails to connect</p>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.goto" title="control.hardware.motors_linux.DDR25.goto"><code class="xref py py-obj docutils literal notranslate"><span class="pre">goto</span></code></a></p></td>
+<td><p>Tell the motor to move to a given absolute position</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.home" title="control.hardware.motors_linux.DDR25.home"><code class="xref py py-obj docutils literal notranslate"><span class="pre">home</span></code></a></p></td>
+<td><p>Tell the motor to go home (0 degrees)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.identify" title="control.hardware.motors_linux.DDR25.identify"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identify</span></code></a></p></td>
+<td><p>Blink the LED on the controller's top panel (non-blocking)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.jog" title="control.hardware.motors_linux.DDR25.jog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jog</span></code></a></p></td>
+<td><p>Move the motor continuously in a given direction (non-blocking)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.moveby" title="control.hardware.motors_linux.DDR25.moveby"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moveby</span></code></a></p></td>
+<td><p>Tell the motor to move relatively by a given angle</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.set_jog_parameters" title="control.hardware.motors_linux.DDR25.set_jog_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_jog_parameters</span></code></a></p></td>
+<td><p>Set jog parameters all at once</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.set_velocity_parameters" title="control.hardware.motors_linux.DDR25.set_velocity_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_velocity_parameters</span></code></a></p></td>
+<td><p>Set velocity parameters all at once</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.stop" title="control.hardware.motors_linux.DDR25.stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code></a></p></td>
+<td><p>Stop the motor</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.acceleration" title="control.hardware.motors_linux.DDR25.acceleration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">acceleration</span></code></a></p></td>
+<td><p>(Read-and-write) Acceleraiton of moveby()/goto() movements, in degrees per second^2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.home_direction" title="control.hardware.motors_linux.DDR25.home_direction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">home_direction</span></code></a></p></td>
+<td><p>Home direction</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.home_velocity" title="control.hardware.motors_linux.DDR25.home_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">home_velocity</span></code></a></p></td>
+<td><p>(Read-and-write) Home velocity in degrees per second</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.in_motion" title="control.hardware.motors_linux.DDR25.in_motion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_motion</span></code></a></p></td>
+<td><p>(Read-only) Whether or not the motor is in motion</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.is_connected" title="control.hardware.motors_linux.DDR25.is_connected"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_connected</span></code></a></p></td>
+<td><p>(Read-only) Whether or not the motor is connected</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.is_enabled" title="control.hardware.motors_linux.DDR25.is_enabled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_enabled</span></code></a></p></td>
+<td><p>(Read-only) Whether or not the motor is enabled</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.is_homing" title="control.hardware.motors_linux.DDR25.is_homing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_homing</span></code></a></p></td>
+<td><p>(Read-only) Whether or not the motor is currently homing</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.is_jogging" title="control.hardware.motors_linux.DDR25.is_jogging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_jogging</span></code></a></p></td>
+<td><p>(Read-only) Whether or not the motor is currently jogging</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.jog_acceleration" title="control.hardware.motors_linux.DDR25.jog_acceleration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jog_acceleration</span></code></a></p></td>
+<td><p>(Read-and-write) Jog acceleration, in degrees per second^2</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.jog_max_velocity" title="control.hardware.motors_linux.DDR25.jog_max_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jog_max_velocity</span></code></a></p></td>
+<td><p>(Read-and-write) Maximum jog velocity, in degrees per second</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.jog_min_velocity" title="control.hardware.motors_linux.DDR25.jog_min_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jog_min_velocity</span></code></a></p></td>
+<td><p>(Read-and-write) Minimum jog velocity, in degrees per second</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.jog_mode" title="control.hardware.motors_linux.DDR25.jog_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jog_mode</span></code></a></p></td>
+<td><p>(Read-and-write) Jog mode</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.jog_step_size" title="control.hardware.motors_linux.DDR25.jog_step_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jog_step_size</span></code></a></p></td>
+<td><p>(Read-and-write) Jog step size</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.jog_stop_mode" title="control.hardware.motors_linux.DDR25.jog_stop_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jog_stop_mode</span></code></a></p></td>
+<td><p>(Read-and-write) Jog stop mode</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.max_velocity" title="control.hardware.motors_linux.DDR25.max_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_velocity</span></code></a></p></td>
+<td><p>(Read-and-write)  Maximum velocity of moveby()/goto() movements, in degrees per second</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.min_velocity" title="control.hardware.motors_linux.DDR25.min_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_velocity</span></code></a></p></td>
+<td><p>(Read-and-write) Minimum velocity of moveby()/goto() movements, in degrees per second</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.position" title="control.hardware.motors_linux.DDR25.position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></a></p></td>
+<td><p>(Read-only) The current position of the motor, in degrees (float in <code class="docutils literal notranslate"><span class="pre">[0,360)</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.velocity" title="control.hardware.motors_linux.DDR25.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a></p></td>
+<td><p>(Read-only) The current velocity of the stage, in degrees per second</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.stage" title="control.hardware.motors_linux.DDR25.stage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stage</span></code></a></p></td>
+<td><p>The underlying thorpy stage</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.motors_linux.DDR25.serial_number" title="control.hardware.motors_linux.DDR25.serial_number"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serial_number</span></code></a></p></td>
+<td><p>Serial number</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.stage">
+<span class="sig-name descname"><span class="pre">stage</span></span><a class="headerlink" href="#control.hardware.motors_linux.DDR25.stage" title="Permalink to this definition"></a></dt>
+<dd><p>The underlying thorpy stage</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.serial_number">
+<span class="sig-name descname"><span class="pre">serial_number</span></span><a class="headerlink" href="#control.hardware.motors_linux.DDR25.serial_number" title="Permalink to this definition"></a></dt>
+<dd><p>Serial number</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.is_connected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_connected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.is_connected" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-only) Whether or not the motor is connected</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">motor</span> <span class="o">=</span> <span class="n">DDR25</span><span class="p">()</span> <span class="c1"># successfully connect device</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">is_connected</span><span class="p">)</span> <span class="c1"># should print True</span>
+<span class="c1"># * unplug device *</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">is_connected</span><span class="p">)</span> <span class="c1"># should print False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.identify">
+<span class="sig-name descname"><span class="pre">identify</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/motors_linux.html#DDR25.identify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.motors_linux.DDR25.identify" title="Permalink to this definition"></a></dt>
+<dd><p>Blink the LED on the controller’s top panel (non-blocking)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.home">
+<span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/motors_linux.html#DDR25.home"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.motors_linux.DDR25.home" title="Permalink to this definition"></a></dt>
+<dd><p>Tell the motor to go home (0 degrees)</p>
+<p>This should usually be performed after the motor is connected,
+in order to calibrate it.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">motor</span> <span class="o">=</span> <span class="n">DDR25</span><span class="p">(</span><span class="mi">12345678</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="c1"># unreliable</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span> <span class="c1"># unreliable</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="c1"># go home</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="c1"># reliable</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span> <span class="c1"># reliable</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blocking</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if True, wait for the motor to finish homing before continuing execution</p></li>
+<li><p><strong>timeout</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – how many seconds to wait for home to complete</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="control.devices.HardwareException.html#control.devices.HardwareException" title="control.devices.HardwareException"><strong>HardwareException</strong></a> – if timeout exceeded</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>boolean indicating success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.goto">
+<span class="sig-name descname"><span class="pre">goto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/motors_linux.html#DDR25.goto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.motors_linux.DDR25.goto" title="Permalink to this definition"></a></dt>
+<dd><p>Tell the motor to move to a given absolute position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – position to move to, in degrees</p></li>
+<li><p><strong>blocking</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if True, wait for the motor to complete the move before continuing execution</p></li>
+<li><p><strong>timeout</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – how many seconds to wait for move to complete</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="control.devices.HardwareException.html#control.devices.HardwareException" title="control.devices.HardwareException"><strong>HardwareException</strong></a> – if timeout exceeded</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>boolean indicating success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.moveby">
+<span class="sig-name descname"><span class="pre">moveby</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/motors_linux.html#DDR25.moveby"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.motors_linux.DDR25.moveby" title="Permalink to this definition"></a></dt>
+<dd><p>Tell the motor to move relatively by a given angle</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">motor</span> <span class="o">=</span> <span class="n">DDR25</span><span class="p">(</span><span class="mi">12345678</span><span class="p">)</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">moveby</span><span class="p">(</span><span class="mi">720</span><span class="p">)</span> <span class="c1"># make 2 revolutions in the forward direction</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">moveby</span><span class="p">(</span><span class="o">-</span><span class="mi">720</span><span class="p">)</span> <span class="c1"># make 2 revolutions in the backward direction</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>amt</strong> – angle to move by, in degrees (positive -&gt; forward, negative -&gt; backward)</p></li>
+<li><p><strong>blocking</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if True, wait for the motor to complete the move before continuing execution</p></li>
+<li><p><strong>timeout</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – how many seconds to wait for move to complete</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="control.devices.HardwareException.html#control.devices.HardwareException" title="control.devices.HardwareException"><strong>HardwareException</strong></a> – if timeout exceeded</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>boolean indicating success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.jog">
+<span class="sig-name descname"><span class="pre">jog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/motors_linux.html#DDR25.jog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.motors_linux.DDR25.jog" title="Permalink to this definition"></a></dt>
+<dd><p>Move the motor continuously in a given direction (non-blocking)</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">motor</span> <span class="o">=</span> <span class="n">DDR25</span><span class="p">(</span><span class="mi">12345678</span><span class="p">)</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">jog_max_velocity</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1"># set jog max velocity to 100 deg/sec</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">jog_acceleration</span> <span class="o">=</span> <span class="mi">200</span> <span class="c1"># set jog acceleration to 200 deg/sec^2</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">jog</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># jog forward</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">jog</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># jog backward</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>d</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – direction (1 for forward, 2 for backward)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">immediately</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/motors_linux.html#DDR25.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.motors_linux.DDR25.stop" title="Permalink to this definition"></a></dt>
+<dd><p>Stop the motor</p>
+<p>Does nothing and returns <code class="docutils literal notranslate"><span class="pre">False</span></code> if motor already stopped</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">motor</span> <span class="o">=</span> <span class="n">DDR25</span><span class="p">(</span><span class="mi">12345678</span><span class="p">)</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">max_velocity</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># 10 deg/sec</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">acceleration</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1"># 100 deg/sec^2</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># non-blocking goto</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># wait 3 seconds</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span> <span class="c1"># stop the motor</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="c1"># should be somewhere between 0 and 100</span>
+
+<span class="c1"># since jogs are non-blocking and have no destination, the only way to stop a jog is stop()</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">jog</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>immediately</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if True, stop the motor immediately. Otherwise, stop gradually (profiled)</p></li>
+<li><p><strong>blocking</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if True, wait for the motor to finish stopping before continuing execution</p></li>
+<li><p><strong>timeout</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – how many seconds to wait for stop to complete</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>boolean indicating success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.is_enabled">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.is_enabled" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-only) Whether or not the motor is enabled</p>
+<p>When disabled, the motor can’t do anything</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.in_motion">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_motion</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.in_motion" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-only) Whether or not the motor is in motion</p>
+<p>“In motion” includes moving (goto/moveby), jogging, and homing</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.is_homing">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_homing</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.is_homing" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-only) Whether or not the motor is currently homing</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.is_jogging">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_jogging</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.is_jogging" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-only) Whether or not the motor is currently jogging</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.position">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.position" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-only) The current position of the motor, in degrees (float in <code class="docutils literal notranslate"><span class="pre">[0,360)</span></code>)</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">motor</span> <span class="o">=</span> <span class="n">DDR25</span><span class="p">(</span><span class="mi">12345678</span><span class="p">)</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="c1"># should be 0</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mf">45.6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="c1"># should be close to 45.6</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">moveby</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="c1"># should be close to 55.6</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">jog_max_velocity</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">jog</span><span class="p">()</span> <span class="c1"># jog forward</span>
+
+<span class="c1"># should print an ascending sequence of angles</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.velocity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">velocity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.velocity" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-only) The current velocity of the stage, in degrees per second</p>
+<ul class="simple">
+<li><p>Positive means rotating forward (angle increasing)</p></li>
+<li><p>Negative means rotating backward (angle decreasing)</p></li>
+<li><p>Zero means stationary</p></li>
+</ul>
+<p>Do not confuse with <a class="reference internal" href="#control.hardware.motors_linux.DDR25.max_velocity" title="control.hardware.motors_linux.DDR25.max_velocity"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DDR25.max_velocity</span></code></a>, which is the maximum velocity that goto() and moveby() will make the motor move at.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">motor</span> <span class="o">=</span> <span class="n">DDR25</span><span class="p">(</span><span class="mi">12345678</span><span class="p">)</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">max_velocity</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">acceleration</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># should print an increasing sequence of velocities before plateauing at 30</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">moveby</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># move forward for a very long time</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># should print a decreasing sequence of velocities before plateauing at -30</span>
+<span class="n">motor</span><span class="o">.</span><span class="n">moveby</span><span class="p">(</span><span class="o">-</span><span class="mi">10000</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># move backward for a very long time</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">motor</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">motor</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.min_velocity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min_velocity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.min_velocity" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write) Minimum velocity of moveby()/goto() movements, in degrees per second</p>
+<p>Typically 0</p>
+<p>Although this property is read-and-write,
+writing to it doesn’t do anything.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.max_velocity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_velocity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.max_velocity" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write)  Maximum velocity of moveby()/goto() movements, in degrees per second</p>
+<blockquote>
+<div><p>When moveby() or goto() is called, the motor will not exceed the set
+maximum velocity while moving toward its destination.</p>
+<p>Do not confuse with <a class="reference internal" href="#control.hardware.motors_linux.DDR25.velocity" title="control.hardware.motors_linux.DDR25.velocity"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DDR25.velocity</span></code></a>, which is the current physical velocity of the motor</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.acceleration">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">acceleration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.acceleration" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write) Acceleraiton of moveby()/goto() movements, in degrees per second^2</p>
+<blockquote>
+<div><p>When moveby() or goto() is called, the motor will accelerate at the
+given rate until it reaches the maximum velocity.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.set_velocity_parameters">
+<span class="sig-name descname"><span class="pre">set_velocity_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minvel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxvel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/motors_linux.html#DDR25.set_velocity_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.motors_linux.DDR25.set_velocity_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Set velocity parameters all at once</p>
+<p>Sets parameters for goto()/moveby() movements</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>minvel</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – minimum velocity (deg/sec)</p></li>
+<li><p><strong>accel</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – acceleration (deg/sec^2)</p></li>
+<li><p><strong>maxvel</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – maximum velocity (deg/sec)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.set_jog_parameters">
+<span class="sig-name descname"><span class="pre">set_jog_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minvel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxvel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stopmode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/motors_linux.html#DDR25.set_jog_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.motors_linux.DDR25.set_jog_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Set jog parameters all at once</p>
+<p>Sets parameters for jog()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – jog mode</p></li>
+<li><p><strong>step</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – jog step size</p></li>
+<li><p><strong>minvel</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – minimum jog velocity (deg/sec)</p></li>
+<li><p><strong>accel</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – jog acceleration (deg/sec^2)</p></li>
+<li><p><strong>maxvel</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – maximum jog velocity (deg/sec)</p></li>
+<li><p><strong>stopmode</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – stop mode</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.jog_max_velocity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jog_max_velocity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.jog_max_velocity" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write) Maximum jog velocity, in degrees per second</p>
+<p>When jogging, the motor will not exceed this velocity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.jog_min_velocity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jog_min_velocity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.jog_min_velocity" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write) Minimum jog velocity, in degrees per second</p>
+<p>Typically 0</p>
+<p>Although this property is read-and-write,
+writing to it doesn’t do anything.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.jog_acceleration">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jog_acceleration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.jog_acceleration" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write) Jog acceleration, in degrees per second^2</p>
+<p>When jog() is called, the motor will accelerate at the given rate until
+it reaches the maximum jog velocity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.jog_mode">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jog_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.jog_mode" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write) Jog mode</p>
+<p>See Thorlabs APT manual</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.jog_stop_mode">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jog_stop_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.jog_stop_mode" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write) Jog stop mode</p>
+<p>See Thorlabs APT manual</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.jog_step_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">jog_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.jog_step_size" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write) Jog step size</p>
+<p>See Thorlabs APT manual</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.home_direction">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">home_direction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.home_direction" title="Permalink to this definition"></a></dt>
+<dd><p>Home direction</p>
+<p>The direction in which the motor will head home</p>
+<p>1 means forward, 2 means backward.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.motors_linux.DDR25.home_velocity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">home_velocity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.motors_linux.DDR25.home_velocity" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write) Home velocity in degrees per second</p>
+<p>The velocity at which the motor will go home</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="control.hardware.motors_linux.initMotor.html" class="btn btn-neutral float-left" title="control.hardware.motors_linux.initMotor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="control.hardware.pattern.html" class="btn btn-neutral float-right" title="control.hardware.pattern" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

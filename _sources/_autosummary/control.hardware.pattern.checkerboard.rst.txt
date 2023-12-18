@@ -1,0 +1,6 @@
+control.hardware.pattern.checkerboard
+=====================================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: checkerboard

@@ -1,0 +1,40 @@
+control.hardware.shutter.SC10
+=============================
+
+.. currentmodule:: control.hardware.shutter
+
+.. autoclass:: SC10
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~SC10.close
+      ~SC10.open
+      ~SC10.open_for
+      ~SC10.toggle
+      ~SC10.trigger
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SC10.id
+      ~SC10.is_connected
+      ~SC10.is_open
+      ~SC10.mode
+      ~SC10.open_dur
+      ~SC10.trigmode
+   
+   

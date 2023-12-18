@@ -1,0 +1,46 @@
+control.hwpstair.interface.Interface
+====================================
+
+.. currentmodule:: control.hwpstair.interface
+
+.. autoclass:: Interface
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~Interface.all_devices_connected
+      ~Interface.bernoulli
+      ~Interface.block
+      ~Interface.cleanup
+      ~Interface.getdir
+      ~Interface.obfuscated_iris_move
+      ~Interface.randdir
+      ~Interface.rotate
+      ~Interface.say
+      ~Interface.set_obstruction
+      ~Interface.stop_rotate
+      ~Interface.unblock
+      ~Interface.unblock_for
+      ~Interface.wait
+      ~Interface.wait_for_ready
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Interface.ORDER
+      ~Interface.settings
+   
+   

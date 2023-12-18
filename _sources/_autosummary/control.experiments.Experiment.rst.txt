@@ -1,0 +1,36 @@
+﻿control.experiments.Experiment
+==============================
+
+.. currentmodule:: control.experiments
+
+.. autoclass:: Experiment
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~Experiment.exp
+      ~Experiment.start
+      ~Experiment.stop
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Experiment.exp_template
+      ~Experiment.hw_template
+      ~Experiment.interface
+      ~Experiment.settings
+   
+   

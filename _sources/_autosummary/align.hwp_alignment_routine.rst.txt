@@ -1,0 +1,6 @@
+align.hwp\_alignment\_routine
+=============================
+
+.. currentmodule:: align
+
+.. autofunction:: hwp_alignment_routine

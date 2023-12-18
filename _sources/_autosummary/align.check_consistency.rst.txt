@@ -1,0 +1,6 @@
+align.check\_consistency
+========================
+
+.. currentmodule:: align
+
+.. autofunction:: check_consistency

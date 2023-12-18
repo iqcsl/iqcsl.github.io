@@ -1,0 +1,30 @@
+control.gui.graph.GraphFrame
+============================
+
+.. currentmodule:: control.gui.graph
+
+.. autoclass:: GraphFrame
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~GraphFrame.browse
+      ~GraphFrame.cleanup
+      ~GraphFrame.destroyGraph
+      ~GraphFrame.graphfile
+      ~GraphFrame.saveDialog
+      ~GraphFrame.setFile
+   
+   
+
+   
+   
+   

@@ -1,0 +1,6 @@
+control.myio.flushinput
+=======================
+
+.. currentmodule:: control.myio
+
+.. autofunction:: flushinput

@@ -1,0 +1,6 @@
+control.hardware.pattern.grating
+================================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: grating

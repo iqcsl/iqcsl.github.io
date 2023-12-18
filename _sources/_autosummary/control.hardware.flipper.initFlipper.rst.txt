@@ -1,0 +1,6 @@
+control.hardware.flipper.initFlipper
+====================================
+
+.. currentmodule:: control.hardware.flipper
+
+.. autofunction:: initFlipper

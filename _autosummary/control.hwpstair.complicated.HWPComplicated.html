@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hwpstair.complicated.HWPComplicated &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="control.hwpstair.familiarize" href="control.hwpstair.familiarize.html" />
+    <link rel="prev" title="control.hwpstair.complicated" href="control.hwpstair.complicated.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="control.html">control</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="control.config.html">control.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.decorategraph.html">control.decorategraph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.devices.html">control.devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.experiments.html">control.experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.graphrecord.html">control.graphrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.gui.html">control.gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.hardware.html">control.hardware</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="control.hwpstair.html">control.hwpstair</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="control.hwpstair.basic.html">control.hwpstair.basic</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="control.hwpstair.complicated.html">control.hwpstair.complicated</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">control.hwpstair.complicated.HWPComplicated</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="control.hwpstair.familiarize.html">control.hwpstair.familiarize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hwpstair.interface.html">control.hwpstair.interface</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="control.inputwidget.html">control.inputwidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.jsonwrappers.html">control.jsonwrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.messages.html">control.messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.myio.html">control.myio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.record.html">control.record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.settings.html">control.settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.templates.html">control.templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.timestamp.html">control.timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.tkwrappers.html">control.tkwrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.typechecking.html">control.typechecking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="control.html">control</a></li>
+          <li class="breadcrumb-item"><a href="control.hwpstair.html">control.hwpstair</a></li>
+          <li class="breadcrumb-item"><a href="control.hwpstair.complicated.html">control.hwpstair.complicated</a></li>
+      <li class="breadcrumb-item active">control.hwpstair.complicated.HWPComplicated</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/control.hwpstair.complicated.HWPComplicated.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="control-hwpstair-complicated-hwpcomplicated">
+<h1>control.hwpstair.complicated.HWPComplicated<a class="headerlink" href="#control-hwpstair-complicated-hwpcomplicated" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="control.hwpstair.complicated.HWPComplicated">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">control.hwpstair.complicated.</span></span><span class="sig-name descname"><span class="pre">HWPComplicated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savedir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hwpstair/complicated.html#HWPComplicated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hwpstair.complicated.HWPComplicated" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="control.hwpstair.basic.HWPBasic.html#control.hwpstair.basic.HWPBasic" title="control.hwpstair.basic.HWPBasic"><code class="xref py py-class docutils literal notranslate"><span class="pre">HWPBasic</span></code></a></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_new_aperture</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcstep</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">decorator</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dotrial</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hwpstair.complicated.HWPComplicated.exp" title="control.hwpstair.complicated.HWPComplicated.exp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp</span></code></a></p></td>
+<td><p>Experiment logic</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hwpstair.complicated.HWPComplicated.start" title="control.hwpstair.complicated.HWPComplicated.start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start</span></code></a></p></td>
+<td><p>Start the experiment</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hwpstair.complicated.HWPComplicated.stop" title="control.hwpstair.complicated.HWPComplicated.stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code></a></p></td>
+<td><p>Perform cleanup (e.x.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">try_joker</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_step</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">devices</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hwpstair.complicated.HWPComplicated.exp_template" title="control.hwpstair.complicated.HWPComplicated.exp_template"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp_template</span></code></a></p></td>
+<td><p>Experiment settings template</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hwpstair.complicated.HWPComplicated.hw_template" title="control.hwpstair.complicated.HWPComplicated.hw_template"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hw_template</span></code></a></p></td>
+<td><p>Hardware settings template</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hwpstair.complicated.HWPComplicated.settings" title="control.hwpstair.complicated.HWPComplicated.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>The experiment settings</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="control.hwpstair.complicated.HWPComplicated.exp_template">
+<span class="sig-name descname"><span class="pre">exp_template</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'aperture_max':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'aperture_min':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'do_joker':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'hwpvel':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'initial_step_size':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'joker_ap':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'joker_rate':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'max_out_stop':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'max_reversals':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'max_trials':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'reversal_step_sizes':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'shutdur':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'threshold_average_num':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#control.hwpstair.complicated.HWPComplicated.exp_template" title="Permalink to this definition"></a></dt>
+<dd><p>Experiment settings template</p>
+<p>A template is a <code class="docutils literal notranslate"><span class="pre">str</span> <span class="pre">-&gt;</span> <span class="pre">Setting</span></code> dictionary</p>
+<p>e.x. maximum number of trials, pattern rotation speed, etc. can be defined
+as <a href="#id1"><span class="problematic" id="id2">``</span></a>Setting``s and placed inside this template</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="control.hwpstair.complicated.HWPComplicated.hw_template">
+<span class="sig-name descname"><span class="pre">hw_template</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'beamblocker':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'clockwise_dir':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'hwp_serial_number':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'iris_serial_number':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'key_ccw':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'key_cw':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'key_ready':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'obstruction':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'obstruction_type':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'phase2gray':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'servo_closed_angle':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'servo_open_angle':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'servo_pwm_pin':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;,</span> <span class="pre">'shutter_com_port':</span> <span class="pre">&lt;control.settings.Setting</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#control.hwpstair.complicated.HWPComplicated.hw_template" title="Permalink to this definition"></a></dt>
+<dd><p>Hardware settings template</p>
+<p>A template is a <code class="docutils literal notranslate"><span class="pre">str</span> <span class="pre">-&gt;</span> <span class="pre">Setting</span></code> dictionary</p>
+<p>e.x. motor serial number, what direction corresponds to clockwise, etc. can
+be defined as <a href="#id3"><span class="problematic" id="id4">``</span></a>Setting``s and placed inside this template</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="control.hwpstair.complicated.HWPComplicated.interface">
+<span class="sig-name descname"><span class="pre">interface</span></span><a class="headerlink" href="#control.hwpstair.complicated.HWPComplicated.interface" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="control.hwpstair.interface.Interface.html#control.hwpstair.interface.Interface" title="control.hwpstair.interface.Interface"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interface</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hwpstair.complicated.HWPComplicated.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gfr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#control.hwpstair.complicated.HWPComplicated.start" title="Permalink to this definition"></a></dt>
+<dd><p>Start the experiment</p>
+<p>Wrapper for <code class="xref py py-meth docutils literal notranslate"><span class="pre">Experiment.exp()</span></code></p>
+<p>Checks connectivity of all required devices, starts recording if
+applicable, then runs the experiment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gfr</strong> (<a class="reference internal" href="control.gui.graph.GraphFrame.html#control.gui.graph.GraphFrame" title="control.gui.graph.GraphFrame"><em>GraphFrame</em></a>) – if provided, the name of the recording file will be given to the GraphFrame for convenience</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hwpstair.complicated.HWPComplicated.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#control.hwpstair.complicated.HWPComplicated.stop" title="Permalink to this definition"></a></dt>
+<dd><p>Perform cleanup (e.x. stop motors)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="control.hwpstair.complicated.HWPComplicated.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><a class="headerlink" href="#control.hwpstair.complicated.HWPComplicated.settings" title="Permalink to this definition"></a></dt>
+<dd><p>The experiment settings</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hwpstair.complicated.HWPComplicated.exp">
+<span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hwpstair/complicated.html#HWPComplicated.exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hwpstair.complicated.HWPComplicated.exp" title="Permalink to this definition"></a></dt>
+<dd><p>Experiment logic</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="control.hwpstair.complicated.html" class="btn btn-neutral float-left" title="control.hwpstair.complicated" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="control.hwpstair.familiarize.html" class="btn btn-neutral float-right" title="control.hwpstair.familiarize" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

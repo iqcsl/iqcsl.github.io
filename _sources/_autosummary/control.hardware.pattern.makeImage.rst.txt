@@ -1,0 +1,6 @@
+control.hardware.pattern.makeImage
+==================================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: makeImage

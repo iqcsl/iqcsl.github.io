@@ -1,0 +1,40 @@
+control.hardware.flipper
+========================
+
+.. automodule:: control.hardware.flipper
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      initFlipper
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      MFF102
+   
+   
+
+   
+   
+   
+
+
+

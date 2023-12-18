@@ -1,0 +1,42 @@
+﻿control.hwpstair.complicated.HWPComplicated
+===========================================
+
+.. currentmodule:: control.hwpstair.complicated
+
+.. autoclass:: HWPComplicated
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~HWPComplicated.calc_new_aperture
+      ~HWPComplicated.calcstep
+      ~HWPComplicated.decorator
+      ~HWPComplicated.dotrial
+      ~HWPComplicated.exp
+      ~HWPComplicated.start
+      ~HWPComplicated.stop
+      ~HWPComplicated.try_joker
+      ~HWPComplicated.update_step
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~HWPComplicated.devices
+      ~HWPComplicated.exp_template
+      ~HWPComplicated.hw_template
+      ~HWPComplicated.settings
+   
+   

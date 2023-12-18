@@ -1,0 +1,6 @@
+control.devices.find\_device\_with\_serial
+==========================================
+
+.. currentmodule:: control.devices
+
+.. autofunction:: find_device_with_serial

@@ -1,0 +1,45 @@
+control.typechecking
+====================
+
+.. automodule:: control.typechecking
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      is_GPIO_pin
+      is_alphachar
+      is_angle
+      is_dirpath
+      is_filepath
+      is_int
+      is_list_or_tuple
+      is_nonneg_int
+      is_nonneg_number
+      is_number
+      is_pos_int
+      is_pos_number
+      is_servo_angle
+      validate
+      validateVelparams
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

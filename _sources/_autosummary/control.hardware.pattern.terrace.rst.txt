@@ -1,0 +1,6 @@
+control.hardware.pattern.terrace
+================================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: terrace

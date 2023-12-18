@@ -1,0 +1,6 @@
+control.config.getargs
+======================
+
+.. currentmodule:: control.config
+
+.. autofunction:: getargs

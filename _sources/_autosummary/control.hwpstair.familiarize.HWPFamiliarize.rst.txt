@@ -1,0 +1,39 @@
+﻿control.hwpstair.familiarize.HWPFamiliarize
+===========================================
+
+.. currentmodule:: control.hwpstair.familiarize
+
+.. autoclass:: HWPFamiliarize
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~HWPFamiliarize.calc_new_aperture
+      ~HWPFamiliarize.decorator
+      ~HWPFamiliarize.dotrial
+      ~HWPFamiliarize.exp
+      ~HWPFamiliarize.start
+      ~HWPFamiliarize.stop
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~HWPFamiliarize.devices
+      ~HWPFamiliarize.exp_template
+      ~HWPFamiliarize.hw_template
+      ~HWPFamiliarize.settings
+   
+   

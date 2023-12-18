@@ -1,0 +1,6 @@
+align.getPowerMeter
+===================
+
+.. currentmodule:: align
+
+.. autofunction:: getPowerMeter

@@ -1,0 +1,6 @@
+control.gui.controls.makeSC10Controls
+=====================================
+
+.. currentmodule:: control.gui.controls
+
+.. autofunction:: makeSC10Controls

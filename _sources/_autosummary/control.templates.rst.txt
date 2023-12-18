@@ -1,0 +1,23 @@
+control.templates
+=================
+
+.. automodule:: control.templates
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

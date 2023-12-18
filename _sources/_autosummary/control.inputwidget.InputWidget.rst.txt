@@ -1,0 +1,36 @@
+control.inputwidget.InputWidget
+===============================
+
+.. currentmodule:: control.inputwidget
+
+.. autoclass:: InputWidget
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~InputWidget.get
+      ~InputWidget.isvalid
+      ~InputWidget.set
+      ~InputWidget.try_get_converted
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InputWidget.err_str
+      ~InputWidget.typ
+      ~InputWidget.widget
+   
+   

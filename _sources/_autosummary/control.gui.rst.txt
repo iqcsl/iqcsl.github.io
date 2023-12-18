@@ -1,0 +1,36 @@
+﻿control.gui
+===========
+
+.. automodule:: control.gui
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   control.gui.controls
+   control.gui.devices
+   control.gui.experiment
+   control.gui.famil
+   control.gui.graph
+   control.gui.settings
+   control.gui.window
+

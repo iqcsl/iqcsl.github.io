@@ -1,0 +1,33 @@
+control.graphrecord
+===================
+
+.. automodule:: control.graphrecord
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      check
+      graphaps
+      graphfile
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

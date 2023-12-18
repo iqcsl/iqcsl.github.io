@@ -1,0 +1,6 @@
+align.promptEnter
+=================
+
+.. currentmodule:: align
+
+.. autofunction:: promptEnter

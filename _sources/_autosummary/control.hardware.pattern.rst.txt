@@ -1,0 +1,42 @@
+control.hardware.pattern
+========================
+
+.. automodule:: control.hardware.pattern
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      blank
+      checkerboard
+      circle
+      combine_with_mask
+      discretize
+      draw
+      grating
+      makeImage
+      make_vortex_with_obstruction
+      swatches
+      terrace
+      vortex
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

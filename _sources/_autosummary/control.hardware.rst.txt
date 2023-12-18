@@ -1,0 +1,40 @@
+control.hardware
+================
+
+.. automodule:: control.hardware
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   control.hardware.detect_heds_module_path
+   control.hardware.flipper
+   control.hardware.iris
+   control.hardware.motors
+   control.hardware.motors_linux
+   control.hardware.motors_windows
+   control.hardware.pattern
+   control.hardware.power
+   control.hardware.servo
+   control.hardware.shutter
+   control.hardware.slm
+

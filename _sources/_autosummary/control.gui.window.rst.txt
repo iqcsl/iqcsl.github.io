@@ -1,0 +1,33 @@
+control.gui.window
+==================
+
+.. automodule:: control.gui.window
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      handle_close
+      makeWindow
+      onFrameConfigure
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

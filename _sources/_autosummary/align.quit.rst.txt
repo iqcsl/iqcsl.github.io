@@ -1,0 +1,6 @@
+align.quit
+==========
+
+.. currentmodule:: align
+
+.. autofunction:: quit

@@ -1,0 +1,6 @@
+control.inputwidget.makeButtonForInput
+======================================
+
+.. currentmodule:: control.inputwidget
+
+.. autofunction:: makeButtonForInput

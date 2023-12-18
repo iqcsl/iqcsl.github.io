@@ -1,0 +1,6 @@
+control.settings.identity
+=========================
+
+.. currentmodule:: control.settings
+
+.. autofunction:: identity

@@ -1,0 +1,6 @@
+control.typechecking.is\_alphachar
+==================================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: is_alphachar

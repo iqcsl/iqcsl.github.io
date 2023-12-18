@@ -1,0 +1,6 @@
+control.typechecking.validate
+=============================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: validate

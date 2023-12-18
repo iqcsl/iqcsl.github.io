@@ -1,0 +1,6 @@
+control.hardware.shutter.list\_serial\_ports
+============================================
+
+.. currentmodule:: control.hardware.shutter
+
+.. autofunction:: list_serial_ports

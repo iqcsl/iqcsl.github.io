@@ -1,0 +1,39 @@
+control.tkwrappers
+==================
+
+.. automodule:: control.tkwrappers
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      entryset
+      labelappend
+      labelset
+      makeEntry
+      makeFrame
+      makeLabel
+      tkgrid
+      tkpack
+      tkpackleft
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

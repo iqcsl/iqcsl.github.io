@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hardware.iris.ELL15 &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="control.hardware.motors" href="control.hardware.motors.html" />
+    <link rel="prev" title="control.hardware.iris" href="control.hardware.iris.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="control.html">control</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="control.config.html">control.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.decorategraph.html">control.decorategraph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.devices.html">control.devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.experiments.html">control.experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.graphrecord.html">control.graphrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.gui.html">control.gui</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="control.hardware.html">control.hardware</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.flipper.html">control.hardware.flipper</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="control.hardware.iris.html">control.hardware.iris</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">control.hardware.iris.ELL15</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.motors.html">control.hardware.motors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.motors_linux.html">control.hardware.motors_linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.pattern.html">control.hardware.pattern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.power.html">control.hardware.power</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.servo.html">control.hardware.servo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.shutter.html">control.hardware.shutter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.slm.html">control.hardware.slm</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="control.hwpstair.html">control.hwpstair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.inputwidget.html">control.inputwidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.jsonwrappers.html">control.jsonwrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.messages.html">control.messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.myio.html">control.myio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.record.html">control.record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.settings.html">control.settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.templates.html">control.templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.timestamp.html">control.timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.tkwrappers.html">control.tkwrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.typechecking.html">control.typechecking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="control.html">control</a></li>
+          <li class="breadcrumb-item"><a href="control.hardware.html">control.hardware</a></li>
+          <li class="breadcrumb-item"><a href="control.hardware.iris.html">control.hardware.iris</a></li>
+      <li class="breadcrumb-item active">control.hardware.iris.ELL15</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/control.hardware.iris.ELL15.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="control-hardware-iris-ell15">
+<h1>control.hardware.iris.ELL15<a class="headerlink" href="#control-hardware-iris-ell15" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">control.hardware.iris.</span></span><span class="sig-name descname"><span class="pre">ELL15</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/iris.html#ELL15"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.iris.ELL15" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Thorlabs ELL15 Iris class</p>
+<p>Typically connected to an Interface Board, which is connected to a computer</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">control.hardware.iris</span> <span class="kn">import</span> <span class="n">ELL15</span>
+
+<span class="n">iris</span> <span class="o">=</span> <span class="n">ELL15</span><span class="p">(</span><span class="s1">&#39;DK0BJ258&#39;</span><span class="p">)</span> <span class="c1"># replace with interface board serial number</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">status</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">max_aperture</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">min_aperture</span><span class="p">)</span>
+<span class="n">iris</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+<span class="n">iris</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">iris</span><span class="o">.</span><span class="n">moverel</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sn</strong> (<em>int</em><em> or </em><em>str</em>) – serial number (of interface board, not iris)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – if fails to connect</p>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.iris.ELL15.goto" title="control.hardware.iris.ELL15.goto"><code class="xref py py-obj docutils literal notranslate"><span class="pre">goto</span></code></a></p></td>
+<td><p>Go to a certain position</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.iris.ELL15.home" title="control.hardware.iris.ELL15.home"><code class="xref py py-obj docutils literal notranslate"><span class="pre">home</span></code></a></p></td>
+<td><p>Home the iris</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.iris.ELL15.info" title="control.hardware.iris.ELL15.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a></p></td>
+<td><p>Get info about the device</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.iris.ELL15.moverel" title="control.hardware.iris.ELL15.moverel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moverel</span></code></a></p></td>
+<td><p>Move relatively by a certain amount</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.iris.ELL15.status" title="control.hardware.iris.ELL15.status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">status</span></code></a></p></td>
+<td><p>Get status of device</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.iris.ELL15.is_connected" title="control.hardware.iris.ELL15.is_connected"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_connected</span></code></a></p></td>
+<td><p>Whether the device is connected</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.iris.ELL15.max_aperture" title="control.hardware.iris.ELL15.max_aperture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_aperture</span></code></a></p></td>
+<td><p>Maximum aperture size</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.iris.ELL15.min_aperture" title="control.hardware.iris.ELL15.min_aperture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_aperture</span></code></a></p></td>
+<td><p>Minimum aperture size</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.iris.ELL15.position" title="control.hardware.iris.ELL15.position"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></a></p></td>
+<td><p>Current position</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#control.hardware.iris.ELL15.serial_number" title="control.hardware.iris.ELL15.serial_number"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serial_number</span></code></a></p></td>
+<td><p>Serial number</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15.serial_number">
+<span class="sig-name descname"><span class="pre">serial_number</span></span><a class="headerlink" href="#control.hardware.iris.ELL15.serial_number" title="Permalink to this definition"></a></dt>
+<dd><p>Serial number</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15.is_connected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_connected</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#control.hardware.iris.ELL15.is_connected" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the device is connected</p>
+<p>Tries to call <a class="reference internal" href="#control.hardware.iris.ELL15.status" title="control.hardware.iris.ELL15.status"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ELL15.status()</span></code></a> and returns True or False based on whether it succeeds</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15.info">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/iris.html#ELL15.info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.iris.ELL15.info" title="Permalink to this definition"></a></dt>
+<dd><p>Get info about the device</p>
+<p>Includes:</p>
+<ul class="simple">
+<li><p>Default address (see manual)</p></li>
+<li><p>ELL model number</p></li>
+<li><p>Serial number</p></li>
+<li><p>Year of manufacture</p></li>
+<li><p>Firmware release</p></li>
+<li><p>Hardware release (see manual)</p></li>
+<li><p>Travel (mm)</p></li>
+<li><p>Encoder pulses per position</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>addr</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – address</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a <code class="docutils literal notranslate"><span class="pre">str</span> <span class="pre">-&gt;</span> <span class="pre">Any</span></code> dictionary containing device information</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15.status">
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/iris.html#ELL15.status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.iris.ELL15.status" title="Permalink to this definition"></a></dt>
+<dd><p>Get status of device</p>
+<p>Possible status strings are:</p>
+<ul class="simple">
+<li><p>OK</p></li>
+<li><p>Communication time out</p></li>
+<li><p>Mechanical time out</p></li>
+<li><p>Command error or not supported</p></li>
+<li><p>Value out of range</p></li>
+<li><p>Module isolated</p></li>
+<li><p>Module out of isolation</p></li>
+<li><p>Initializing error</p></li>
+<li><p>Thermal error</p></li>
+<li><p>Busy</p></li>
+<li><p>Sensor error</p></li>
+<li><p>Motor error</p></li>
+<li><p>Out of Range</p></li>
+<li><p>Over Current error</p></li>
+<li><p>Unknown error</p></li>
+</ul>
+<p>See the manual for more details</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>addr</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – address</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>status string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15.home">
+<span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/iris.html#ELL15.home"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.iris.ELL15.home" title="Permalink to this definition"></a></dt>
+<dd><p>Home the iris</p>
+<p>For the ELL15, home is the maximum aperture by default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – address</p></li>
+<li><p><strong>d</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – homing direction (for rotary stages only)</p></li>
+<li><p><strong>blocking</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if True, wait for homing to finish stopping before continuing execution</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>boolean indicating success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15.goto">
+<span class="sig-name descname"><span class="pre">goto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/iris.html#ELL15.goto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.iris.ELL15.goto" title="Permalink to this definition"></a></dt>
+<dd><p>Go to a certain position</p>
+<p>The given position must be in the interval <code class="docutils literal notranslate"><span class="pre">[ELL15.min_aperture,</span> <span class="pre">ELL15.max_aperture]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mm</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – target position in millimeters</p></li>
+<li><p><strong>addr</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – address</p></li>
+<li><p><strong>blocking</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if True, wait for move to finish stopping before continuing execution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15.moverel">
+<span class="sig-name descname"><span class="pre">moverel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/control/hardware/iris.html#ELL15.moverel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#control.hardware.iris.ELL15.moverel" title="Permalink to this definition"></a></dt>
+<dd><p>Move relatively by a certain amount</p>
+<p>The given amount must not move the iris out of the interval <code class="docutils literal notranslate"><span class="pre">[ELL.min_aperture,</span> <span class="pre">ELL15.max_aperture]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mm</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – amount to move in millimeters. Positive means increase aperture, negative means decrease aperture</p></li>
+<li><p><strong>addr</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – address</p></li>
+<li><p><strong>blocking</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – if True, wait for move to finish stopping before continuing execution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15.position">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.iris.ELL15.position" title="Permalink to this definition"></a></dt>
+<dd><p>Current position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>addr</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – address</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>current aperture size in millimeters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15.max_aperture">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_aperture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.iris.ELL15.max_aperture" title="Permalink to this definition"></a></dt>
+<dd><p>Maximum aperture size</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>maximum aperture size in millimeters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.iris.ELL15.min_aperture">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min_aperture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#control.hardware.iris.ELL15.min_aperture" title="Permalink to this definition"></a></dt>
+<dd><p>Minimum aperture size</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>minimum aperture size in millimeters</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="control.hardware.iris.html" class="btn btn-neutral float-left" title="control.hardware.iris" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="control.hardware.motors.html" class="btn btn-neutral float-right" title="control.hardware.motors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

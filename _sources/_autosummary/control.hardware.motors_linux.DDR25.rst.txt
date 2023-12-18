@@ -1,0 +1,57 @@
+﻿control.hardware.motors\_linux.DDR25
+====================================
+
+.. currentmodule:: control.hardware.motors_linux
+
+.. autoclass:: DDR25
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~DDR25.goto
+      ~DDR25.home
+      ~DDR25.identify
+      ~DDR25.jog
+      ~DDR25.moveby
+      ~DDR25.set_jog_parameters
+      ~DDR25.set_velocity_parameters
+      ~DDR25.stop
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DDR25.acceleration
+      ~DDR25.home_direction
+      ~DDR25.home_velocity
+      ~DDR25.in_motion
+      ~DDR25.is_connected
+      ~DDR25.is_enabled
+      ~DDR25.is_homing
+      ~DDR25.is_jogging
+      ~DDR25.jog_acceleration
+      ~DDR25.jog_max_velocity
+      ~DDR25.jog_min_velocity
+      ~DDR25.jog_mode
+      ~DDR25.jog_step_size
+      ~DDR25.jog_stop_mode
+      ~DDR25.max_velocity
+      ~DDR25.min_velocity
+      ~DDR25.position
+      ~DDR25.velocity
+      ~DDR25.stage
+      ~DDR25.serial_number
+   
+   

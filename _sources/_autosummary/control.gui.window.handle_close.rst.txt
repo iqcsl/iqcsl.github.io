@@ -1,0 +1,6 @@
+control.gui.window.handle\_close
+================================
+
+.. currentmodule:: control.gui.window
+
+.. autofunction:: handle_close

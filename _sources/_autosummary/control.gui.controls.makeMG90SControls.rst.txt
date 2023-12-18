@@ -1,0 +1,6 @@
+control.gui.controls.makeMG90SControls
+======================================
+
+.. currentmodule:: control.gui.controls
+
+.. autofunction:: makeMG90SControls

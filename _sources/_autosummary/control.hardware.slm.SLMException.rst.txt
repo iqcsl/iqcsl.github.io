@@ -1,0 +1,6 @@
+control.hardware.slm.SLMException
+=================================
+
+.. currentmodule:: control.hardware.slm
+
+.. autoexception:: SLMException

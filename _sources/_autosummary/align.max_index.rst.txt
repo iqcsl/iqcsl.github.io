@@ -1,0 +1,6 @@
+align.max\_index
+================
+
+.. currentmodule:: align
+
+.. autofunction:: max_index

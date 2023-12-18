@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hardware &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="control.hardware.flipper" href="control.hardware.flipper.html" />
+    <link rel="prev" title="control.gui.window.onFrameConfigure" href="control.gui.window.onFrameConfigure.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="control.html">control</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="control.config.html">control.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.decorategraph.html">control.decorategraph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.devices.html">control.devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.experiments.html">control.experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.graphrecord.html">control.graphrecord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.gui.html">control.gui</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">control.hardware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.flipper.html">control.hardware.flipper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.iris.html">control.hardware.iris</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.motors.html">control.hardware.motors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.motors_linux.html">control.hardware.motors_linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.pattern.html">control.hardware.pattern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.power.html">control.hardware.power</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.servo.html">control.hardware.servo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.shutter.html">control.hardware.shutter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="control.hardware.slm.html">control.hardware.slm</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="control.hwpstair.html">control.hwpstair</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.inputwidget.html">control.inputwidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.jsonwrappers.html">control.jsonwrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.messages.html">control.messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.myio.html">control.myio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.record.html">control.record</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.settings.html">control.settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.templates.html">control.templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.timestamp.html">control.timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.tkwrappers.html">control.tkwrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control.typechecking.html">control.typechecking</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="control.html">control</a></li>
+      <li class="breadcrumb-item active">control.hardware</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/control.hardware.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-control.hardware">
+<span id="control-hardware"></span><h1>control.hardware<a class="headerlink" href="#module-control.hardware" title="Permalink to this heading"></a></h1>
+<p>Modules for controlling optical devices</p>
+<p>Each type of device is associated with a class named after its model number
+(e.x. <code class="docutils literal notranslate"><span class="pre">MG90S</span></code>, <code class="docutils literal notranslate"><span class="pre">GAEA2</span></code>, <code class="docutils literal notranslate"><span class="pre">DDR25</span></code>, etc.), which is defined in the
+appropriate module</p>
+<p>Devices can be safely connected to using <a class="reference internal" href="control.devices.tryConnect.html#control.devices.tryConnect" title="control.devices.tryConnect"><code class="xref py py-func docutils literal notranslate"><span class="pre">control.devices.tryConnect()</span></code></a>.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="control.hardware.flipper.html#module-control.hardware.flipper" title="control.hardware.flipper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">control.hardware.flipper</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="control.hardware.iris.html#module-control.hardware.iris" title="control.hardware.iris"><code class="xref py py-obj docutils literal notranslate"><span class="pre">control.hardware.iris</span></code></a></p></td>
+<td><p>Iris module</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="control.hardware.motors.html#module-control.hardware.motors" title="control.hardware.motors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">control.hardware.motors</span></code></a></p></td>
+<td><p>Motor module</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="control.hardware.motors_linux.html#module-control.hardware.motors_linux" title="control.hardware.motors_linux"><code class="xref py py-obj docutils literal notranslate"><span class="pre">control.hardware.motors_linux</span></code></a></p></td>
+<td><p>Linux motor module</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="control.hardware.pattern.html#module-control.hardware.pattern" title="control.hardware.pattern"><code class="xref py py-obj docutils literal notranslate"><span class="pre">control.hardware.pattern</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="control.hardware.power.html#module-control.hardware.power" title="control.hardware.power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">control.hardware.power</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="control.hardware.servo.html#module-control.hardware.servo" title="control.hardware.servo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">control.hardware.servo</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="control.hardware.shutter.html#module-control.hardware.shutter" title="control.hardware.shutter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">control.hardware.shutter</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="control.hardware.slm.html#module-control.hardware.slm" title="control.hardware.slm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">control.hardware.slm</span></code></a></p></td>
+<td><p>Spatial Light Modulator (SLM) module</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="control.gui.window.onFrameConfigure.html" class="btn btn-neutral float-left" title="control.gui.window.onFrameConfigure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="control.hardware.flipper.html" class="btn btn-neutral float-right" title="control.hardware.flipper" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

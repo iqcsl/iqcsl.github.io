@@ -1,0 +1,32 @@
+control.jsonwrappers
+====================
+
+.. automodule:: control.jsonwrappers
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      filename2dict
+      str2dict
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

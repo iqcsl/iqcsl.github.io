@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.gui.controls &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.gui.controls</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.gui.controls</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+
+<span class="kn">from</span> <span class="nn">control.tkwrappers</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.inputwidget</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.myio</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.settings</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.motors</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.iris</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.devices</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># the functions here get passed a frame (to populate) and a key (to the gdevices dict)</span>
+<span class="c1"># the dictionary is never accessed directly by the functions that populate the frame,</span>
+<span class="c1"># as the dictionary may change while the frame is alive (also it just seems like bad practice)</span>
+<span class="c1"># hence why gdevices[key] is seen everywhere</span>
+
+<div class="viewcode-block" id="makeGAEA2Controls"><a class="viewcode-back" href="../../../_autosummary/control.gui.controls.makeGAEA2Controls.html#control.gui.controls.makeGAEA2Controls">[docs]</a><span class="k">def</span> <span class="nf">makeGAEA2Controls</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">lorder</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Vortex order&#39;</span><span class="p">)</span>
+    <span class="n">iworder</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;vortex order&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">is_pos_int</span><span class="p">,</span> <span class="s1">&#39;must be positive integer&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+    <span class="n">bvortex</span> <span class="o">=</span> <span class="n">makeButtonForInput</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">iworder</span><span class="p">,</span> <span class="s1">&#39;Show vortex phase&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">order</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">showVortex</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">lorder</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iworder</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bvortex</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="makeSC10Controls"><a class="viewcode-back" href="../../../_autosummary/control.gui.controls.makeSC10Controls.html#control.gui.controls.makeSC10Controls">[docs]</a><span class="k">def</span> <span class="nf">makeSC10Controls</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">bopen</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Open&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">open</span><span class="p">())</span>
+    <span class="n">bclose</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Close&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
+
+    <span class="n">iwopenfor</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;open duration (ms)&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;500&#39;</span><span class="p">,</span> <span class="n">is_pos_int</span><span class="p">,</span> <span class="s1">&#39;must be positive integer&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+    <span class="n">bopenfor</span> <span class="o">=</span> <span class="n">makeButtonForInput</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">iwopenfor</span><span class="p">,</span> <span class="s1">&#39;Open for (ms)&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">dur</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">open_for</span><span class="p">(</span><span class="n">dur</span><span class="p">))</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bopen</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bclose</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bopenfor</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwopenfor</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="makeMG90SControls"><a class="viewcode-back" href="../../../_autosummary/control.gui.controls.makeMG90SControls.html#control.gui.controls.makeMG90SControls">[docs]</a><span class="k">def</span> <span class="nf">makeMG90SControls</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">bsetup</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Setup&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">setup</span><span class="p">())</span>
+    <span class="n">bcleanup</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Cleanup&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">cleanup</span><span class="p">())</span>
+
+    <span class="n">iwgoto</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;servo position&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;90&#39;</span><span class="p">,</span> <span class="n">is_servo_angle</span><span class="p">,</span> <span class="s1">&#39;must be angle in [0,180]&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="n">bgoto</span> <span class="o">=</span> <span class="n">makeButtonForInput</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">iwgoto</span><span class="p">,</span> <span class="s1">&#39;Goto (deg)&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">pos</span><span class="p">))</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bsetup</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bcleanup</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bgoto</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwgoto</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="makeELL15Controls"><a class="viewcode-back" href="../../../_autosummary/control.gui.controls.makeELL15Controls.html#control.gui.controls.makeELL15Controls">[docs]</a><span class="k">def</span> <span class="nf">makeELL15Controls</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="c1"># get status</span>
+    <span class="n">lstatus</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+    <span class="n">bstatus</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="n">lstatus</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">status</span><span class="p">(),</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">))</span>
+
+    <span class="c1"># info = max aperture, min aperture, current position</span>
+    <span class="k">def</span> <span class="nf">temp</span><span class="p">():</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;MIN </span><span class="si">{</span><span class="n">dev</span><span class="o">.</span><span class="n">min_aperture</span><span class="si">}</span><span class="s1">mm</span><span class="se">\n</span><span class="s1">MAX </span><span class="si">{</span><span class="n">dev</span><span class="o">.</span><span class="n">max_aperture</span><span class="si">}</span><span class="s1">mm</span><span class="se">\n</span><span class="s1">AT </span><span class="si">{</span><span class="n">dev</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="s1">mm&#39;</span>
+        <span class="n">linfo</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">txt</span><span class="p">,</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="n">binfo</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Info&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">temp</span><span class="p">)</span>
+    <span class="n">linfo</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+
+    <span class="c1"># home, go max, go min</span>
+    <span class="n">bhome</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Home&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">home</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="n">bgomax</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Max&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">max_aperture</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="n">bgomin</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Min&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">min_aperture</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+    <span class="c1"># shrink &amp; grow by steps</span>
+    <span class="n">lstep</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Step size (mm)&#39;</span><span class="p">)</span>
+    <span class="n">iwstep</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;iris step size&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="n">is_pos_number</span><span class="p">,</span> <span class="s1">&#39;must be positive number&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="n">bshrink</span> <span class="o">=</span> <span class="n">makeButtonForInput</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">iwstep</span><span class="p">,</span> <span class="s1">&#39;Shrink&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">step</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">moverel</span><span class="p">(</span><span class="o">-</span><span class="n">step</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">bgrow</span> <span class="o">=</span> <span class="n">makeButtonForInput</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">iwstep</span><span class="p">,</span> <span class="s1">&#39;Grow&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">step</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">moverel</span><span class="p">(</span><span class="n">step</span><span class="p">))</span>
+
+    <span class="c1"># goto</span>
+    <span class="n">iwgoto</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;iris position&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;1.23&#39;</span><span class="p">,</span> <span class="n">is_pos_number</span><span class="p">,</span> <span class="s1">&#39;must be positive number&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="n">bgoto</span> <span class="o">=</span> <span class="n">makeButtonForInput</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">iwgoto</span><span class="p">,</span> <span class="s1">&#39;Goto (mm)&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">binfo</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">linfo</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bstatus</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">lstatus</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bhome</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bgomax</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bgomin</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">lstep</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwstep</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bshrink</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bgrow</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bgoto</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwgoto</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span></div>
+
+<span class="c1"># TODO thread these or something to make it nicer</span>
+<span class="c1"># maybe disable all buttons while a movement is in progress</span>
+<span class="c1"># TODO button to check if enabled or to enable/disable</span>
+<div class="viewcode-block" id="makeDDR25Controls"><a class="viewcode-back" href="../../../_autosummary/control.gui.controls.makeDDR25Controls.html#control.gui.controls.makeDDR25Controls">[docs]</a><span class="k">def</span> <span class="nf">makeDDR25Controls</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="c1"># actions frame (everything that isn&#39;t for getting/setting parameters)</span>
+    <span class="n">factions</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+    <span class="n">bidentify</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">factions</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Identify&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">identify</span><span class="p">())</span>
+
+    <span class="c1"># enabled/disabled, in motion, stationary, homing, jogging</span>
+    <span class="c1"># current position, velocity</span>
+    <span class="n">linfo</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">factions</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">temp</span><span class="p">():</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">enabled</span> <span class="o">=</span> <span class="s1">&#39;ENABLED&#39;</span> <span class="k">if</span> <span class="n">dev</span><span class="o">.</span><span class="n">is_enabled</span> <span class="k">else</span> <span class="s1">&#39;DISABLED&#39;</span>
+
+        <span class="k">if</span> <span class="n">dev</span><span class="o">.</span><span class="n">is_homing</span><span class="p">:</span>
+            <span class="n">motion</span> <span class="o">=</span> <span class="s1">&#39;IN MOTION (HOMING)&#39;</span>
+        <span class="k">elif</span> <span class="n">dev</span><span class="o">.</span><span class="n">is_jogging</span><span class="p">:</span>
+            <span class="n">motion</span> <span class="o">=</span> <span class="s1">&#39;IN MOTION (JOGGING)&#39;</span>
+        <span class="k">elif</span> <span class="n">dev</span><span class="o">.</span><span class="n">in_motion</span><span class="p">:</span>
+            <span class="n">motion</span> <span class="o">=</span> <span class="s1">&#39;IN MOTION&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">motion</span> <span class="o">=</span> <span class="s1">&#39;NOT IN MOTION&#39;</span>
+
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">position</span>
+        <span class="n">vel</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">velocity</span>
+
+        <span class="n">txt</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">enabled</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">motion</span><span class="si">}</span><span class="se">\n</span><span class="s1">POS </span><span class="si">{</span><span class="n">pos</span><span class="si">}</span><span class="se">\n</span><span class="s1">VEL </span><span class="si">{</span><span class="n">vel</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">linfo</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">txt</span><span class="p">,</span><span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="n">binfo</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">factions</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Info&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">temp</span><span class="p">)</span>
+
+    <span class="n">bstop</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">factions</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Stop&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+    <span class="n">bhome</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">factions</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Home&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">home</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+    <span class="n">iwgoto</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">factions</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;motor position&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;123&#39;</span><span class="p">,</span> <span class="n">is_angle</span><span class="p">,</span> <span class="s1">&#39;must be number in [-360,360]&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="n">bgoto</span> <span class="o">=</span> <span class="n">makeButtonForInput</span><span class="p">(</span><span class="n">factions</span><span class="p">,</span> <span class="n">iwgoto</span><span class="p">,</span> <span class="s1">&#39;Goto (deg)&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+    <span class="n">bjogforward</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">factions</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Jog forward&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">jog</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">bjogbackward</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">factions</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Jog backward&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">jog</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">binfo</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">linfo</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bidentify</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bstop</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bhome</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bgoto</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwgoto</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bjogforward</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bjogbackward</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Velocity parameters</span>
+    <span class="n">fvp</span> <span class="o">=</span> <span class="n">makeFrame</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+    <span class="n">lvp</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Velocity parameters&#39;</span><span class="p">)</span>
+
+    <span class="n">lvpmin</span> <span class="o">=</span> <span class="n">makeLabel</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="s1">&#39;Min (deg/sec)&#39;</span><span class="p">)</span>
+    <span class="n">lvpacc</span> <span class="o">=</span> <span class="n">makeLabel</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="s1">&#39;Accel (deg/sec^2)&#39;</span><span class="p">)</span>
+    <span class="n">lvpmax</span> <span class="o">=</span> <span class="n">makeLabel</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="s1">&#39;Max (deg/sec)&#39;</span><span class="p">)</span>
+
+    <span class="n">lvpminget</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="n">lvpaccget</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="n">lvpmaxget</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+
+    <span class="n">iwvpmin</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;vpmin&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="n">is_nonneg_number</span><span class="p">,</span> <span class="s1">&#39;must be non-negative number&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="n">iwvpacc</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;vpacc&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">,</span> <span class="n">is_pos_number</span><span class="p">,</span> <span class="s1">&#39;must be positive number&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="n">iwvpmax</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;vpmax&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">,</span> <span class="n">is_pos_number</span><span class="p">,</span> <span class="s1">&#39;must be positive number&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="c1"># evpmin = makeEntry(fvp, &#39;0&#39;)</span>
+    <span class="c1"># evpacc = makeEntry(fvp, &#39;100&#39;)</span>
+    <span class="c1"># evpmax = makeEntry(fvp, &#39;100&#39;)</span>
+
+    <span class="c1"># get velparams</span>
+    <span class="k">def</span> <span class="nf">temp</span><span class="p">():</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">minvel</span><span class="p">,</span> <span class="n">acc</span><span class="p">,</span> <span class="n">maxvel</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">min_velocity</span><span class="p">,</span> <span class="n">dev</span><span class="o">.</span><span class="n">acceleration</span><span class="p">,</span> <span class="n">dev</span><span class="o">.</span><span class="n">max_velocity</span>
+        <span class="n">labelset</span><span class="p">(</span><span class="n">lvpminget</span><span class="p">,</span> <span class="n">minvel</span><span class="p">)</span>
+        <span class="n">labelset</span><span class="p">(</span><span class="n">lvpaccget</span><span class="p">,</span> <span class="n">acc</span><span class="p">)</span>
+        <span class="n">labelset</span><span class="p">(</span><span class="n">lvpmaxget</span><span class="p">,</span> <span class="n">maxvel</span><span class="p">)</span>
+    <span class="n">bvpget</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Get&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">temp</span><span class="p">)</span>
+
+    <span class="c1"># set velparams</span>
+    <span class="k">def</span> <span class="nf">temp</span><span class="p">():</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">minvel</span> <span class="o">=</span> <span class="n">iwvpmin</span><span class="o">.</span><span class="n">try_get_converted</span><span class="p">()</span>
+        <span class="n">accel</span>  <span class="o">=</span> <span class="n">iwvpacc</span><span class="o">.</span><span class="n">try_get_converted</span><span class="p">()</span>
+        <span class="n">maxvel</span> <span class="o">=</span> <span class="n">iwvpmax</span><span class="o">.</span><span class="n">try_get_converted</span><span class="p">()</span>
+
+        <span class="c1"># try_get_converted() prints error message returns None on failure</span>
+        <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">minvel</span><span class="p">,</span> <span class="n">accel</span><span class="p">,</span> <span class="n">maxvel</span><span class="p">):</span>
+            <span class="n">dev</span><span class="o">.</span><span class="n">set_velocity_parameters</span><span class="p">(</span><span class="n">minvel</span><span class="p">,</span> <span class="n">accel</span><span class="p">,</span> <span class="n">maxvel</span><span class="p">)</span>
+    <span class="n">bvpset</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fvp</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Set&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">temp</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">lvp</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">lvpmin</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">lvpacc</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">lvpmax</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bvpget</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">lvpminget</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">lvpaccget</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">lvpmaxget</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bvpset</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwvpmin</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwvpacc</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwvpmax</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+
+    <span class="c1"># Jog parameters</span>
+    <span class="c1"># not implementing all jogparams, just the simple ones</span>
+    <span class="c1"># basically identical to velparams</span>
+    <span class="n">fjp</span> <span class="o">=</span> <span class="n">makeFrame</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+    <span class="n">ljp</span> <span class="o">=</span> <span class="n">makeLabel</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="s1">&#39;Jog parameters&#39;</span><span class="p">)</span>
+
+    <span class="n">ljpmin</span> <span class="o">=</span> <span class="n">makeLabel</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="s1">&#39;Min (deg/sec)&#39;</span><span class="p">)</span>
+    <span class="n">ljpacc</span> <span class="o">=</span> <span class="n">makeLabel</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="s1">&#39;Accel (deg/sec^2)&#39;</span><span class="p">)</span>
+    <span class="n">ljpmax</span> <span class="o">=</span> <span class="n">makeLabel</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="s1">&#39;Max (deg/sec)&#39;</span><span class="p">)</span>
+
+    <span class="n">ljpminget</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="n">ljpaccget</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="n">ljpmaxget</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+
+    <span class="n">iwjpmin</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;jpmin&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="n">is_nonneg_number</span><span class="p">,</span> <span class="s1">&#39;must be non-negative number&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="n">iwjpacc</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;jpacc&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">,</span> <span class="n">is_pos_number</span><span class="p">,</span> <span class="s1">&#39;must be positive number&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="n">iwjpmax</span> <span class="o">=</span> <span class="n">InputWidget</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="n">Setting</span><span class="p">(</span><span class="s1">&#39;jpmax&#39;</span><span class="p">,</span> <span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">,</span> <span class="n">is_pos_number</span><span class="p">,</span> <span class="s1">&#39;must be positive number&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+
+    <span class="c1"># get jogparams</span>
+    <span class="k">def</span> <span class="nf">temp</span><span class="p">():</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">minvel</span><span class="p">,</span> <span class="n">acc</span><span class="p">,</span> <span class="n">maxvel</span> <span class="o">=</span> <span class="n">dev</span><span class="o">.</span><span class="n">jog_min_velocity</span><span class="p">,</span> <span class="n">dev</span><span class="o">.</span><span class="n">jog_acceleration</span><span class="p">,</span> <span class="n">dev</span><span class="o">.</span><span class="n">jog_max_velocity</span>
+        <span class="n">labelset</span><span class="p">(</span><span class="n">ljpminget</span><span class="p">,</span> <span class="n">minvel</span><span class="p">)</span>
+        <span class="n">labelset</span><span class="p">(</span><span class="n">ljpaccget</span><span class="p">,</span> <span class="n">acc</span><span class="p">)</span>
+        <span class="n">labelset</span><span class="p">(</span><span class="n">ljpmaxget</span><span class="p">,</span> <span class="n">maxvel</span><span class="p">)</span>
+    <span class="n">bjpget</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Get&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">temp</span><span class="p">)</span>
+
+    <span class="c1"># set jogparams</span>
+    <span class="k">def</span> <span class="nf">temp</span><span class="p">():</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">gdevices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">minvel</span> <span class="o">=</span> <span class="n">iwjpmin</span><span class="o">.</span><span class="n">try_get_converted</span><span class="p">()</span>
+        <span class="n">accel</span>  <span class="o">=</span> <span class="n">iwjpacc</span><span class="o">.</span><span class="n">try_get_converted</span><span class="p">()</span>
+        <span class="n">maxvel</span> <span class="o">=</span> <span class="n">iwjpmax</span><span class="o">.</span><span class="n">try_get_converted</span><span class="p">()</span>
+
+        <span class="c1"># try_get_converted() prints error message returns None on failure</span>
+        <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">minvel</span><span class="p">,</span> <span class="n">accel</span><span class="p">,</span> <span class="n">maxvel</span><span class="p">):</span>
+            <span class="c1"># we hardcode these values:</span>
+            <span class="c1"># 1 -&gt; continuous jog</span>
+            <span class="c1">#1000 step size</span>
+            <span class="c1"># 2 -&gt; profiled stop</span>
+            <span class="n">dev</span><span class="o">.</span><span class="n">set_jog_parameters</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">minvel</span><span class="p">,</span> <span class="n">accel</span><span class="p">,</span> <span class="n">maxvel</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">bjpset</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">fjp</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Set&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">temp</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">ljp</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">ljpmin</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">ljpacc</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">ljpmax</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bjpget</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">ljpminget</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">ljpaccget</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">ljpmaxget</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">bjpset</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwjpmin</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwjpacc</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">iwjpmax</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># fhp = makeFrame(fr)</span>
+    <span class="c1"># lhp = tk.Label(fhp, text=&#39;Home parameters&#39;)</span>
+
+    <span class="n">tkpack</span><span class="p">(</span><span class="n">factions</span><span class="p">)</span>
+    <span class="n">tkpack</span><span class="p">(</span><span class="n">fvp</span><span class="p">)</span>
+    <span class="n">tkpack</span><span class="p">(</span><span class="n">fjp</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

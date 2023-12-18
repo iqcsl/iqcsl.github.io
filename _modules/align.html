@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>align &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">align</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for align</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Script for aligning &amp; calibrating optical setups</span>
+
+<span class="sd">Provides a command-line interface which lists different operations/routines,</span>
+<span class="sd">e.x. cross two polarizers, find fast-axis of waveplate, etc.</span>
+
+<span class="sd">Additionally, some common alignment routines have been bundled into one command</span>
+<span class="sd">which sets up and does everything in the correct order.</span>
+
+<span class="sd">Also allows you to drop into a REPL for manual operation</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">fminbound</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span><span class="p">,</span> <span class="n">count</span>
+<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">ascii_lowercase</span>
+<span class="kn">import</span> <span class="nn">IPython</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterable</span>
+
+<span class="c1"># cwd = os.getcwd()</span>
+<span class="c1"># sys.path.insert(0, os.path.abspath(os.path.join(cwd, &#39;thorpy_ddr25&#39;)))</span>
+<span class="c1"># sys.path.insert(0, os.path.abspath(os.path.join(cwd, &#39;pyLabLib_en&#39;)))</span>
+
+<span class="kn">from</span> <span class="nn">control.myio</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">IO</span><span class="o">.</span><span class="n">do_logging</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">IO</span><span class="o">.</span><span class="n">output_filter</span><span class="p">[</span><span class="s1">&#39;update&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="kn">from</span> <span class="nn">control.hardware.slm</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.pattern</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.motors</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.power</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.devices</span> <span class="kn">import</span> <span class="o">*</span> 
+
+<span class="c1">## global device variables</span>
+
+<span class="c1"># serial number -&gt; motor dict</span>
+<span class="c1"># serial numbers are strings</span>
+<span class="c1"># motors are DDR25 for example</span>
+<span class="n">motors</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="n">pm</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">slm</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># class for holding measurements</span>
+<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../_autosummary/align.Data.html#align.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for holding measurements &amp; related data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># X is an iterable (x-values)</span>
+    <span class="c1"># scatter and plot are tuples of iterables (y-values)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">scatter</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span><span class="o">=</span><span class="p">(),</span> <span class="n">plot</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span><span class="o">=</span><span class="p">(),</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param X: X-values (typically angles in degrees)</span>
+<span class="sd">        :param scatter: tuple of lists of Y-values to be drawn with plt.scatter() (typically Y-values, e.x. intensity in watts)</span>
+<span class="sd">        :param plot: tuple of lists of Y-values to be drawn with plt.plot() (typically fit data)</span>
+<span class="sd">        :param theta: usually an angle which minimizes/maximizes y</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scatter</span> <span class="o">=</span> <span class="n">scatter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="n">plot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span>
+    
+    <span class="c1"># show a graph of the data</span>
+<div class="viewcode-block" id="Data.graph"><a class="viewcode-back" href="../_autosummary/align.Data.html#align.Data.graph">[docs]</a>    <span class="k">def</span> <span class="nf">graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Graph the data and show it using matplotlib</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+
+        <span class="c1"># scatter in blue</span>
+        <span class="k">for</span> <span class="n">sc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scatter</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">sc</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+
+        <span class="c1"># plot in red</span>
+        <span class="k">for</span> <span class="n">pl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+    <span class="c1"># prints all the data and also offers a graph</span>
+<div class="viewcode-block" id="Data.print"><a class="viewcode-back" href="../_autosummary/align.Data.html#align.Data.print">[docs]</a>    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print all the data to the terminal and offers to show a graph</span>
+
+<span class="sd">        Additionally calculates and prints r-squared value if applicable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;X:&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Y:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">Y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scatter</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Theta is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># if there exists fit data (self.plot) then calculate r^2</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scatter</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">):</span>
+            <span class="n">r2</span> <span class="o">=</span> <span class="n">get_r2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scatter</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;r-squared is </span><span class="si">{</span><span class="n">r2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">Yesno</span><span class="p">(</span><span class="s1">&#39;Wanna see a graph?&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">graph</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">()</span></div></div>
+
+<span class="c1"># https://stackoverflow.com/questions/3173320/text-progress-bar-in-terminal-with-block-characters</span>
+<span class="c1"># Print iterations progress</span>
+<div class="viewcode-block" id="printProgressBar"><a class="viewcode-back" href="../_autosummary/align.printProgressBar.html#align.printProgressBar">[docs]</a><span class="k">def</span> <span class="nf">printProgressBar</span> <span class="p">(</span><span class="n">iteration</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">decimals</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="s1">&#39;█&#39;</span><span class="p">,</span> <span class="n">printEnd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Call in a loop to create terminal progress bar</span>
+
+<span class="sd">    (taken from https://stackoverflow.com/questions/3173320/text-progress-bar-in-terminal-with-block-characters)</span>
+
+<span class="sd">    @params:</span>
+<span class="sd">        iteration   - Required  : current iteration (Int)</span>
+<span class="sd">        total       - Required  : total iterations (Int)</span>
+<span class="sd">        prefix      - Optional  : prefix string (Str)</span>
+<span class="sd">        suffix      - Optional  : suffix string (Str)</span>
+<span class="sd">        decimals    - Optional  : positive number of decimals in percent complete (Int)</span>
+<span class="sd">        length      - Optional  : character length of bar (Int)</span>
+<span class="sd">        fill        - Optional  : bar fill character (Str)</span>
+<span class="sd">        printEnd    - Optional  : end character (e.g. &quot;\r&quot;, &quot;\r\n&quot;) (Str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">percent</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;{0:.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">decimals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;f}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">iteration</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)))</span>
+    <span class="n">filledLength</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="n">iteration</span> <span class="o">//</span> <span class="n">total</span><span class="p">)</span>
+    <span class="n">bar</span> <span class="o">=</span> <span class="n">fill</span> <span class="o">*</span> <span class="n">filledLength</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="n">filledLength</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\r</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1"> |</span><span class="si">{</span><span class="n">bar</span><span class="si">}</span><span class="s1">| </span><span class="si">{</span><span class="n">percent</span><span class="si">}</span><span class="s1">% </span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">printEnd</span><span class="p">)</span>
+    <span class="c1"># Print New Line on Complete</span>
+    <span class="k">if</span> <span class="n">iteration</span> <span class="o">==</span> <span class="n">total</span><span class="p">:</span> 
+        <span class="nb">print</span><span class="p">()</span></div>
+
+<span class="c1">## acquire hardware</span>
+
+<div class="viewcode-block" id="getSLM"><a class="viewcode-back" href="../_autosummary/align.getSLM.html#align.getSLM">[docs]</a><span class="k">def</span> <span class="nf">getSLM</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Connect to the SLM if not already connected</span>
+
+<span class="sd">    Modifies global variable ``slm``</span>
+
+<span class="sd">    :returns: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">slm</span>
+    <span class="k">if</span> <span class="n">slm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">slm</span> <span class="o">=</span> <span class="n">GAEA2</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="getPowerMeter"><a class="viewcode-back" href="../_autosummary/align.getPowerMeter.html#align.getPowerMeter">[docs]</a><span class="k">def</span> <span class="nf">getPowerMeter</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Connect to the power meter if not already connected</span>
+
+<span class="sd">    Also prompts user to set appropriate wavelength</span>
+
+<span class="sd">    Modifies global variable ``pm``</span>
+
+<span class="sd">    :returns: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">pm</span>
+    <span class="k">while</span> <span class="n">pm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pm</span> <span class="o">=</span> <span class="n">tryConnect</span><span class="p">(</span><span class="n">PM100</span><span class="p">)</span> <span class="c1"># for now assume only 1 power meter</span>
+        <span class="k">if</span> <span class="n">pm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please ensure power meter is connected&#39;</span><span class="p">)</span>
+            <span class="n">promptEnter</span><span class="p">()</span>
+    
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">wav</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;What wavelength? (default </span><span class="si">{</span><span class="n">pm</span><span class="o">.</span><span class="n">wavelength</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">wav</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">pm</span><span class="o">.</span><span class="n">min_wavelength</span> <span class="o">&lt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">wav</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">pm</span><span class="o">.</span><span class="n">max_wavelength</span><span class="p">:</span>
+                    <span class="n">pm</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">wav</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Wavelength must be between </span><span class="si">{</span><span class="n">pm</span><span class="o">.</span><span class="n">min_wavelength</span><span class="si">}</span><span class="s1"> and </span><span class="si">{</span><span class="n">pm</span><span class="o">.</span><span class="n">max_wavelength</span><span class="si">}</span><span class="s1">. Try again&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Invalid input. Try again&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span></div>
+
+<span class="c1">## user input functions</span>
+
+<div class="viewcode-block" id="promptSkip"><a class="viewcode-back" href="../_autosummary/align.promptSkip.html#align.promptSkip">[docs]</a><span class="k">def</span> <span class="nf">promptSkip</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="s1">&#39;Skip this step?&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Do a yes/no prompt for skipping</span>
+
+<span class="sd">    Defaults to no (do not skip)</span>
+<span class="sd">    </span>
+<span class="sd">    :param prompt: The prompt to print (usually a question)</span>
+<span class="sd">    :returns: True to skip, False to not skip</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">skip</span> <span class="o">=</span> <span class="n">Yesno</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">skip</span></div>
+
+<div class="viewcode-block" id="promptEnter"><a class="viewcode-back" href="../_autosummary/align.promptEnter.html#align.promptEnter">[docs]</a><span class="k">def</span> <span class="nf">promptEnter</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wait for user to pres enter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Press ENTER to continue&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="promptContinue"><a class="viewcode-back" href="../_autosummary/align.promptContinue.html#align.promptContinue">[docs]</a><span class="k">def</span> <span class="nf">promptContinue</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Do a yes/no prompt for continuing</span>
+
+<span class="sd">    Defaults to yes (do continue)</span>
+
+<span class="sd">    :returns: True for continue, False for don&#39;t continue</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Yesno</span><span class="p">(</span><span class="s1">&#39;Continue?&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># ask yes or no</span>
+<div class="viewcode-block" id="Yesno"><a class="viewcode-back" href="../_autosummary/align.Yesno.html#align.Yesno">[docs]</a><span class="k">def</span> <span class="nf">Yesno</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prompt user for yes/no answer</span>
+
+<span class="sd">    :param prompt: The prompt to print (usually a question)</span>
+<span class="sd">    :param default: What to return if response is blank</span>
+<span class="sd">    :returns: ``True`` for yes, ``False`` for no</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yn</span> <span class="o">=</span> <span class="s1">&#39;[Y/n]&#39;</span> <span class="k">if</span> <span class="n">default</span> <span class="k">else</span> <span class="s1">&#39;[y/N]&#39;</span>
+    <span class="n">inp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">yn</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">inp</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="s1">&#39;Y&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">inp</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">default</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<span class="c1"># prompt the user for a motor after listing several options</span>
+<span class="c1"># if already in the motors dict, return the motor object</span>
+<span class="c1"># otherwise connect it and add it to the dict</span>
+<div class="viewcode-block" id="getMotor"><a class="viewcode-back" href="../_autosummary/align.getMotor.html#align.getMotor">[docs]</a><span class="k">def</span> <span class="nf">getMotor</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="s1">&#39;Pick a motor: &#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DDR25</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prompt user to select a motor</span>
+
+<span class="sd">    Prints a line formatted as ``{shortcut}: {serial number}`` for each visible</span>
+<span class="sd">    motor, followed by a prompt.</span>
+<span class="sd">    For example::</span>
+
+<span class="sd">        a: 12345678</span>
+<span class="sd">        b: 24681012</span>
+<span class="sd">        c: 31415926</span>
+<span class="sd">        Pick a motor: </span>
+
+<span class="sd">    The user can input either a shortcut or a full serial number.</span>
+<span class="sd">    The function then connects to the specified motor if necessary, and returns it.</span>
+<span class="sd">    If the user inputs something invalid, the function loops until it successfully connects to a motor.</span>
+
+<span class="sd">    Modifies global variable ``motors`` in order to remember already-connected devices</span>
+
+<span class="sd">    :param prompt: The prompt to print (usually a question)</span>
+<span class="sd">    :returns: motor instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># prompt user input until they provide something reasonable</span>
+    <span class="c1"># re-print the list of visible devices every time</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">visible_motors</span> <span class="o">=</span> <span class="n">list_devices</span><span class="p">()</span> <span class="c1"># get list of dicts</span>
+
+        <span class="c1"># generator that yields &#39;a&#39;, &#39;b&#39;, ..., &#39;z&#39;, &#39;aa&#39;, &#39;ab&#39;, etc.</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">ascii_lowercase</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="n">r</span><span class="p">))</span>
+
+        <span class="c1"># construct label-&gt;serial number mapping &amp; print them out</span>
+        <span class="n">lab2ser</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">dct</span> <span class="ow">in</span> <span class="n">visible_motors</span><span class="p">:</span>
+            <span class="n">lab</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+            <span class="n">ser</span> <span class="o">=</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;serial_number&#39;</span><span class="p">]</span>
+            <span class="n">lab2ser</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span> <span class="o">=</span> <span class="n">ser</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">lab</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">ser</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">inp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+
+        <span class="c1"># user should input either a label or a serial number</span>
+        <span class="k">if</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">lab2ser</span><span class="p">:</span>
+            <span class="n">ser</span> <span class="o">=</span> <span class="n">lab2ser</span><span class="p">[</span><span class="n">inp</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ser</span> <span class="o">=</span> <span class="n">inp</span>
+
+        <span class="k">global</span> <span class="n">motors</span> <span class="c1"># probably redundant but oh well</span>
+
+        <span class="c1"># motor already connected. great!</span>
+        <span class="k">if</span> <span class="n">ser</span> <span class="ow">in</span> <span class="n">motors</span><span class="p">:</span>
+            <span class="n">mot</span> <span class="o">=</span> <span class="n">motors</span><span class="p">[</span><span class="n">ser</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">mot</span><span class="o">.</span><span class="n">is_connected</span><span class="p">:</span> <span class="c1"># return if still connected</span>
+                <span class="k">return</span> <span class="n">mot</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># otherwise, delete the instance and fall-through</span>
+                <span class="k">del</span> <span class="n">motors</span><span class="p">[</span><span class="n">ser</span><span class="p">]</span>
+        
+        <span class="n">mot</span> <span class="o">=</span> <span class="n">tryConnect</span><span class="p">(</span><span class="n">DDR25</span><span class="p">,</span> <span class="n">ser</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># add to the dictionary and return it</span>
+            <span class="n">motors</span><span class="p">[</span><span class="n">ser</span><span class="p">]</span> <span class="o">=</span> <span class="n">mot</span>
+            <span class="k">return</span> <span class="n">mot</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># something went wrong; loop</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Could not connect motor. Please ensure your input is valid and the motor is connected and switched on&#39;</span><span class="p">)</span></div>
+
+<span class="c1">## some data-processing functions</span>
+
+<div class="viewcode-block" id="get_r2"><a class="viewcode-back" href="../_autosummary/align.get_r2.html#align.get_r2">[docs]</a><span class="k">def</span> <span class="nf">get_r2</span><span class="p">(</span><span class="n">Y</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">fit</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate r-squared of fitted data</span>
+
+<span class="sd">    :param Y: y-values</span>
+<span class="sd">    :param fit: fit values</span>
+<span class="sd">    :returns: r-squared value of fit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+    <span class="n">ss_res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">Y</span> <span class="o">-</span> <span class="n">fit</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">ss_tot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">Y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">r2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">ss_res</span> <span class="o">/</span> <span class="n">ss_tot</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r2</span></div>
+
+<span class="c1"># cosine with offset, amplitude, period, phase parameters</span>
+<div class="viewcode-block" id="cos_func"><a class="viewcode-back" href="../_autosummary/align.cos_func.html#align.cos_func">[docs]</a><span class="k">def</span> <span class="nf">cos_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    General sinusoidal function used for fitting data</span>
+
+<span class="sd">    (Many optical alignment operations involve minimizing or maximizing a sinusoidal)</span>
+<span class="sd">    </span>
+<span class="sd">    :param x: x-value</span>
+<span class="sd">    :param A: y-offset</span>
+<span class="sd">    :param B: amplitude</span>
+<span class="sd">    :param p: period</span>
+<span class="sd">    :param phi: phase shift</span>
+<span class="sd">    :returns: y-value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">A</span> <span class="o">+</span> <span class="n">B</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">x</span><span class="o">/</span><span class="n">p</span> <span class="o">+</span> <span class="n">phi</span><span class="p">)</span></div>
+
+<span class="c1"># get index of max/min element</span>
+<div class="viewcode-block" id="max_index"><a class="viewcode-back" href="../_autosummary/align.max_index.html#align.max_index">[docs]</a><span class="k">def</span> <span class="nf">max_index</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get index of maximum element in list</span>
+
+<span class="sd">    :returns: index of maximum element in ``lst``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">lst</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span></div>
+<div class="viewcode-block" id="min_index"><a class="viewcode-back" href="../_autosummary/align.min_index.html#align.min_index">[docs]</a><span class="k">def</span> <span class="nf">min_index</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get index of minimum element in list</span>
+
+<span class="sd">    :returns: index of minimum element in ``lst``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">lst</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<span class="c1"># guess cosine parameters and then fit</span>
+<div class="viewcode-block" id="fit_cos"><a class="viewcode-back" href="../_autosummary/align.fit_cos.html#align.fit_cos">[docs]</a><span class="k">def</span> <span class="nf">fit_cos</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Y</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Attempt to fit a sinusoidal to given data</span>
+<span class="sd">    </span>
+<span class="sd">    Roughly guesses parameters of sinusoidal,</span>
+<span class="sd">    then passes those to ``scipy.optimize.curve_fit()``</span>
+
+<span class="sd">    Parameters are the same as the ones used by :func:`cos_func()`</span>
+
+<span class="sd">    :param X: x-values</span>
+<span class="sd">    :param Y: y-values (must be same length as ``X``)</span>
+<span class="sd">    :returns: fitted parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># guess</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="o">-</span> <span class="n">B</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">max_index</span><span class="p">(</span><span class="n">Y</span><span class="p">)]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="n">min_index</span><span class="p">(</span><span class="n">Y</span><span class="p">)])</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="o">-</span><span class="n">X</span><span class="p">[</span><span class="n">max_index</span><span class="p">(</span><span class="n">Y</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">p</span>
+    <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+
+    <span class="c1"># fit</span>
+    <span class="n">params</span><span class="p">,</span> <span class="n">covar</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">cos_func</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="n">guess</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">params</span></div>
+
+<span class="c1">## motor/measurement operation</span>
+
+<div class="viewcode-block" id="rotate_and_measure"><a class="viewcode-back" href="../_autosummary/align.rotate_and_measure.html#align.rotate_and_measure">[docs]</a><span class="k">def</span> <span class="nf">rotate_and_measure</span><span class="p">(</span><span class="n">mot</span><span class="p">:</span> <span class="n">DDR25</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rotate an optical device and record the resulting power measurements</span>
+
+<span class="sd">    Requires power-meter to be connected</span>
+
+<span class="sd">    Displays a progress bar while running</span>
+
+<span class="sd">    :param mot: motor to rotate</span>
+<span class="sd">    :param rng: angles at which to make measurements. e.x. ``range(0, 360, 10)`` will make measurements at 0, 10, 20, ..., 350 degrees</span>
+<span class="sd">    :returns: x-values (angles) and corresponding y-values (measurements)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">max_theta</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">theta</span> <span class="ow">in</span> <span class="n">rng</span><span class="p">:</span>
+        <span class="n">printProgressBar</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">max_theta</span><span class="p">)</span>
+        <span class="n">mot</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">measure_builtin</span><span class="p">(</span><span class="mi">1000</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span></div>
+
+<span class="c1"># make motor params fast &amp; home it</span>
+<div class="viewcode-block" id="setup_motor"><a class="viewcode-back" href="../_autosummary/align.setup_motor.html#align.setup_motor">[docs]</a><span class="k">def</span> <span class="nf">setup_motor</span><span class="p">(</span><span class="n">mot</span><span class="p">:</span> <span class="n">DDR25</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set motor velocity/homing parameters and then home the motor</span>
+<span class="sd">    </span>
+<span class="sd">    :param mot: motor to setup</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mot</span><span class="o">.</span><span class="n">set_velocity_parameters</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">mot</span><span class="o">.</span><span class="n">home_velocity</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">mot</span><span class="o">.</span><span class="n">home</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="get_min_intensity_angle"><a class="viewcode-back" href="../_autosummary/align.get_min_intensity_angle.html#align.get_min_intensity_angle">[docs]</a><span class="k">def</span> <span class="nf">get_min_intensity_angle</span><span class="p">(</span><span class="n">mot</span><span class="p">:</span> <span class="n">DDR25</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Data</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine what angle minimizes power measurement</span>
+
+<span class="sd">    Rotates given motor to given angles and records measurements.  Then fits a</span>
+<span class="sd">    cosine function to the measured data and finds the angle which minimizes</span>
+<span class="sd">    the function</span>
+
+<span class="sd">    Requires power-meter to be connected</span>
+
+<span class="sd">    :param mot: motor to rotate</span>
+<span class="sd">    :param rng: angles at which to make measurements. e.x. ``range(0, 360, 10)`` will make measurements at 0, 10, 20, ..., 350 degrees</span>
+<span class="sd">    :returns: the angle which minimizes the intensity, as well as the data used to find that angle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">setup_motor</span><span class="p">(</span><span class="n">mot</span><span class="p">)</span>
+    
+    <span class="c1"># get angle-intensity data</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">rotate_and_measure</span><span class="p">(</span><span class="n">mot</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
+    <span class="c1"># print(X)</span>
+    <span class="c1"># print(Y)</span>
+
+    <span class="c1"># fit</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">fit_cos</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+    <span class="c1"># print(params)</span>
+
+    <span class="c1"># minimize</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">fminbound</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">cos_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">),</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># print(theta)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="n">Y</span><span class="p">,),</span> <span class="p">(</span><span class="n">cos_func</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="o">*</span><span class="n">params</span><span class="p">),),</span> <span class="n">theta</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">theta</span><span class="p">,</span> <span class="n">data</span></div>
+
+<span class="c1"># one-line difference from above function</span>
+<div class="viewcode-block" id="get_max_intensity_angle"><a class="viewcode-back" href="../_autosummary/align.get_max_intensity_angle.html#align.get_max_intensity_angle">[docs]</a><span class="k">def</span> <span class="nf">get_max_intensity_angle</span><span class="p">(</span><span class="n">mot</span><span class="p">:</span> <span class="n">DDR25</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Data</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine what angle maximizes power measurement</span>
+
+<span class="sd">    Rotates given motor to given angles and records measurements.  Then fits a</span>
+<span class="sd">    cosine function to the measured data and finds the angle which maximizes</span>
+<span class="sd">    the function</span>
+
+<span class="sd">    Requires power-meter to be connected</span>
+
+<span class="sd">    :param mot: motor to rotate</span>
+<span class="sd">    :param rng: angles at which to make measurements. e.x. ``range(0, 360, 10)`` will make measurements at 0, 10, 20, ..., 350 degrees</span>
+<span class="sd">    :returns: the angle which maximizes the intensity, as well as the data used to find that angle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">setup_motor</span><span class="p">(</span><span class="n">mot</span><span class="p">)</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">rotate_and_measure</span><span class="p">(</span><span class="n">mot</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">fit_cos</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+
+    <span class="c1"># minimize on the negated function, to get the maximum</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">fminbound</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">cos_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">),</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="n">Y</span><span class="p">,),</span> <span class="p">(</span><span class="n">cos_func</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="o">*</span><span class="n">params</span><span class="p">),),</span> <span class="n">theta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">theta</span><span class="p">,</span> <span class="n">data</span></div>
+
+<span class="c1">## modular functions which typically align/analyze 1 element</span>
+
+<span class="c1"># rotate a polarizer until we maximize the intensity coming out</span>
+<span class="c1"># interactive is True when being run as a standalone function</span>
+<span class="c1"># when part of a larger routine, the routine will handle the interactive stuff,</span>
+<span class="c1"># so we unset the interactive flag</span>
+<div class="viewcode-block" id="align_polarizer"><a class="viewcode-back" href="../_autosummary/align.align_polarizer.html#align.align_polarizer">[docs]</a><span class="k">def</span> <span class="nf">align_polarizer</span><span class="p">(</span><span class="n">mot</span><span class="p">:</span><span class="n">DDR25</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interactive</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Data</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the angle of a polarizer which maximizes the measured intensity</span>
+<span class="sd">    </span>
+<span class="sd">    Uses :func:`get_max_intensity_angle()`</span>
+
+<span class="sd">    If motor not connected, prompts user to select a motor</span>
+
+<span class="sd">    Requires power-meter to be connected</span>
+
+<span class="sd">    :param mot: motor containing polarizer</span>
+<span class="sd">    :param interactive: when True, prints instructions before doing the measurements and the collected data afterward</span>
+<span class="sd">    :returns: the angle at which the polarizer lets through the most light, as well as the data used to find that angle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LP -&gt; [LP] -&gt; PM&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">promptContinue</span><span class="p">():</span>
+            <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">mot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mot</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor to align? &#39;</span><span class="p">)</span>
+
+    <span class="n">theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">get_max_intensity_angle</span><span class="p">(</span><span class="n">mot</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">theta</span><span class="p">,</span> <span class="n">data</span></div>
+
+<span class="c1"># rotate a polarizer until we minimize the intensity coming out</span>
+<div class="viewcode-block" id="antialign_polarizer"><a class="viewcode-back" href="../_autosummary/align.antialign_polarizer.html#align.antialign_polarizer">[docs]</a><span class="k">def</span> <span class="nf">antialign_polarizer</span><span class="p">(</span><span class="n">mot</span><span class="p">:</span><span class="n">DDR25</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interactive</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Data</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the angle of a polarizer which minimizes the measured intensity</span>
+<span class="sd">    </span>
+<span class="sd">    Uses :func:`get_min_intensity_angle()`</span>
+
+<span class="sd">    If motor not connected, prompts user to select a motor</span>
+
+<span class="sd">    Requires power-meter to be connected</span>
+
+<span class="sd">    :param mot: motor containing polarizer</span>
+<span class="sd">    :param interactive: when True, prints instructions before doing the measurements and the collected data afterward</span>
+<span class="sd">    :returns: the angle at which the polarizer lets through the least light, as well as the data used to find that angle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LP -&gt; [LP] -&gt; PM&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">promptContinue</span><span class="p">():</span>
+            <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">mot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mot</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor to antialign? &#39;</span><span class="p">)</span>
+    
+    <span class="n">theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">get_min_intensity_angle</span><span class="p">(</span><span class="n">mot</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">theta</span><span class="p">,</span> <span class="n">data</span></div>
+
+<span class="c1"># rotate a waveplate between two crossed polarizers until it does nothing</span>
+<span class="c1"># actually can&#39;t tell whether it&#39;s the fast or slow axis, but that&#39;s ok</span>
+<div class="viewcode-block" id="find_fast_axis"><a class="viewcode-back" href="../_autosummary/align.find_fast_axis.html#align.find_fast_axis">[docs]</a><span class="k">def</span> <span class="nf">find_fast_axis</span><span class="p">(</span><span class="n">mot</span><span class="p">:</span><span class="n">DDR25</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interactive</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Data</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the fast-axis of a waveplate</span>
+
+<span class="sd">    The waveplate is assumed to be between two crossed polarizers.  Uses</span>
+<span class="sd">    :func:`get_min_intensity_angle()` to determine what angle aligns the</span>
+<span class="sd">    waveplate with the polarizers.</span>
+
+<span class="sd">    Note that this is not guaranteed to find the fast axis, as both the fast</span>
+<span class="sd">    axis and the slow axis will minimize the intensity.</span>
+
+<span class="sd">    If motor not connected, prompts user to select a motor</span>
+
+<span class="sd">    Requires power-meter to be connected</span>
+
+<span class="sd">    :param mot: motor containing waveplate</span>
+<span class="sd">    :param interactive: when True, prints instructions before doing the measurements and the collected data afterward</span>
+<span class="sd">    :returns: the angle at which the polarizer-waveplate-polarizer setup lets through the least light, as well as the data used to find that angle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Horizontal LP -&gt; [WP] -&gt; Vertical LP -&gt; PM&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">promptContinue</span><span class="p">():</span>
+            <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">mot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mot</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor to find fast axis of? &#39;</span><span class="p">)</span>
+
+    <span class="n">theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">get_min_intensity_angle</span><span class="p">(</span><span class="n">mot</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">theta</span><span class="p">,</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="print_variation"><a class="viewcode-back" href="../_autosummary/align.print_variation.html#align.print_variation">[docs]</a><span class="k">def</span> <span class="nf">print_variation</span><span class="p">(</span><span class="n">Y</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print the min, mean, max, and percentage variation of given data</span>
+
+<span class="sd">    For example, if the low is 28, the mean is 30, and the high is 33,</span>
+<span class="sd">    then the percentage variation is +/- 10%</span>
+
+<span class="sd">    :param Y: data</span>
+<span class="sd">    :returns: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">hi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">lo</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">hi_perc</span> <span class="o">=</span> <span class="p">(</span><span class="n">hi</span><span class="o">-</span><span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">mean</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="n">lo_perc</span> <span class="o">=</span> <span class="p">(</span><span class="n">mean</span><span class="o">-</span><span class="n">lo</span><span class="p">)</span> <span class="o">/</span> <span class="n">mean</span> <span class="o">*</span> <span class="mi">100</span>
+
+    <span class="n">max_perc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">hi_perc</span><span class="p">,</span> <span class="n">lo_perc</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;low </span><span class="si">{</span><span class="n">lo</span><span class="si">}</span><span class="se">\n</span><span class="s1">mean </span><span class="si">{</span><span class="n">mean</span><span class="si">}</span><span class="se">\n</span><span class="s1">high </span><span class="si">{</span><span class="n">hi</span><span class="si">}</span><span class="se">\n</span><span class="s1">+/- </span><span class="si">{</span><span class="n">max_perc</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1"># check how good a LP -&gt; QWP -&gt; LP(theta) setup is at maintaining consistent intensity</span>
+<span class="c1"># (dependent on quality of waveplate/polarizers, accuracy of alignment)</span>
+<div class="viewcode-block" id="check_consistency"><a class="viewcode-back" href="../_autosummary/align.check_consistency.html#align.check_consistency">[docs]</a><span class="k">def</span> <span class="nf">check_consistency</span><span class="p">(</span><span class="n">mot</span><span class="p">:</span><span class="n">DDR25</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interactive</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the consistency of light produced by a rotating device</span>
+
+<span class="sd">    For example, a horizontal LP -&gt; diagonal QWP -&gt; rotating LP</span>
+<span class="sd">    should in theory produce equal-intensity light all around.</span>
+
+<span class="sd">    If motor not connected, prompts user to select a motor</span>
+
+<span class="sd">    Requires power-meter to be connected</span>
+
+<span class="sd">    :param mot: motor to rotate</span>
+<span class="sd">    :param interactive: when True, prints instructions before doing the measurements and the collected data afterward</span>
+<span class="sd">    :returns: the data collected</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Horizontal LP -&gt; Diagonal QWP -&gt; [LP] -&gt; PM&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">promptContinue</span><span class="p">():</span>
+            <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">mot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mot</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor has the rotating polarizer? &#39;</span><span class="p">)</span>
+
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">rotate_and_measure</span><span class="p">(</span><span class="n">mot</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="n">Y</span><span class="p">,))</span>
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+        <span class="n">print_variation</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span></div>
+
+<span class="c1"># SLM wrapper function</span>
+<div class="viewcode-block" id="showgrating"><a class="viewcode-back" href="../_autosummary/align.showgrating.html#align.showgrating">[docs]</a><span class="k">def</span> <span class="nf">showgrating</span><span class="p">(</span><span class="n">val</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">halfperiod</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display a grating pattern on the SLM</span>
+
+<span class="sd">    A grating pattern is a band of width ``halfperiod`` with gray-value 0,</span>
+<span class="sd">    followed by a band of width ``halfperiod`` with gray-value ``val``, repeated.</span>
+
+<span class="sd">    Requires SLM to be connected</span>
+
+<span class="sd">    :param val: the gray value of the high bands (integer from 0 to 255)</span>
+<span class="sd">    :param halfperiod: the width of a band, which equals half the period (positive integer)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">slm</span><span class="o">.</span><span class="n">width</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">slm</span><span class="o">.</span><span class="n">height</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">makeImage</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="n">grating</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">halfperiod</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+    <span class="n">slm</span><span class="o">.</span><span class="n">displayMatrix</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="find_slm_horizontal"><a class="viewcode-back" href="../_autosummary/align.find_slm_horizontal.html#align.find_slm_horizontal">[docs]</a><span class="k">def</span> <span class="nf">find_slm_horizontal</span><span class="p">(</span><span class="n">mot</span><span class="p">:</span><span class="n">DDR25</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interactive</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Data</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Align a polarizer with the horizontal axis of an SLM</span>
+<span class="sd">    </span>
+<span class="sd">    A setup producing equal-intensity light at any angle is created two</span>
+<span class="sd">    polarizers and a quarter-waveplate.  The second polarizer is then rotated</span>
+<span class="sd">    and the light is reflected off an SLM displaying a grating pattern.  The</span>
+<span class="sd">    intensity of the first-order diffraction beam is a function of the angle of</span>
+<span class="sd">    polarization of the incoming light, and the angle which maximizes the</span>
+<span class="sd">    intensity is the angle which aligns the polarizer with the SLM.</span>
+
+<span class="sd">    If motor not connected, prompts user to select a motor</span>
+
+<span class="sd">    Requires power-meter to be connected</span>
+
+<span class="sd">    Requires SLM to be connected</span>
+
+<span class="sd">    :param mot: motor containing second polarizer</span>
+<span class="sd">    :param interactive: when True, prints instructions before doing the measurements and the collected data afterward</span>
+<span class="sd">    :returns: the angle at which the polarizer&#39;s fast axis is aligned with the SLM&#39;s horizontal, as well as the data used to find that angle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">getSLM</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="c1"># show grating</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Showing grating&#39;</span><span class="p">)</span>
+        <span class="n">showgrating</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Horizontal LP -&gt; Diagonal QWP -&gt; [LP] -&gt; Beamsplitter -&gt; SLM&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;                                              |&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;                                              v&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;                                              PM (1st-order diffraction beam)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">promptContinue</span><span class="p">():</span>
+            <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">mot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mot</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor is the LP? &#39;</span><span class="p">)</span>
+
+    <span class="n">theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">get_max_intensity_angle</span><span class="p">(</span><span class="n">mot</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">theta</span><span class="p">,</span> <span class="n">data</span></div>
+
+<span class="c1">## some routines which combine the above functions to align a particular setup</span>
+
+<span class="c1"># 1. LP HWP(theta) BS SLM</span>
+<span class="c1"># 2. PM in front of first-order diffraction beam</span>
+<span class="c1"># 3. rotate HWP until intensity max (light coming out of HWP now horizontal)</span>
+<span class="c1"># 4. LP HWP LP(theta)</span>
+<span class="c1"># 5. rotate LP until intensity min (now vertical)</span>
+<span class="c1"># 6. LP HWP QWP(theta) LP</span>
+<span class="c1"># 7. rotate QWP until intensity min (fast axis)</span>
+<span class="c1"># 8. do it again for another QWP</span>
+<span class="c1"># 9. remove second LP</span>
+<div class="viewcode-block" id="hwp_alignment_routine"><a class="viewcode-back" href="../_autosummary/align.hwp_alignment_routine.html#align.hwp_alignment_routine">[docs]</a><span class="k">def</span> <span class="nf">hwp_alignment_routine</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Align a ``fixed LP -&gt; rotating HWP -&gt; diagonal/antidiagonal QWP -&gt; horizontal SLM -&gt; diagonal QWP`` setup</span>
+
+<span class="sd">    Requires power meter and SLM to be connected</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># put grating on SLM</span>
+    <span class="n">getSLM</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Showing grating&#39;</span><span class="p">)</span>
+    <span class="n">showgrating</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Setup the devices as follows:&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LP -&gt; [HWP] -&gt; Beamsplitter -&gt; SLM&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;                    |&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;                    v&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;                    PM  (1st-order diffraction beam)&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">promptSkip</span><span class="p">():</span>
+        <span class="c1"># find SLM horizontal and send HWP to it</span>
+        <span class="n">hwp</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor is the HWP? &#39;</span><span class="p">)</span>
+        <span class="n">theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">find_slm_horizontal</span><span class="p">(</span><span class="n">hwp</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending HWP to </span><span class="si">{</span><span class="n">theta</span><span class="si">}</span><span class="s1"> (horizontal)&#39;</span><span class="p">)</span>
+        <span class="n">hwp</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+        <span class="n">hwp</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Place a motorized LP after the HWP&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Place the power meter after the motorized LP&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LP -&gt; HWP -&gt; [LP] -&gt; PM&#39;</span><span class="p">)</span>
+
+    <span class="c1"># find SLM vertical and send LP to it</span>
+    <span class="n">pol</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor is the LP? &#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">promptSkip</span><span class="p">():</span>
+        <span class="n">pol_theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">antialign_polarizer</span><span class="p">(</span><span class="n">pol</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending LP to </span><span class="si">{</span><span class="n">pol_theta</span><span class="si">}</span><span class="s1"> (vertical)&#39;</span><span class="p">)</span>
+        <span class="n">pol</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+        <span class="n">pol</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">pol_theta</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pol_theta</span> <span class="o">=</span> <span class="n">pol</span><span class="o">.</span><span class="n">position</span>
+
+    <span class="c1"># align 1 or more QWPs</span>
+    <span class="c1"># you can align as many QWPs as you wish</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Place a motorized QWP between the HWP and the second LP&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Keep the power meter after the second LP&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LP -&gt; HWP -&gt; [QWP] -&gt; LP -&gt; PM&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">promptSkip</span><span class="p">():</span>
+            <span class="c1"># find SLM diagonal and send QWP to it</span>
+            <span class="n">qwp</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor is the QWP? &#39;</span><span class="p">)</span>
+            <span class="n">theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">find_fast_axis</span><span class="p">(</span><span class="n">qwp</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending QWP to </span><span class="si">{</span><span class="n">theta</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s1"> (diagonal)&#39;</span><span class="p">)</span>
+            <span class="n">qwp</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+            <span class="n">qwp</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">theta</span><span class="o">+</span><span class="mi">45</span><span class="p">)</span>
+
+        <span class="n">check</span> <span class="o">=</span> <span class="n">Yesno</span><span class="p">(</span><span class="s1">&#39;Check quality of circular polarization?&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+            <span class="c1"># perform a consistency check (rotating the LP after the QWP)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">check_consistency</span><span class="p">(</span><span class="n">pol</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+            <span class="n">print_variation</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">scatter</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="c1"># reset the LP</span>
+            <span class="n">pol</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+            <span class="n">pol</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">pol_theta</span><span class="p">)</span>
+
+        <span class="n">again</span> <span class="o">=</span> <span class="n">Yesno</span><span class="p">(</span><span class="s1">&#39;Align another QWP?&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">again</span><span class="p">:</span>
+            <span class="k">break</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Alignment complete. You may remove the second LP and power meter now&#39;</span><span class="p">)</span>
+    <span class="n">promptEnter</span><span class="p">()</span></div>
+
+<span class="c1"># 1. LP QWP LP(theta)</span>
+<span class="c1"># 2. align two LPs</span>
+<span class="c1"># 3. align QWP</span>
+<span class="c1"># 4. put grating on SLM</span>
+<span class="c1"># 5. place power meter in front of first-order diffraction beam</span>
+<span class="c1"># 6. rotate LP(theta)</span>
+<span class="c1"># 7. theta of first maximum in intensity is horizontal</span>
+<span class="c1"># 8. realign LP with LP(theta)</span>
+<span class="c1"># 9. realign QWP</span>
+<span class="c1"># 10. add in HWP and remove LP(theta)</span>
+<div class="viewcode-block" id="pol_alignment_routine"><a class="viewcode-back" href="../_autosummary/align.pol_alignment_routine.html#align.pol_alignment_routine">[docs]</a><span class="k">def</span> <span class="nf">pol_alignment_routine</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Align a ``horizontal LP -&gt; diagonal QWP -&gt; rotating LP -&gt; diagonal/antidiagonal QWP -&gt; horizontal SLM -&gt; diagonal QWP`` setup</span>
+
+<span class="sd">    Requires power meter and SLM to be connected</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Setup the devices as follows:&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LP -&gt; [LP] -&gt; PM&#39;</span><span class="p">)</span>
+
+    <span class="c1"># cross the second polarizer with the first</span>
+    <span class="n">pol</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor is the LP? &#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">promptSkip</span><span class="p">():</span>
+        <span class="n">theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">antialign_polarizer</span><span class="p">(</span><span class="n">pol</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending LP to </span><span class="si">{</span><span class="n">theta</span><span class="si">}</span><span class="s1"> (vertical)&#39;</span><span class="p">)</span>
+        <span class="n">pol</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+        <span class="n">pol</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Place a QWP between the two LPs&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Keep the power meter after the second LP&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LP -&gt; [QWP] -&gt; LP&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">promptSkip</span><span class="p">():</span>
+        <span class="c1"># get the QWP to make circularly polarized light</span>
+        <span class="n">qwp</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor is the QWP? &#39;</span><span class="p">)</span>
+        <span class="n">theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">find_fast_axis</span><span class="p">(</span><span class="n">qwp</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending QWP to </span><span class="si">{</span><span class="n">theta</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s1"> (diagonal)&#39;</span><span class="p">)</span>
+        <span class="n">qwp</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+        <span class="n">qwp</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">theta</span><span class="o">+</span><span class="mi">45</span><span class="p">)</span>
+
+    <span class="c1"># do an optional quality check</span>
+    <span class="n">check</span> <span class="o">=</span> <span class="n">Yesno</span><span class="p">(</span><span class="s1">&#39;Check quality of circular polarization?&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+        <span class="c1"># perform a consistency check (rotating the LP after the QWP)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">check_consistency</span><span class="p">(</span><span class="n">pol</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+
+    <span class="c1"># put grating on SLM</span>
+    <span class="n">getSLM</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Showing grating&#39;</span><span class="p">)</span>
+    <span class="n">showgrating</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Setup the devices as follows:&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LP -&gt; QWP -&gt; [LP] -&gt; Beamsplitter -&gt; SLM&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;                          |&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;                          v&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;                          PM  (1st-order diffraction beam)&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">promptSkip</span><span class="p">():</span>
+        <span class="c1"># find SLM horizontal</span>
+        <span class="n">horizontal_theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">find_slm_horizontal</span><span class="p">(</span><span class="n">pol</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending LP to to </span><span class="si">{</span><span class="n">horizontal_theta</span><span class="o">+</span><span class="mi">90</span><span class="si">}</span><span class="s1"> (vertical)&#39;</span><span class="p">)</span>
+        <span class="n">pol</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+        <span class="n">pol</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">horizontal_theta</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">horizontal_theta</span> <span class="o">=</span> <span class="n">pol</span><span class="o">.</span><span class="n">position</span>
+
+    <span class="c1"># realign fixed LP</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Remove QWP&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[LP] -&gt; LP -&gt; PM&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Antialign fixed polarizer with second polarizer (you have to do this manually)&#39;</span><span class="p">)</span>
+    <span class="n">promptEnter</span><span class="p">()</span>
+    
+    <span class="c1"># align QWPs forever and ever and ever</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Place a motorized QWP between the first and second LPs&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Place the power meter after the second LP&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;LP -&gt; [QWP] -&gt; LP -&gt; PM&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">promptSkip</span><span class="p">():</span>
+            <span class="c1"># find diagonal and send QWP to it</span>
+            <span class="n">qwp</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor is the QWP? &#39;</span><span class="p">)</span>
+            <span class="n">theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">find_fast_axis</span><span class="p">(</span><span class="n">qwp</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending QWP to </span><span class="si">{</span><span class="n">theta</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s1"> (diagonal)&#39;</span><span class="p">)</span>
+
+        <span class="n">check</span> <span class="o">=</span> <span class="n">Yesno</span><span class="p">(</span><span class="s1">&#39;Check quality of circular polarization?&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+            <span class="c1"># perform a consistency check (rotating the LP after the QWP)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">check_consistency</span><span class="p">(</span><span class="n">pol</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
+
+            <span class="c1"># reset the LP</span>
+            <span class="n">pol</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+            <span class="n">pol</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">horizontal_theta</span><span class="o">+</span><span class="mi">90</span><span class="p">)</span>
+
+        <span class="n">again</span> <span class="o">=</span> <span class="n">Yesno</span><span class="p">(</span><span class="s1">&#39;Align another QWP?&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">again</span><span class="p">:</span>
+            <span class="k">break</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Alignment complete. You may remove the second LP and power meter now&#39;</span><span class="p">)</span>
+    <span class="n">promptEnter</span><span class="p">()</span></div>
+
+<span class="c1">## miscellaneous</span>
+
+<div class="viewcode-block" id="send_motor"><a class="viewcode-back" href="../_autosummary/align.send_motor.html#align.send_motor">[docs]</a><span class="k">def</span> <span class="nf">send_motor</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prompt user to select a motor and input an angle, then sends the motor to that angle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mot</span> <span class="o">=</span> <span class="n">getMotor</span><span class="p">(</span><span class="s1">&#39;Which motor? &#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Motor currently at </span><span class="si">{</span><span class="n">mot</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="s1"> deg&#39;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Where to send motor? &#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Invalid input. Try again&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="n">mot</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="print_devices"><a class="viewcode-back" href="../_autosummary/align.print_devices.html#align.print_devices">[docs]</a><span class="k">def</span> <span class="nf">print_devices</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List motors and power meters</span>
+
+<span class="sd">    Prints the devices returned by :func:`control.devices.list_devices()` (for motors)</span>
+<span class="sd">    and :func:`control.hardware.power.list_resources()` (for power meters)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I see the following devices:&#39;</span><span class="p">)</span>
+    <span class="n">devs</span> <span class="o">=</span> <span class="n">list_devices</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">devs</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">list_resources</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="repl"><a class="viewcode-back" href="../_autosummary/align.repl.html#align.repl">[docs]</a><span class="k">def</span> <span class="nf">repl</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Drop into an interactive REPL</span>
+
+<span class="sd">    Upon exiting the REPL the script resumes as normal.</span>
+
+<span class="sd">    This can be used to manually manipulate motors, the power meter, SLM, etc.,</span>
+<span class="sd">    or in order to troubleshoot issues.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># enable updates in repl</span>
+    <span class="n">IO</span><span class="o">.</span><span class="n">output_filter</span><span class="p">[</span><span class="s1">&#39;update&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">IPython</span><span class="o">.</span><span class="n">embed</span><span class="p">()</span>
+    <span class="n">IO</span><span class="o">.</span><span class="n">output_filter</span><span class="p">[</span><span class="s1">&#39;update&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="quit"><a class="viewcode-back" href="../_autosummary/align.quit.html#align.quit">[docs]</a><span class="k">def</span> <span class="nf">quit</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exit the program</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+<span class="c1"># input -&gt; (explanation, function) dict</span>
+<span class="n">actions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;q&#39;</span><span class="p">:(</span><span class="s1">&#39;Quit&#39;</span><span class="p">,</span> <span class="n">quit</span><span class="p">),</span>
+        <span class="s1">&#39;p&#39;</span><span class="p">:(</span><span class="s1">&#39;Print devices&#39;</span><span class="p">,</span> <span class="n">print_devices</span><span class="p">),</span>
+        <span class="s1">&#39;m&#39;</span><span class="p">:(</span><span class="s1">&#39;Send motor to position&#39;</span><span class="p">,</span> <span class="n">send_motor</span><span class="p">),</span>
+        <span class="s1">&#39;pm&#39;</span><span class="p">:(</span><span class="s1">&#39;Reconnect power meter&#39;</span><span class="p">,</span> <span class="n">getPowerMeter</span><span class="p">),</span>
+        <span class="s1">&#39;r&#39;</span><span class="p">:(</span><span class="s1">&#39;REPL&#39;</span><span class="p">,</span> <span class="n">repl</span><span class="p">),</span>
+        <span class="s1">&#39;a&#39;</span><span class="p">:(</span><span class="s1">&#39;Align two polarizers&#39;</span><span class="p">,</span> <span class="n">align_polarizer</span><span class="p">),</span>
+        <span class="s1">&#39;aa&#39;</span><span class="p">:(</span><span class="s1">&#39;Anti-align two polarizers&#39;</span><span class="p">,</span> <span class="n">antialign_polarizer</span><span class="p">),</span>
+        <span class="s1">&#39;f&#39;</span><span class="p">:(</span><span class="s1">&#39;Find fast axis of waveplate&#39;</span><span class="p">,</span> <span class="n">find_fast_axis</span><span class="p">),</span>
+        <span class="s1">&#39;c&#39;</span><span class="p">:(</span><span class="s1">&#39;Check intensity of rotating polarizer&#39;</span><span class="p">,</span> <span class="n">check_consistency</span><span class="p">),</span>
+        <span class="s1">&#39;s&#39;</span><span class="p">:(</span><span class="s1">&#39;Find SLM horizontal&#39;</span><span class="p">,</span> <span class="n">find_slm_horizontal</span><span class="p">),</span>
+        <span class="s1">&#39;H&#39;</span><span class="p">:(</span><span class="s1">&#39;Half-waveplate alignment routine&#39;</span><span class="p">,</span> <span class="n">hwp_alignment_routine</span><span class="p">),</span>
+        <span class="s1">&#39;P&#39;</span><span class="p">:(</span><span class="s1">&#39;Polarizer alignment routine&#39;</span><span class="p">,</span> <span class="n">pol_alignment_routine</span><span class="p">),</span>
+        <span class="p">}</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># there is always a power meter</span>
+    <span class="n">getPowerMeter</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># list all available actions</span>
+        <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">inp</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">actions</span><span class="p">[</span><span class="n">inp</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># prompt for one</span>
+        <span class="n">act</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;What to do? &#39;</span><span class="p">)</span>
+
+        <span class="c1"># do the thing</span>
+        <span class="k">if</span> <span class="n">act</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">actions</span><span class="p">[</span><span class="n">act</span><span class="p">][</span><span class="mi">1</span><span class="p">]()</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyboardInterrupt</span><span class="p">,</span> <span class="ne">EOFError</span><span class="p">):</span> <span class="c1"># ctrl-c interrupt</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Nevermind&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> <span class="c1"># if something breaks, print the error and traceback</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Something went wrong:&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not command. Try again&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

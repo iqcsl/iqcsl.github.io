@@ -1,0 +1,6 @@
+control.gui.window.makeWindow
+=============================
+
+.. currentmodule:: control.gui.window
+
+.. autofunction:: makeWindow

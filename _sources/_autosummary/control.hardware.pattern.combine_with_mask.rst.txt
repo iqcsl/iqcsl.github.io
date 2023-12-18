@@ -1,0 +1,6 @@
+control.hardware.pattern.combine\_with\_mask
+============================================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: combine_with_mask

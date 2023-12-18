@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hwpstair.interface &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.hwpstair.interface</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.hwpstair.interface</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">from</span> <span class="nn">control.record</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.motors</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.iris</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.servo</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.slm</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.pattern</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.gui.settings</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.devices</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.myio</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># TODO replace the generator/driver setup with something much cleaner</span>
+<span class="c1"># (use a decorator)</span>
+
+<div class="viewcode-block" id="Interface"><a class="viewcode-back" href="../../../_autosummary/control.hwpstair.interface.Interface.html#control.hwpstair.interface.Interface">[docs]</a><span class="k">class</span> <span class="nc">Interface</span><span class="p">:</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">all_devices_connected</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="n">SET</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span>
+        <span class="n">devs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;half-waveplate&#39;</span><span class="p">]</span>
+        <span class="n">devs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SET</span><span class="p">[</span><span class="s1">&#39;obstruction&#39;</span><span class="p">])</span>
+        <span class="n">devs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SET</span><span class="p">[</span><span class="s1">&#39;beamblocker&#39;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">devs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">gdevices</span><span class="p">:</span>
+                <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1"> not connected. Please connect all devices then start experiment again&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">block</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="n">bb</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;beamblocker&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">bb</span> <span class="o">==</span> <span class="s1">&#39;shutter&#39;</span><span class="p">:</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;shutter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">bb</span> <span class="o">==</span> <span class="s1">&#39;servo&#39;</span><span class="p">:</span>
+            <span class="n">ang</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;servo_closed_angle&#39;</span><span class="p">]</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">ang</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;bb=</span><span class="si">{</span><span class="n">bb</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">unblock</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="n">bb</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;beamblocker&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">bb</span> <span class="o">==</span> <span class="s1">&#39;shutter&#39;</span><span class="p">:</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;shutter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">bb</span> <span class="o">==</span> <span class="s1">&#39;servo&#39;</span><span class="p">:</span>
+            <span class="n">ang</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;servo_open_angle&#39;</span><span class="p">]</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">ang</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;bb=</span><span class="si">{</span><span class="n">bb</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">unblock_for</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dur</span><span class="p">):</span> <span class="c1"># dur is in ms</span>
+        <span class="n">bb</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;beamblocker&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">bb</span> <span class="o">==</span> <span class="s1">&#39;shutter&#39;</span><span class="p">:</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;shutter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">open_for</span><span class="p">(</span><span class="n">dur</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">bb</span> <span class="o">==</span> <span class="s1">&#39;servo&#39;</span><span class="p">:</span>
+            <span class="n">ang_op</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;servo_open_angle&#39;</span><span class="p">]</span>
+            <span class="n">ang_cl</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;servo_closed_angle&#39;</span><span class="p">]</span>
+
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">ang_op</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">dur</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">ang_cl</span><span class="p">)</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;bb=</span><span class="si">{</span><span class="n">bb</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="c1"># d is &#39;cw&#39; or &#39;ccw&#39;</span>
+    <span class="c1"># vel is in deg/sec</span>
+    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">vel</span><span class="p">):</span>
+        <span class="c1"># set jogparams to continuous, 1000 step size (probably redundant),</span>
+        <span class="c1"># 0 min-velocity, 1000 acceleration, given max-velocity, profiled stop</span>
+        <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;half-waveplate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_jog_parameters</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># ascertain real direction (1 or 2) from</span>
+        <span class="c1"># given direction (&#39;cw&#39; or &#39;ccw&#39;) and</span>
+        <span class="c1"># clockwise_dir setting (&#39;forward&#39; or &#39;backward&#39;)</span>
+        <span class="n">cwdir</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;clockwise_dir&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">cwdir</span> <span class="o">==</span> <span class="s1">&#39;forward&#39;</span><span class="p">:</span>
+            <span class="n">realdir</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="s1">&#39;cw&#39;</span> <span class="k">else</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">realdir</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="s1">&#39;cw&#39;</span> <span class="k">else</span> <span class="mi">1</span>
+
+        <span class="c1"># start jog</span>
+        <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;half-waveplate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">jog</span><span class="p">(</span><span class="n">realdir</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">stop_rotate</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;half-waveplate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+    <span class="c1"># intelligently moves the iris to a given position</span>
+    <span class="c1"># ensures that exactly 2 iris movements are performed,</span>
+    <span class="c1"># so as not to give away to the test subject whether the</span>
+    <span class="c1"># aperture has changed</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">obfuscated_iris_move</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">position</span>
+
+        <span class="k">if</span> <span class="n">src</span> <span class="o">==</span> <span class="n">dest</span><span class="p">:</span> <span class="c1"># move away and come back</span>
+            <span class="n">apmax</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">max_aperture</span>
+            <span class="n">apmin</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">min_aperture</span>
+            <span class="n">travel</span> <span class="o">=</span> <span class="n">apmax</span><span class="o">-</span><span class="n">apmin</span>
+
+            <span class="c1"># move 1 tenth the travel in either direction</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="n">travel</span><span class="o">/</span><span class="mi">10</span>
+            <span class="k">if</span> <span class="n">apmin</span> <span class="o">&lt;=</span> <span class="n">src</span><span class="o">-</span><span class="n">step</span> <span class="o">&lt;=</span> <span class="n">apmax</span><span class="p">:</span>
+                <span class="n">I</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">src</span><span class="o">-</span><span class="n">step</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">apmin</span> <span class="o">&lt;=</span> <span class="n">src</span><span class="o">+</span><span class="n">step</span> <span class="o">&lt;=</span> <span class="n">apmax</span><span class="p">:</span>
+                <span class="n">I</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">src</span><span class="o">+</span><span class="n">step</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;obfuscated_iris_move(): something has gone horrible wrong.&#39;</span><span class="p">)</span>
+                <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;apmin=</span><span class="si">{</span><span class="n">apmin</span><span class="si">}</span><span class="s1">, src=</span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s1">, step=</span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s1">, apmax=</span><span class="si">{</span><span class="n">apmax</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span>
+
+            <span class="c1"># go back</span>
+            <span class="n">I</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">avg</span> <span class="o">=</span> <span class="p">(</span><span class="n">src</span><span class="o">+</span><span class="n">dest</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+            <span class="n">I</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">avg</span><span class="p">)</span>
+            <span class="n">I</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+
+
+    <span class="c1"># subject to change</span>
+    <span class="n">ORDER</span> <span class="o">=</span> <span class="mi">12</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="c1"># radius is in either pixels or mm (it&#39;s up to you to figure out what this translates to in FOV)</span>
+    <span class="k">def</span> <span class="nf">set_obstruction</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+        <span class="n">typ</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;obstruction_type&#39;</span><span class="p">]</span>
+        <span class="n">ob</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;obstruction&#39;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">ob</span> <span class="o">==</span> <span class="s1">&#39;iris&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s1">&#39;inner&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;iris can</span><span class="se">\&#39;</span><span class="s1">t do inner obstruction&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">obfuscated_iris_move</span><span class="p">(</span><span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;iris&#39;</span><span class="p">],</span> <span class="n">radius</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">ob</span> <span class="o">==</span> <span class="s1">&#39;SLM&#39;</span><span class="p">:</span>
+            <span class="n">slm</span> <span class="o">=</span> <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;SLM&#39;</span><span class="p">]</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">make_vortex_with_obstruction</span><span class="p">(</span><span class="n">slm</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">slm</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ORDER</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">checkerboard</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hi</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+            <span class="n">slm</span><span class="o">.</span><span class="n">displayMatrix</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ob=</span><span class="si">{</span><span class="n">ob</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">):</span>
+        <span class="c1"># if none provided then default to generic puts</span>
+        <span class="k">if</span> <span class="n">IO</span><span class="o">.</span><span class="n">expout</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">puts</span><span class="p">(</span><span class="s1">&#39;EXPERIMENT: &#39;</span> <span class="o">+</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">IO</span><span class="o">.</span><span class="n">expout</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="n">fg</span><span class="p">)</span>
+
+    <span class="c1"># returns True with probability p</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">bernoulli</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">p</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">randdir</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">((</span><span class="s1">&#39;cw&#39;</span><span class="p">,</span><span class="s1">&#39;ccw&#39;</span><span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">getdir</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span>
+        <span class="n">cw</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;key_cw&#39;</span><span class="p">]</span>
+        <span class="n">ccw</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;key_ccw&#39;</span><span class="p">]</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="n">cw</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;cw&#39;</span>
+            <span class="k">elif</span> <span class="n">ch</span> <span class="o">==</span> <span class="n">ccw</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;ccw&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s1">&#39;Not a direction. Try again&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">)</span>
+
+    <span class="c1"># dur in ms</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dur</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">dur</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">wait_for_ready</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="n">ready</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;key_ready&#39;</span><span class="p">]</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="n">ready</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">times</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Press Ready to continue (</span><span class="si">{</span><span class="n">times</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+
+    <span class="c1"># call this when experiment over</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;half-waveplate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">gdevices</span><span class="p">[</span><span class="s1">&#39;servo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">stop_recording</span><span class="p">()</span> <span class="c1"># does nothing if was not recording</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

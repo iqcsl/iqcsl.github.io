@@ -1,0 +1,39 @@
+﻿control.hardware.iris.ELL15
+===========================
+
+.. currentmodule:: control.hardware.iris
+
+.. autoclass:: ELL15
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~ELL15.goto
+      ~ELL15.home
+      ~ELL15.info
+      ~ELL15.moverel
+      ~ELL15.status
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ELL15.is_connected
+      ~ELL15.max_aperture
+      ~ELL15.min_aperture
+      ~ELL15.position
+      ~ELL15.serial_number
+   
+   

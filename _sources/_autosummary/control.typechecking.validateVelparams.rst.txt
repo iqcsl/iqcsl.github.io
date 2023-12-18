@@ -1,0 +1,6 @@
+control.typechecking.validateVelparams
+======================================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: validateVelparams

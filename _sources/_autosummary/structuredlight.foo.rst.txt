@@ -1,0 +1,6 @@
+structuredlight.foo
+===================
+
+.. currentmodule:: structuredlight
+
+.. autofunction:: foo

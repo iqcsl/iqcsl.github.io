@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.messages &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.messages</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.messages</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+
+<span class="kn">from</span> <span class="nn">control.tkwrappers</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.timestamp</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># queue of (str, bool) tuples to be sent out as messages</span>
+<span class="n">msg_queue</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">msglock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+<span class="c1"># the label sits at the bottom of the window and displays the most recent message</span>
+<span class="n">message_label</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="c1"># the log sits in its own tab and displays all messages so far (with scrollbar)</span>
+<span class="n">message_tab</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">tab_height</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="makeMsgBar"><a class="viewcode-back" href="../../_autosummary/control.messages.makeMsgBar.html#control.messages.makeMsgBar">[docs]</a><span class="k">def</span> <span class="nf">makeMsgBar</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+    <span class="n">fmsg</span> <span class="o">=</span> <span class="n">makeFrame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+    <span class="k">global</span> <span class="n">message_label</span>
+    <span class="n">message_label</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">fmsg</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="n">message_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fmsg</span></div>
+
+<div class="viewcode-block" id="makeMsgTab"><a class="viewcode-back" href="../../_autosummary/control.messages.makeMsgTab.html#control.messages.makeMsgTab">[docs]</a><span class="k">def</span> <span class="nf">makeMsgTab</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">message_tab</span>
+    <span class="n">message_tab</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">message_tab</span></div>
+
+<div class="viewcode-block" id="message"><a class="viewcode-back" href="../../_autosummary/control.messages.message.html#control.messages.message">[docs]</a><span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">clr</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">):</span>
+    <span class="c1"># queue the message for the message bar</span>
+    <span class="k">with</span> <span class="n">msglock</span><span class="p">:</span>
+        <span class="n">msg_queue</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">txt</span><span class="p">,</span> <span class="n">clr</span><span class="p">))</span> <span class="c1"># append message to queue</span>
+        <span class="n">handler_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span> <span class="c1"># tell the handler a new message has arrived</span>
+
+    <span class="c1"># send it out immediately in the tab</span>
+    <span class="n">_message_tab</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span><span class="n">clr</span><span class="p">)</span>
+    <span class="c1"># also print to terminal</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span></div>
+
+<span class="c1">#def message_err(txt):</span>
+    <span class="c1">#message(txt, True)</span>
+
+<span class="k">def</span> <span class="nf">_message_tab</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">clr</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">):</span>
+    <span class="n">loglab</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">message_tab</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">txt</span><span class="p">,</span><span class="n">fg</span><span class="o">=</span><span class="n">clr</span><span class="p">)</span>
+
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">message_tab</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">get_timestamp</span><span class="p">())</span>
+    <span class="k">global</span> <span class="n">tab_height</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">loglab</span><span class="p">,</span> <span class="n">tab_height</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">tkgrid</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">tab_height</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">tab_height</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="k">def</span> <span class="nf">_message_bar</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">clr</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">):</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="n">get_timestamp</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">txt</span>
+    <span class="n">message_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">txt</span><span class="p">,</span><span class="n">fg</span><span class="o">=</span><span class="n">clr</span><span class="p">)</span>
+
+<span class="n">handler_active</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">handler_event</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+
+<div class="viewcode-block" id="message_handler"><a class="viewcode-back" href="../../_autosummary/control.messages.message_handler.html#control.messages.message_handler">[docs]</a><span class="k">def</span> <span class="nf">message_handler</span><span class="p">():</span>
+    <span class="k">while</span> <span class="n">handler_active</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">with</span> <span class="n">msglock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg_queue</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg_queue</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">msg_queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">msg</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_message_bar</span><span class="p">(</span><span class="o">*</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;failed to print message </span><span class="si">{</span><span class="n">msg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># tiny delay between messages</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">handler_event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># do nothing unless somebody sets this event (new message)</span>
+            <span class="n">handler_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<span class="c1">#def _notify(txt, err=False):</span>
+<span class="c1">#    if err:</span>
+<span class="c1">#        notification_label.configure(text=txt,fg=&#39;red&#39;)</span>
+<span class="c1">#        loglab = tk.Label(notification_tab, text=txt,fg=&#39;red&#39;)</span>
+<span class="c1">#    else:</span>
+<span class="c1">#        notification_label.configure(text=txt,fg=&#39;blue&#39;)</span>
+<span class="c1">#        loglab = tk.Label(notification_tab, text=txt,fg=&#39;blue&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#    timestamp = tk.Label(notification_tab, text=str(datetime.now()))</span>
+<span class="c1">#    global tab_height</span>
+<span class="c1">#    tkgrid(loglab, tab_height, 0)</span>
+<span class="c1">#    tkgrid(timestamp, tab_height, 1)</span>
+<span class="c1">#    tab_height += 1</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

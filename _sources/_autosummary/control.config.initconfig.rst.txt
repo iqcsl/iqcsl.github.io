@@ -1,0 +1,6 @@
+control.config.initconfig
+=========================
+
+.. currentmodule:: control.config
+
+.. autofunction:: initconfig

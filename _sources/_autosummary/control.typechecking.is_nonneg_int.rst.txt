@@ -1,0 +1,6 @@
+control.typechecking.is\_nonneg\_int
+====================================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: is_nonneg_int

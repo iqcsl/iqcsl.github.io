@@ -1,0 +1,44 @@
+control.myio.IO
+===============
+
+.. currentmodule:: control.myio
+
+.. autoclass:: IO
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~IO.gui_key_pressed
+      ~IO.guiflushinput
+      ~IO.guigetchar
+      ~IO.guiputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~IO.breakevent
+      ~IO.breakfn
+      ~IO.do_logging
+      ~IO.expout
+      ~IO.gui_alive
+      ~IO.gui_colors
+      ~IO.gui_input_buf
+      ~IO.gui_input_lock
+      ~IO.iolock
+      ~IO.output_filter
+      ~IO.termgetchar
+   
+   

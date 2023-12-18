@@ -1,0 +1,39 @@
+﻿control.hwpstair.basic.HWPBasic
+===============================
+
+.. currentmodule:: control.hwpstair.basic
+
+.. autoclass:: HWPBasic
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~HWPBasic.calc_new_aperture
+      ~HWPBasic.decorator
+      ~HWPBasic.dotrial
+      ~HWPBasic.exp
+      ~HWPBasic.start
+      ~HWPBasic.stop
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~HWPBasic.devices
+      ~HWPBasic.exp_template
+      ~HWPBasic.hw_template
+      ~HWPBasic.settings
+   
+   

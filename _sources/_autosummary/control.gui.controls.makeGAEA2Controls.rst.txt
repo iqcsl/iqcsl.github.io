@@ -1,0 +1,6 @@
+control.gui.controls.makeGAEA2Controls
+======================================
+
+.. currentmodule:: control.gui.controls
+
+.. autofunction:: makeGAEA2Controls

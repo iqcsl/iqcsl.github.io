@@ -1,0 +1,6 @@
+control.typechecking.is\_GPIO\_pin
+==================================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: is_GPIO_pin

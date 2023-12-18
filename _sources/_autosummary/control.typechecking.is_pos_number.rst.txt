@@ -1,0 +1,6 @@
+control.typechecking.is\_pos\_number
+====================================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: is_pos_number

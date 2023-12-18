@@ -1,0 +1,6 @@
+control.gui.controls.makeDDR25Controls
+======================================
+
+.. currentmodule:: control.gui.controls
+
+.. autofunction:: makeDDR25Controls

@@ -1,0 +1,69 @@
+﻿align
+=====
+
+.. automodule:: align
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      Yesno
+      align_polarizer
+      antialign_polarizer
+      check_consistency
+      cos_func
+      find_fast_axis
+      find_slm_horizontal
+      fit_cos
+      getMotor
+      getPowerMeter
+      getSLM
+      get_max_intensity_angle
+      get_min_intensity_angle
+      get_r2
+      hwp_alignment_routine
+      max_index
+      min_index
+      pol_alignment_routine
+      printProgressBar
+      print_devices
+      print_variation
+      promptContinue
+      promptEnter
+      promptSkip
+      quit
+      repl
+      rotate_and_measure
+      send_motor
+      setup_motor
+      showgrating
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      Data
+   
+   
+
+   
+   
+   
+
+
+

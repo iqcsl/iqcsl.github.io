@@ -1,0 +1,6 @@
+control.timestamp.get\_timestamp
+================================
+
+.. currentmodule:: control.timestamp
+
+.. autofunction:: get_timestamp

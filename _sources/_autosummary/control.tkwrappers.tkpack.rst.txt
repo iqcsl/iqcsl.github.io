@@ -1,0 +1,6 @@
+control.tkwrappers.tkpack
+=========================
+
+.. currentmodule:: control.tkwrappers
+
+.. autofunction:: tkpack

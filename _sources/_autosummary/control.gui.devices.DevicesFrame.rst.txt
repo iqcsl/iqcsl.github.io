@@ -1,0 +1,29 @@
+control.gui.devices.DevicesFrame
+================================
+
+.. currentmodule:: control.gui.devices
+
+.. autoclass:: DevicesFrame
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~DevicesFrame.connectall
+      ~DevicesFrame.disconnectall
+      ~DevicesFrame.list_visible
+      ~DevicesFrame.populate
+      ~DevicesFrame.reload
+   
+   
+
+   
+   
+   

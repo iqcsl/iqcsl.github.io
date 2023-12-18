@@ -1,0 +1,6 @@
+align.promptSkip
+================
+
+.. currentmodule:: align
+
+.. autofunction:: promptSkip

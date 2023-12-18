@@ -1,0 +1,34 @@
+control.record
+==============
+
+.. automodule:: control.record
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      record_line
+      start_recording
+      stop_recording
+      unique_timestamped_fname
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

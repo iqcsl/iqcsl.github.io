@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hwpstair.complicated &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.hwpstair.complicated</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.hwpstair.complicated</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">control.hwpstair.basic</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.myio</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hwpstair.interface</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.record</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">INT</span> <span class="o">=</span> <span class="n">Interface</span>
+
+<span class="c1"># 2 up 1 down staircase which tracks reversal number/points and adjusts step size accordingly</span>
+<span class="c1"># terminates when specified reversal number or number of trials reached</span>
+<span class="c1"># takes average of last several reversal points to calculate threshold</span>
+<div class="viewcode-block" id="HWPComplicated"><a class="viewcode-back" href="../../../_autosummary/control.hwpstair.complicated.HWPComplicated.html#control.hwpstair.complicated.HWPComplicated">[docs]</a><span class="k">class</span> <span class="nc">HWPComplicated</span><span class="p">(</span><span class="n">HWPBasic</span><span class="p">):</span>
+    <span class="n">exp_template</span> <span class="o">=</span> <span class="n">hwp_template_complicated</span>
+    <span class="c1"># inherits hw_template from HWPBasic</span>
+
+    <span class="c1"># TODO abstract away aperture behind difficulty, so that it can work with inner obstruction too</span>
+
+    <span class="c1"># returns new step size or None (for no change)</span>
+    <span class="c1"># we assume reversal_step_sizes has already been validated (see templates.py)</span>
+    <span class="k">def</span> <span class="nf">update_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_reversals</span><span class="p">,</span> <span class="n">reversal_step_sizes</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">rnum</span><span class="p">,</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">reversal_step_sizes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">num_reversals</span> <span class="o">==</span> <span class="n">rnum</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">step</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">calcstep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_step</span><span class="p">,</span> <span class="n">num_reversals</span><span class="p">,</span> <span class="n">reversal_step_sizes</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">init_step</span>
+        <span class="n">maxrnum</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">rnum</span><span class="p">,</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">reversal_step_sizes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">maxrnum</span> <span class="o">&lt;</span> <span class="n">rnum</span> <span class="ow">and</span> <span class="n">num_reversals</span> <span class="o">&gt;=</span> <span class="n">rnum</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">step</span>
+                <span class="n">maxrnum</span> <span class="o">=</span> <span class="n">rnum</span>
+
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="c1"># randomly chooses to do joker trial at set rate</span>
+    <span class="c1"># returns True if it did joker trial, False otherwise</span>
+    <span class="k">def</span> <span class="nf">try_joker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">ap</span><span class="p">):</span>
+        <span class="n">do_it</span> <span class="o">=</span> <span class="n">INT</span><span class="o">.</span><span class="n">bernoulli</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">do_it</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s1">&#39;Doing joker trial...&#39;</span><span class="p">)</span>
+            <span class="c1"># goto joker ap (caller will remember and reset to the old ap afterward)</span>
+            <span class="n">INT</span><span class="o">.</span><span class="n">set_obstruction</span><span class="p">(</span><span class="n">ap</span><span class="p">)</span>
+
+            <span class="c1"># do a trial (discard return value)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dotrial</span><span class="p">()</span>
+
+            <span class="c1"># record the fact that a joker trial occurred, and the aperture it occurred at</span>
+            <span class="c1"># (the result of the joker trial does not matter)</span>
+            <span class="n">record_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;joker </span><span class="si">{</span><span class="n">ap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="HWPComplicated.exp"><a class="viewcode-back" href="../../../_autosummary/control.hwpstair.complicated.HWPComplicated.html#control.hwpstair.complicated.HWPComplicated.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">SET</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span>
+
+        <span class="c1"># get some settings</span>
+        <span class="n">apmin</span> <span class="o">=</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;aperture_min&#39;</span><span class="p">]</span>
+        <span class="n">apmax</span> <span class="o">=</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;aperture_max&#39;</span><span class="p">]</span>
+        <span class="n">reversal_step_sizes</span> <span class="o">=</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;reversal_step_sizes&#39;</span><span class="p">]</span>
+
+        <span class="c1"># limit for number of trials/reversal points</span>
+        <span class="n">maxrevs</span> <span class="o">=</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;max_reversals&#39;</span><span class="p">]</span>
+        <span class="n">maxtrials</span> <span class="o">=</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;max_trials&#39;</span><span class="p">]</span>
+
+        <span class="c1"># set the iris to the initial (maximum) value</span>
+        <span class="n">cur_ap</span> <span class="o">=</span> <span class="n">apmax</span>
+        <span class="n">INT</span><span class="o">.</span><span class="n">set_obstruction</span><span class="p">(</span><span class="n">cur_ap</span><span class="p">)</span>
+        <span class="n">record_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ap </span><span class="si">{</span><span class="n">cur_ap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">trials_completed</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">reversal_aps</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># apertures at each of the reversal points so far</span>
+        <span class="n">init_step</span> <span class="o">=</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;initial_step_size&#39;</span><span class="p">]</span>
+        <span class="n">current_direction</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># what direction was the last aperture change?</span>
+        <span class="n">correct_in_a_row</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">max_in_a_row</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># do trials until either end condition met</span>
+        <span class="k">while</span> <span class="n">trials_completed</span> <span class="o">&lt;</span> <span class="n">maxtrials</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">reversal_aps</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">maxrevs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;do_joker&#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">try_joker</span><span class="p">(</span><span class="n">SET</span><span class="p">[</span><span class="s1">&#39;joker_rate&#39;</span><span class="p">],</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;joker_ap&#39;</span><span class="p">])</span>
+
+            <span class="c1"># update the physical aperture and do a trial</span>
+            <span class="n">INT</span><span class="o">.</span><span class="n">set_obstruction</span><span class="p">(</span><span class="n">cur_ap</span><span class="p">)</span>
+            <span class="n">correct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dotrial</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">correct</span><span class="p">:</span>
+                <span class="c1">#INT.say(&#39;Correct&#39;)</span>
+                <span class="n">record_line</span><span class="p">(</span><span class="s1">&#39;correct&#39;</span><span class="p">)</span>
+
+                <span class="n">correct_in_a_row</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">correct_in_a_row</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">correct_in_a_row</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">new_direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="c1"># shrinking iris</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_direction</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># doing nothing with iris</span>
+
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># incorrect</span>
+                <span class="c1">#INT.say(&#39;Incorrect&#39;)</span>
+                <span class="n">record_line</span><span class="p">(</span><span class="s1">&#39;incorrect&#39;</span><span class="p">)</span>
+
+                <span class="n">correct_in_a_row</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">new_direction</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># growing iris</span>
+
+            <span class="c1"># tentative reversal flag</span>
+            <span class="c1"># we need the number of reversals to determine the step size,</span>
+            <span class="c1"># but we need the step size (and max/min apertures) to determine if a reversal truly happened.</span>
+            <span class="c1"># therefore the only solution is to tentatively detect the reversal, calculate the step size,</span>
+            <span class="c1"># then attempt to change the aperture accordingly.</span>
+            <span class="c1"># if the aperture change succeeds, we then record the new reversal.</span>
+            <span class="c1"># if it fails, we discard it.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">current_direction</span><span class="p">,</span> <span class="n">new_direction</span><span class="p">)</span> <span class="ow">in</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">reversal_occurred</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">reversal_occurred</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># calculate current step size, accounting for possible new reversal</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calcstep</span><span class="p">(</span><span class="n">init_step</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reversal_aps</span><span class="p">)</span> <span class="o">+</span> <span class="n">reversal_occurred</span><span class="p">,</span> <span class="n">reversal_step_sizes</span><span class="p">)</span>
+
+            <span class="c1"># calculate new aperture</span>
+            <span class="n">new_ap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_new_aperture</span><span class="p">(</span><span class="n">cur_ap</span><span class="p">,</span> <span class="n">apmax</span><span class="p">,</span> <span class="n">apmin</span><span class="p">,</span> <span class="n">new_direction</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_ap</span> <span class="o">==</span> <span class="n">apmin</span><span class="p">:</span> <span class="c1"># ap minimum means difficulty maximum</span>
+                <span class="n">max_in_a_row</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">max_in_a_row</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># unset reversal flag if nothing happened</span>
+            <span class="k">if</span> <span class="n">new_ap</span> <span class="o">==</span> <span class="n">cur_ap</span><span class="p">:</span>
+                <span class="n">reversal_occurred</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># update direction if something happened</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">current_direction</span> <span class="o">=</span> <span class="n">new_direction</span>
+
+            <span class="c1"># append reversal ap if it really happened</span>
+            <span class="k">if</span> <span class="n">reversal_occurred</span><span class="p">:</span>
+                <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;reversal point at </span><span class="si">{</span><span class="n">cur_ap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">reversal_aps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_ap</span><span class="p">)</span>
+                <span class="n">record_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rev </span><span class="si">{</span><span class="n">trials_completed</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">cur_ap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># update state variables</span>
+            <span class="n">cur_ap</span> <span class="o">=</span> <span class="n">new_ap</span> <span class="c1"># (we physically change the aperture at the top of the loop)</span>
+            <span class="n">trials_completed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># output aperture</span>
+            <span class="n">record_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ap </span><span class="si">{</span><span class="n">cur_ap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">max_in_a_row</span> <span class="o">==</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;max_out_stop&#39;</span><span class="p">]:</span>
+                <span class="n">record_line</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;max </span><span class="si">{</span><span class="n">SET</span><span class="p">[</span><span class="s1">&#39;max_out_stop&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+
+        <span class="c1">## calculate obstruction threshold</span>
+
+        <span class="c1"># if maximum trials completed, treat the final point as a reversal point</span>
+        <span class="c1"># also if exited due to max out, do the same</span>
+        <span class="c1"># but don&#39;t double count</span>
+        <span class="k">if</span> <span class="n">trials_completed</span> <span class="o">==</span> <span class="n">maxtrials</span> <span class="ow">or</span> <span class="n">max_in_a_row</span> <span class="o">==</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;max_out_stop&#39;</span><span class="p">]:</span>
+            <span class="n">reversal_aps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_ap</span><span class="p">)</span>
+            <span class="n">record_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rev </span><span class="si">{</span><span class="n">trials_completed</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">cur_ap</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="n">SET</span><span class="p">[</span><span class="s1">&#39;threshold_average_num&#39;</span><span class="p">]</span>
+
+        <span class="c1"># take the last n reversal points</span>
+        <span class="c1"># if reversal_aps is too short then this just takes all of them</span>
+        <span class="n">final_reversal_aps</span> <span class="o">=</span> <span class="n">reversal_aps</span><span class="p">[</span><span class="o">-</span><span class="n">n</span><span class="p">:]</span>
+        <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;final reversal aps are </span><span class="si">{</span><span class="n">final_reversal_aps</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># get the average</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_reversal_aps</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">final_reversal_aps</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_reversal_aps</span><span class="p">)</span>
+            <span class="c1"># record it</span>
+            <span class="n">record_line</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;threshold </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+align.setup\_motor
+==================
+
+.. currentmodule:: align
+
+.. autofunction:: setup_motor

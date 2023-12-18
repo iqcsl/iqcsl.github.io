@@ -1,0 +1,6 @@
+control.hardware.pattern.discretize
+===================================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: discretize

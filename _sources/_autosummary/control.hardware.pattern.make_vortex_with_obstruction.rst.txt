@@ -1,0 +1,6 @@
+control.hardware.pattern.make\_vortex\_with\_obstruction
+========================================================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: make_vortex_with_obstruction

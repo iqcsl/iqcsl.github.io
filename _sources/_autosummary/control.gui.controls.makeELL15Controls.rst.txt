@@ -1,0 +1,6 @@
+control.gui.controls.makeELL15Controls
+======================================
+
+.. currentmodule:: control.gui.controls
+
+.. autofunction:: makeELL15Controls

@@ -1,0 +1,45 @@
+control.myio
+============
+
+.. automodule:: control.myio
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      flushinput
+      getchar
+      log
+      puterr
+      puts
+      putwarning
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      IO
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,16 @@
+Click on any module/function/class/script/etc. to view more detailed documentation.
+
+.. autosummary::
+   :toctree: _autosummary
+   :recursive:
+   :template: custom-module-template.rst
+
+   control
+   structuredlight
+   align
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+

@@ -1,0 +1,39 @@
+control.hardware.slm
+====================
+
+.. automodule:: control.hardware.slm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      GAEA2
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree:
+   
+      SLMException
+   
+   
+
+
+

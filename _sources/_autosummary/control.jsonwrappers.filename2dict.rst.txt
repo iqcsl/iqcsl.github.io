@@ -1,0 +1,6 @@
+control.jsonwrappers.filename2dict
+==================================
+
+.. currentmodule:: control.jsonwrappers
+
+.. autofunction:: filename2dict

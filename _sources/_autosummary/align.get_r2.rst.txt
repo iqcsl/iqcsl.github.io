@@ -1,0 +1,6 @@
+align.get\_r2
+=============
+
+.. currentmodule:: align
+
+.. autofunction:: get_r2

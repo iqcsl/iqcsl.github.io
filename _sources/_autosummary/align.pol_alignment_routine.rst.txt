@@ -1,0 +1,6 @@
+align.pol\_alignment\_routine
+=============================
+
+.. currentmodule:: align
+
+.. autofunction:: pol_alignment_routine

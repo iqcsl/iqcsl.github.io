@@ -1,0 +1,32 @@
+control.hardware.flipper.MFF102
+===============================
+
+.. currentmodule:: control.hardware.flipper
+
+.. autoclass:: MFF102
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~MFF102.goto
+      ~MFF102.toggle
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MFF102.position
+   
+   

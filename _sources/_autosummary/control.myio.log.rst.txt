@@ -1,0 +1,6 @@
+control.myio.log
+================
+
+.. currentmodule:: control.myio
+
+.. autofunction:: log

@@ -1,0 +1,6 @@
+align.min\_index
+================
+
+.. currentmodule:: align
+
+.. autofunction:: min_index

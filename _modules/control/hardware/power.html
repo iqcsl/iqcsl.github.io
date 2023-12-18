@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hardware.power &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.hardware.power</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.hardware.power</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Power meter module</span>
+
+<span class="sd">Currently supports the Thorlabs PM100 power meter</span>
+
+<span class="sd">Uses the ThorlabsPM100 library https://pypi.org/project/ThorlabsPM100/ as well as PyVisa https://pypi.org/project/PyVISA/</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pyvisa</span> <span class="k">as</span> <span class="nn">visa</span>
+<span class="kn">from</span> <span class="nn">ThorlabsPM100</span> <span class="kn">import</span> <span class="n">ThorlabsPM100</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">control.myio</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">puterr</span> <span class="o">=</span> <span class="nb">print</span>
+
+<span class="n">_rm</span> <span class="o">=</span> <span class="n">visa</span><span class="o">.</span><span class="n">ResourceManager</span><span class="p">()</span>
+
+<div class="viewcode-block" id="list_resources"><a class="viewcode-back" href="../../../_autosummary/control.hardware.power.list_resources.html#control.hardware.power.list_resources">[docs]</a><span class="k">def</span> <span class="nf">list_resources</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List available resources</span>
+
+<span class="sd">    All power meters are resources, but not all resources are power meters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_rm</span><span class="o">.</span><span class="n">list_resources</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PM100"><a class="viewcode-back" href="../../../_autosummary/control.hardware.power.PM100.html#control.hardware.power.PM100">[docs]</a><span class="k">class</span> <span class="nc">PM100</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thorlabs PM100 class</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        from control.hardware.power import PM100</span>
+<span class="sd">        </span>
+<span class="sd">        print(list_resources())</span>
+<span class="sd">        pm = PM100() # connect to first visible resource by default</span>
+<span class="sd">        pm.wavelength = 450 # blue light</span>
+<span class="sd">        </span>
+<span class="sd">        print(pm.measure_builtin(1000))</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param name: name of resource (can be found using :func:`list_resources()`). If not provided, attempts to connect to the first resource found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if no name provided, try to figure it out</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">_rm</span><span class="o">.</span><span class="n">list_resources</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trying to connect instrument </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># connect to power meter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inst</span> <span class="o">=</span> <span class="n">_rm</span><span class="o">.</span><span class="n">open_resource</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inst</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="mi">5000</span> <span class="c1"># milliseconds</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pm</span> <span class="o">=</span> <span class="n">ThorlabsPM100</span><span class="p">(</span><span class="n">inst</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inst</span><span class="p">)</span>
+            <span class="c1">#self.inst.timeout=None</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Could not connect power meter. Please make sure power meter is connected and using the correct driver&#39;</span><span class="p">)</span>
+            <span class="k">raise</span>
+        
+        <span class="c1"># set sane defaults</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">dc</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;W&quot;</span> <span class="c1"># power in watts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">configure</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">power</span><span class="p">()</span> <span class="c1"># measure power</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">dc</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">auto</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># auto ranging by default</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Power meter currently set to measure </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="si">}</span><span class="s1">nm light&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inst</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># read-only</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_upper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Read-only) Maximum upper power limit (W)</span>
+
+<span class="sd">        ``PM100.upper`` may not be set higher than this</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">dc</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">maximum_upper</span>
+
+    <span class="c1"># read and write</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">upper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">dc</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">upper</span>
+
+    <span class="nd">@upper</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">upper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_upper</span><span class="p">:</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Given upper </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> greater than maximum upper </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_upper</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">dc</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">upper</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="c1"># read-only</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">min_upper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Read-only) Minimum upper power limit (W)</span>
+
+<span class="sd">        ``PM100.upper`` may not be set lower than this</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">dc</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">minimum_upper</span>
+
+    <span class="c1"># read and write</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">auto</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">dc</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">auto</span>
+
+    <span class="nd">@auto</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">auto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ON&#39;</span><span class="p">,</span><span class="s1">&#39;OFF&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Given invalid auto setting </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> (must be &quot;OFF&quot;, &quot;ON&quot;, 0, or 1&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">dc</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">auto</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="c1"># read-only</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">correction</span><span class="o">.</span><span class="n">maximum_wavelength</span>
+
+    <span class="c1"># read-only</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">min_wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">correction</span><span class="o">.</span><span class="n">minimum_wavelength</span>
+
+    <span class="c1"># read and write</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">correction</span><span class="o">.</span><span class="n">wavelength</span>
+
+    <span class="nd">@wavelength</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_wavelength</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_wavelength</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">correction</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Given invalid wavelength </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> (must be in range [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_wavelength</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_wavelength</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
+
+    <span class="c1"># use the builtin functionality to average many measurements</span>
+    <span class="c1"># 3000 samples -&gt; roughly 1 second</span>
+    <span class="k">def</span> <span class="nf">measure_builtin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">samples</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">read</span>
+
+    <span class="c1"># samples: how many raw measurements to take</span>
+    <span class="c1"># duration: how long to take the measurements over, in seconds</span>
+    <span class="k">def</span> <span class="nf">measure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">samples</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;samples must be positive integer (given </span><span class="si">{</span><span class="n">samples</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">duration</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;duration must be non-negative (given </span><span class="si">{</span><span class="n">duration</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">delay</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">samples</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">duration</span> <span class="o">/</span> <span class="p">(</span><span class="n">samples</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># calculate delay between individual reads</span>
+        <span class="n">readings</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+            <span class="n">readings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">read</span><span class="p">)</span>
+
+            <span class="c1"># skip the final sleep</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">samples</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">break</span>
+            
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">readings</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">readings</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

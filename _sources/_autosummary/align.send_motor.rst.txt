@@ -1,0 +1,6 @@
+align.send\_motor
+=================
+
+.. currentmodule:: align
+
+.. autofunction:: send_motor

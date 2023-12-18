@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.myio &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.myio</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.myio</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">control.tkwrappers</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.messages</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1">## TERMINAL GETCHAR</span>
+
+<span class="k">class</span> <span class="nc">_Getch</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets a single character from standard input.  Does not echo to the</span>
+<span class="sd">screen.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">impl</span> <span class="o">=</span> <span class="n">_GetchWindows</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">impl</span> <span class="o">=</span> <span class="n">_GetchUnix</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">impl</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">_GetchUnix</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">tty</span><span class="o">,</span> <span class="nn">sys</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">tty</span><span class="o">,</span> <span class="nn">termios</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+        <span class="n">old_settings</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tty</span><span class="o">.</span><span class="n">setraw</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSADRAIN</span><span class="p">,</span> <span class="n">old_settings</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ch</span>
+
+<span class="k">class</span> <span class="nc">_GetchWindows</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">msvcrt</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">msvcrt</span>
+        <span class="k">return</span> <span class="n">msvcrt</span><span class="o">.</span><span class="n">getch</span><span class="p">()</span>
+
+<span class="c1">## IO class (holds state variables, under-the-hood functions, etc.</span>
+
+<div class="viewcode-block" id="IO"><a class="viewcode-back" href="../../_autosummary/control.myio.IO.html#control.myio.IO">[docs]</a><span class="k">class</span> <span class="nc">IO</span><span class="p">:</span>
+    <span class="c1"># set by gui.py</span>
+    <span class="n">gui_alive</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">do_logging</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">expout</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># this must be acquired by anybody who wants to use breakevent/breakfn</span>
+    <span class="n">iolock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+    
+    <span class="c1"># all I/O functions call breakfn (usually raises an exception) if breakevent is tripped</span>
+    <span class="c1"># this allows us to terminate experiments gracefully (on the next I/O call)</span>
+
+    <span class="c1"># either None, or a threading.Event()</span>
+    <span class="n">breakevent</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># when breakevent is tripped, we call this function</span>
+    <span class="n">breakfn</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># puts() consults this dictionary to decide whether to ignore or output a given message</span>
+    <span class="c1"># for example, during an experiment, we want to suppress updates and warnings, but output errors</span>
+    <span class="n">output_filter</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;update&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;warning&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">}</span>
+
+    <span class="c1"># if the message type is in this dictionary, then the provided color is used</span>
+    <span class="n">gui_colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;update&#39;</span><span class="p">:</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;warning&#39;</span><span class="p">:</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="s1">&#39;red&#39;</span><span class="p">}</span>
+
+    <span class="c1"># GUI input buffer and lock</span>
+    <span class="n">gui_input_buf</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">gui_input_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">gui_key_pressed</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">cls</span><span class="o">.</span><span class="n">gui_input_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">char</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">gui_input_buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">char</span><span class="p">)</span>
+                <span class="c1">#print(f&#39;I see a little silhouette of a {ord(event.char)}&#39;)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">guiflushinput</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">cls</span><span class="o">.</span><span class="n">gui_input_lock</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">gui_input_buf</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">guiputs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;update&#39;</span><span class="p">):</span>
+        <span class="c1">#if gui_output_frame is not None:</span>
+        <span class="c1">#    lb = makeLabel(gui_output_frame, msg, fg=&#39;blue&#39;)</span>
+        <span class="c1">#    lb.pack(anchor=&#39;nw&#39;)</span>
+
+        <span class="k">if</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">IO</span><span class="o">.</span><span class="n">gui_colors</span><span class="p">:</span>
+            <span class="n">message</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">IO</span><span class="o">.</span><span class="n">gui_colors</span><span class="p">[</span><span class="n">typ</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">message</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">guigetchar</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">breakevent</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="n">breakevent</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+                <span class="k">assert</span> <span class="bp">cls</span><span class="o">.</span><span class="n">breakfn</span> <span class="o">!=</span> <span class="kc">None</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">breakfn</span><span class="p">()</span>
+
+            <span class="k">with</span> <span class="bp">cls</span><span class="o">.</span><span class="n">gui_input_lock</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">gui_input_buf</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ch</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">gui_input_buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">gui_input_buf</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">ch</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="n">termgetchar</span> <span class="o">=</span> <span class="n">_Getch</span><span class="p">()</span></div>
+
+<span class="c1">## FRONTEND FUNCTIONS</span>
+
+<span class="c1"># print to stderr instead of stdout</span>
+<div class="viewcode-block" id="log"><a class="viewcode-back" href="../../_autosummary/control.myio.log.html#control.myio.log">[docs]</a><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="getchar"><a class="viewcode-back" href="../../_autosummary/control.myio.getchar.html#control.myio.getchar">[docs]</a><span class="k">def</span> <span class="nf">getchar</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">IO</span><span class="o">.</span><span class="n">gui_alive</span><span class="p">:</span> <span class="c1"># prefer GUI over terminal</span>
+        <span class="k">return</span> <span class="n">IO</span><span class="o">.</span><span class="n">guigetchar</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">IO</span><span class="o">.</span><span class="n">termgetchar</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="flushinput"><a class="viewcode-back" href="../../_autosummary/control.myio.flushinput.html#control.myio.flushinput">[docs]</a><span class="k">def</span> <span class="nf">flushinput</span><span class="p">():</span>
+    <span class="c1"># TODO figure out flush for terminal too</span>
+    <span class="k">if</span> <span class="n">IO</span><span class="o">.</span><span class="n">gui_alive</span><span class="p">:</span>
+        <span class="n">IO</span><span class="o">.</span><span class="n">guiflushinput</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="puterr"><a class="viewcode-back" href="../../_autosummary/control.myio.puterr.html#control.myio.puterr">[docs]</a><span class="k">def</span> <span class="nf">puterr</span><span class="p">(</span><span class="n">txt</span><span class="p">):</span>
+    <span class="n">puts</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="putwarning"><a class="viewcode-back" href="../../_autosummary/control.myio.putwarning.html#control.myio.putwarning">[docs]</a><span class="k">def</span> <span class="nf">putwarning</span><span class="p">(</span><span class="n">txt</span><span class="p">):</span>
+    <span class="n">puts</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;warning&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="puts"><a class="viewcode-back" href="../../_autosummary/control.myio.puts.html#control.myio.puts">[docs]</a><span class="k">def</span> <span class="nf">puts</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s1">&#39;update&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">IO</span><span class="o">.</span><span class="n">breakevent</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">IO</span><span class="o">.</span><span class="n">breakevent</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+        <span class="k">assert</span> <span class="n">IO</span><span class="o">.</span><span class="n">breakfn</span> <span class="o">!=</span> <span class="kc">None</span>
+        <span class="n">IO</span><span class="o">.</span><span class="n">breakfn</span><span class="p">()</span>
+
+    <span class="c1"># write to stderr regardless of filter</span>
+    <span class="k">if</span> <span class="n">IO</span><span class="o">.</span><span class="n">do_logging</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typ</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">txt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="c1"># prefix with message type</span>
+
+    <span class="c1"># check filter to see if we proceed</span>
+    <span class="k">if</span> <span class="n">IO</span><span class="o">.</span><span class="n">output_filter</span><span class="p">[</span><span class="n">typ</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">IO</span><span class="o">.</span><span class="n">gui_alive</span><span class="p">:</span> <span class="c1"># prefer GUI over terminal</span>
+        <span class="n">IO</span><span class="o">.</span><span class="n">guiputs</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">typ</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span></div>
+
+<span class="c1">#def puterr(txt):</span>
+<span class="c1">#    with IO.iolock:</span>
+<span class="c1">#        if IO.breakevent != None and IO.breakevent.is_set():</span>
+<span class="c1">#            assert IO.breakfn != None</span>
+<span class="c1">#            IO.breakfn()</span>
+<span class="c1">#</span>
+<span class="c1">#    if IO.gui_alive:</span>
+<span class="c1">#        IO.guiputerr(txt)</span>
+<span class="c1">#    else:</span>
+<span class="c1">#        print(txt)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+control.hardware.pattern.blank
+==============================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: blank

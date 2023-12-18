@@ -1,0 +1,6 @@
+control.record.unique\_timestamped\_fname
+=========================================
+
+.. currentmodule:: control.record
+
+.. autofunction:: unique_timestamped_fname

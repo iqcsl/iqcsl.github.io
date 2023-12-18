@@ -1,0 +1,6 @@
+control.typechecking.is\_dirpath
+================================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: is_dirpath

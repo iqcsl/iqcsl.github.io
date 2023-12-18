@@ -1,0 +1,35 @@
+control.gui.devices.DeviceWidget
+================================
+
+.. currentmodule:: control.gui.devices
+
+.. autoclass:: DeviceWidget
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~DeviceWidget.connect
+      ~DeviceWidget.destroyControls
+      ~DeviceWidget.disconnect
+      ~DeviceWidget.makeControls
+      ~DeviceWidget.poll
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DeviceWidget.class2controls
+   
+   

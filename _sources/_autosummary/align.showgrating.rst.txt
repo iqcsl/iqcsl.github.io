@@ -1,0 +1,6 @@
+align.showgrating
+=================
+
+.. currentmodule:: align
+
+.. autofunction:: showgrating

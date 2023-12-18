@@ -1,0 +1,6 @@
+control.config.makeSureEverythingExists
+=======================================
+
+.. currentmodule:: control.config
+
+.. autofunction:: makeSureEverythingExists

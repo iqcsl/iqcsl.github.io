@@ -1,0 +1,6 @@
+align.align\_polarizer
+======================
+
+.. currentmodule:: align
+
+.. autofunction:: align_polarizer

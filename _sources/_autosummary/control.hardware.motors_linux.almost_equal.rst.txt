@@ -1,0 +1,6 @@
+control.hardware.motors\_linux.almost\_equal
+============================================
+
+.. currentmodule:: control.hardware.motors_linux
+
+.. autofunction:: almost_equal

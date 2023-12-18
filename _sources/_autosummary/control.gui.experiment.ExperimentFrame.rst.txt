@@ -1,0 +1,30 @@
+control.gui.experiment.ExperimentFrame
+======================================
+
+.. currentmodule:: control.gui.experiment
+
+.. autoclass:: ExperimentFrame
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~ExperimentFrame.getsavedir
+      ~ExperimentFrame.output
+      ~ExperimentFrame.resume
+      ~ExperimentFrame.start
+      ~ExperimentFrame.start_thread
+      ~ExperimentFrame.stop
+   
+   
+
+   
+   
+   

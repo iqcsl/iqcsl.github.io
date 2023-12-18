@@ -1,0 +1,6 @@
+control.devices.tryConnect
+==========================
+
+.. currentmodule:: control.devices
+
+.. autofunction:: tryConnect

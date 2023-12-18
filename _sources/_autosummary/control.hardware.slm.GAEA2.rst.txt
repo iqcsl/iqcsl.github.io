@@ -1,0 +1,35 @@
+﻿control.hardware.slm.GAEA2
+==========================
+
+.. currentmodule:: control.hardware.slm
+
+.. autoclass:: GAEA2
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~GAEA2.displayMatrix
+      ~GAEA2.showPattern
+      ~GAEA2.showVortex
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GAEA2.height
+      ~GAEA2.width
+      ~GAEA2.slm
+   
+   

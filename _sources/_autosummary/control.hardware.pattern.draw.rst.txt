@@ -1,0 +1,6 @@
+control.hardware.pattern.draw
+=============================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: draw

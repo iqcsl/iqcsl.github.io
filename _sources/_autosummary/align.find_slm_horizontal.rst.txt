@@ -1,0 +1,6 @@
+align.find\_slm\_horizontal
+===========================
+
+.. currentmodule:: align
+
+.. autofunction:: find_slm_horizontal

@@ -1,0 +1,6 @@
+align.getSLM
+============
+
+.. currentmodule:: align
+
+.. autofunction:: getSLM

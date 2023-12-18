@@ -1,0 +1,6 @@
+control.graphrecord.graphfile
+=============================
+
+.. currentmodule:: control.graphrecord
+
+.. autofunction:: graphfile

@@ -1,0 +1,6 @@
+control.devices.list\_devices\_linux
+====================================
+
+.. currentmodule:: control.devices
+
+.. autofunction:: list_devices_linux

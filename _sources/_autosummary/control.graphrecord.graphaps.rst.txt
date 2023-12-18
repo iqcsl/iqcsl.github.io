@@ -1,0 +1,6 @@
+control.graphrecord.graphaps
+============================
+
+.. currentmodule:: control.graphrecord
+
+.. autofunction:: graphaps

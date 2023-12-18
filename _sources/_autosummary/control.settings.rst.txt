@@ -1,0 +1,43 @@
+control.settings
+================
+
+.. automodule:: control.settings
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      identity
+      mergeSettings
+      validate
+      validate_settings
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      Setting
+   
+   
+
+   
+   
+   
+
+
+

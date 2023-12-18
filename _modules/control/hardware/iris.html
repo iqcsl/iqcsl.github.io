@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hardware.iris &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.hardware.iris</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.hardware.iris</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Iris module</span>
+
+<span class="sd">Currently supports the Thorlabs ELL15 iris</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">control.devices</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">control.myio</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">puterr</span> <span class="o">=</span> <span class="nb">print</span>
+    <span class="n">putwarning</span> <span class="o">=</span> <span class="nb">print</span>
+    <span class="n">puts</span> <span class="o">=</span> <span class="nb">print</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="nb">print</span>
+
+<span class="c1">#devices = list_devices()</span>
+<span class="c1">#print(devices)</span>
+
+<span class="c1"># status codes that the iris can return</span>
+<span class="n">STATUS_STR</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="s1">&#39;OK&#39;</span><span class="p">,</span>
+              <span class="mi">1</span><span class="p">:</span><span class="s1">&#39;Communication time out&#39;</span><span class="p">,</span>
+              <span class="mi">2</span><span class="p">:</span><span class="s1">&#39;Mechanical time out&#39;</span><span class="p">,</span>
+              <span class="mi">3</span><span class="p">:</span><span class="s1">&#39;Command error or not supported&#39;</span><span class="p">,</span>
+              <span class="mi">4</span><span class="p">:</span><span class="s1">&#39;Value out of range&#39;</span><span class="p">,</span>
+              <span class="mi">5</span><span class="p">:</span><span class="s1">&#39;Module isolated&#39;</span><span class="p">,</span>
+              <span class="mi">6</span><span class="p">:</span><span class="s1">&#39;Module out of isolation&#39;</span><span class="p">,</span>
+              <span class="mi">7</span><span class="p">:</span><span class="s1">&#39;Initializing error&#39;</span><span class="p">,</span>
+              <span class="mi">8</span><span class="p">:</span><span class="s1">&#39;Thermal error&#39;</span><span class="p">,</span>
+              <span class="mi">9</span><span class="p">:</span><span class="s1">&#39;Busy&#39;</span><span class="p">,</span>
+              <span class="mi">10</span><span class="p">:</span><span class="s1">&#39;Sensor Error&#39;</span><span class="p">,</span>
+              <span class="mi">11</span><span class="p">:</span><span class="s1">&#39;Motor Error&#39;</span><span class="p">,</span>
+              <span class="mi">12</span><span class="p">:</span><span class="s1">&#39;Out of Range&#39;</span><span class="p">,</span>
+              <span class="mi">13</span><span class="p">:</span><span class="s1">&#39;Over Current error&#39;</span><span class="p">,}</span>
+              <span class="c1">#14:&#39;Unknown error (14-255)&#39;}</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">256</span><span class="p">):</span>
+    <span class="n">STATUS_STR</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Unknown error (</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+<div class="viewcode-block" id="ELL15"><a class="viewcode-back" href="../../../_autosummary/control.hardware.iris.ELL15.html#control.hardware.iris.ELL15">[docs]</a><span class="k">class</span> <span class="nc">ELL15</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Thorlabs ELL15 Iris class</span>
+
+<span class="sd">    Typically connected to an Interface Board, which is connected to a computer</span>
+
+<span class="sd">    Example::</span>
+<span class="sd">        </span>
+<span class="sd">        from control.hardware.iris import ELL15</span>
+
+<span class="sd">        iris = ELL15(&#39;DK0BJ258&#39;) # replace with interface board serial number</span>
+<span class="sd">        print(iris.info())</span>
+<span class="sd">        print(iris.status())</span>
+<span class="sd">        print(iris.max_aperture)</span>
+<span class="sd">        print(iris.min_aperture)</span>
+<span class="sd">        iris.home()</span>
+<span class="sd">        iris.goto(5)</span>
+<span class="sd">        iris.moverel(-0.5)</span>
+<span class="sd">        print(iris.position)</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sn</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :type sn: int or str</span>
+<span class="sd">        :param sn: serial number (of interface board, not iris)</span>
+
+<span class="sd">        :raises Exception: if fails to connect</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serial_number</span> <span class="o">=</span> <span class="n">sn</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serial number&quot;&quot;&quot;</span>
+
+        <span class="n">devices</span> <span class="o">=</span> <span class="n">list_devices</span><span class="p">()</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;serial_number&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">sn</span><span class="p">):</span>
+                <span class="n">dev</span> <span class="o">=</span> <span class="n">d</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">dev</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="s1">&#39;Could not locate ELL15 device with serial number &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sn</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+
+        <span class="n">port_name</span> <span class="o">=</span> <span class="n">dev</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span> <span class="o">=</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="n">port_name</span><span class="p">,</span>
+                                   <span class="n">baudrate</span><span class="o">=</span><span class="mi">9600</span><span class="p">,</span>
+                                   <span class="n">parity</span><span class="o">=</span><span class="n">serial</span><span class="o">.</span><span class="n">PARITY_NONE</span><span class="p">,</span>
+                                   <span class="n">stopbits</span><span class="o">=</span><span class="n">serial</span><span class="o">.</span><span class="n">STOPBITS_ONE</span><span class="p">,</span>
+                                   <span class="n">bytesize</span><span class="o">=</span><span class="n">serial</span><span class="o">.</span><span class="n">EIGHTBITS</span><span class="p">,</span>
+                                   <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+                                   <span class="n">write_timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">reset_output_buffer</span><span class="p">()</span>
+
+        <span class="n">inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pulse_per_mm</span> <span class="o">=</span> <span class="n">inf</span><span class="p">[</span><span class="s1">&#39;pulse&#39;</span><span class="p">]</span> <span class="c1"># encoder pulses per millimeter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_pulse</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1"># this is not obtainable using info(), so we use the ELL15 value given by thorlabs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_pulse</span> <span class="o">=</span> <span class="n">inf</span><span class="p">[</span><span class="s1">&#39;travel&#39;</span><span class="p">]</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_pulse</span>
+
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Closed iris serial port&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Whether the device is connected</span>
+<span class="sd">        </span>
+<span class="sd">        Tries to call :meth:`.ELL15.status()` and returns True or False based on whether it succeeds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s1">&#39;ELL15.is_connected() encountered the following exception:&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+
+    <span class="k">def</span> <span class="nf">_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s1">&#39;ascii&#39;</span><span class="p">))</span>
+
+    <span class="c1"># read until \r\n and return what was read</span>
+    <span class="k">def</span> <span class="nf">_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+        <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">timeout</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">inWaiting</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+                <span class="n">resp</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="c1"># end of message &#39;\r\n&#39;</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">resp</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">resp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">+=</span> <span class="mf">0.01</span>
+
+        <span class="c1"># timeout</span>
+        <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Timeout while waiting for response from ELL15 </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">serial_number</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HardwareException</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial_number</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; _read()&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="c1"># returns a dictionary containing info</span>
+<div class="viewcode-block" id="ELL15.info"><a class="viewcode-back" href="../../../_autosummary/control.hardware.iris.ELL15.html#control.hardware.iris.ELL15.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get info about the device</span>
+
+<span class="sd">        Includes:</span>
+
+<span class="sd">        - Default address (see manual)</span>
+<span class="sd">        - ELL model number</span>
+<span class="sd">        - Serial number</span>
+<span class="sd">        - Year of manufacture</span>
+<span class="sd">        - Firmware release</span>
+<span class="sd">        - Hardware release (see manual)</span>
+<span class="sd">        - Travel (mm)</span>
+<span class="sd">        - Encoder pulses per position</span>
+
+<span class="sd">        :param addr: address</span>
+<span class="sd">        :returns: a ``str -&gt; Any`` dictionary containing device information</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">puts</span><span class="p">(</span><span class="s1">&#39;Asking iris for info...&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;in&#39;</span><span class="p">)</span> <span class="c1"># e.x. &#39;0in&#39;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">()</span>
+
+        <span class="n">address</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">16</span><span class="p">)</span>
+        <span class="k">assert</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;IN&#39;</span><span class="p">)</span>
+        <span class="n">ell_nbr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">serial_nbr</span> <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="mi">13</span><span class="p">:</span><span class="mi">17</span><span class="p">]</span>
+        <span class="n">firm</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">17</span><span class="p">:</span><span class="mi">19</span><span class="p">])</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">19</span><span class="p">:</span><span class="mi">21</span><span class="p">],</span><span class="mi">16</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">&gt;=</span> <span class="mb">0b10000000</span><span class="p">:</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;imperial&#39;</span>
+            <span class="n">temp</span> <span class="o">-=</span> <span class="mb">0b10000000</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;metric&#39;</span>
+        <span class="n">hard</span> <span class="o">=</span> <span class="n">temp</span>
+
+        <span class="n">travel</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">21</span><span class="p">:</span><span class="mi">25</span><span class="p">],</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">pulse</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">25</span><span class="p">:</span><span class="mi">33</span><span class="p">],</span><span class="mi">16</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;address&#39;</span><span class="p">:</span><span class="n">address</span><span class="p">,</span> <span class="s1">&#39;ell_number&#39;</span><span class="p">:</span><span class="n">ell_nbr</span><span class="p">,</span> <span class="s1">&#39;serial_number&#39;</span><span class="p">:</span><span class="n">serial_nbr</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">:</span><span class="n">year</span><span class="p">,</span> <span class="s1">&#39;firmware&#39;</span><span class="p">:</span><span class="n">firm</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span><span class="n">unit</span><span class="p">,</span> <span class="s1">&#39;hardware&#39;</span><span class="p">:</span><span class="n">hard</span><span class="p">,</span> <span class="s1">&#39;travel&#39;</span><span class="p">:</span><span class="n">travel</span><span class="p">,</span> <span class="s1">&#39;pulse&#39;</span><span class="p">:</span><span class="n">pulse</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="ELL15.status"><a class="viewcode-back" href="../../../_autosummary/control.hardware.iris.ELL15.html#control.hardware.iris.ELL15.status">[docs]</a>    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get status of device</span>
+
+<span class="sd">        Possible status strings are:</span>
+
+<span class="sd">        - OK</span>
+<span class="sd">        - Communication time out</span>
+<span class="sd">        - Mechanical time out</span>
+<span class="sd">        - Command error or not supported</span>
+<span class="sd">        - Value out of range</span>
+<span class="sd">        - Module isolated</span>
+<span class="sd">        - Module out of isolation</span>
+<span class="sd">        - Initializing error</span>
+<span class="sd">        - Thermal error</span>
+<span class="sd">        - Busy</span>
+<span class="sd">        - Sensor error</span>
+<span class="sd">        - Motor error</span>
+<span class="sd">        - Out of Range</span>
+<span class="sd">        - Over Current error</span>
+<span class="sd">        - Unknown error</span>
+
+<span class="sd">        See the manual for more details</span>
+<span class="sd">        </span>
+<span class="sd">        :param addr: address</span>
+<span class="sd">        :returns: status string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">puts</span><span class="p">(</span><span class="s1">&#39;Asking iris for status...&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;gs&#39;</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;GS&#39;</span>
+
+        <span class="k">return</span> <span class="n">STATUS_STR</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span><span class="mi">16</span><span class="p">)]</span></div>
+
+    <span class="c1"># many commands have the motor either return GS or PO</span>
+    <span class="c1"># this function processes that output</span>
+    <span class="k">def</span> <span class="nf">_process_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">resp</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;GS&#39;</span><span class="p">:</span>
+            <span class="n">stat</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span><span class="mi">16</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="s1">&#39;Status: &#39;</span> <span class="o">+</span> <span class="n">STATUS_STR</span><span class="p">[</span><span class="n">stat</span><span class="p">])</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;PO&#39;</span>
+            <span class="n">pulse</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">11</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pulse</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse_per_mm</span>
+
+<div class="viewcode-block" id="ELL15.home"><a class="viewcode-back" href="../../../_autosummary/control.hardware.iris.ELL15.html#control.hardware.iris.ELL15.home">[docs]</a>    <span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">blocking</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Home the iris</span>
+
+<span class="sd">        For the ELL15, home is the maximum aperture by default.</span>
+
+<span class="sd">        :param addr: address</span>
+<span class="sd">        :param d: homing direction (for rotary stages only)</span>
+<span class="sd">        :param blocking: if True, wait for homing to finish stopping before continuing execution</span>
+<span class="sd">        :returns: boolean indicating success</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;ho&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">blocking</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">()</span>
+            <span class="c1"># return self._process_pos(resp)</span>
+            <span class="n">puts</span><span class="p">(</span><span class="s1">&#39;Homed iris&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+    <span class="c1"># takes in aperture diameter in millimeters</span>
+<div class="viewcode-block" id="ELL15.goto"><a class="viewcode-back" href="../../../_autosummary/control.hardware.iris.ELL15.html#control.hardware.iris.ELL15.goto">[docs]</a>    <span class="k">def</span> <span class="nf">goto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mm</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">blocking</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Go to a certain position</span>
+
+<span class="sd">        The given position must be in the interval ``[ELL15.min_aperture, ELL15.max_aperture]``.</span>
+
+<span class="sd">        :param mm: target position in millimeters</span>
+<span class="sd">        :param addr: address</span>
+<span class="sd">        :param blocking: if True, wait for move to finish stopping before continuing execution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print(&#39;setting iris to &#39; + str(mm))</span>
+        <span class="n">pulses</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mm</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulse_per_mm</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">pulses</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_pulse</span> <span class="ow">or</span> <span class="n">pulses</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_pulse</span><span class="p">:</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ELL15.goto(): Out of bounds (</span><span class="si">{</span><span class="n">mm</span><span class="si">}</span><span class="s1">mm)&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="c1"># 8 character long hex string (no leading 0x)</span>
+        <span class="n">hexstr</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">pulses</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;ma&#39;</span> <span class="o">+</span> <span class="n">hexstr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">blocking</span><span class="p">:</span>
+            <span class="c1"># response is either a PO (position) or GS (get status)</span>
+            <span class="c1"># return -1 if there&#39;s a problem,</span>
+            <span class="c1"># otherwise return current position in encoder pulses</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">()</span>
+            <span class="c1"># return self._process_pos(resp)</span>
+            <span class="n">puts</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Moved iris to </span><span class="si">{</span><span class="n">mm</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+    <span class="c1"># move relative</span>
+    <span class="c1"># TODO: verify, positive = grow, negative = shrink</span>
+    <span class="c1"># although this is move relative we simply calculate the destination</span>
+    <span class="c1"># and then move there absolutely. not sure if the alternative is better</span>
+<div class="viewcode-block" id="ELL15.moverel"><a class="viewcode-back" href="../../../_autosummary/control.hardware.iris.ELL15.html#control.hardware.iris.ELL15.moverel">[docs]</a>    <span class="k">def</span> <span class="nf">moverel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mm</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">blocking</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Move relatively by a certain amount</span>
+<span class="sd">        </span>
+<span class="sd">        The given amount must not move the iris out of the interval ``[ELL.min_aperture, ELL15.max_aperture]``.</span>
+<span class="sd">        </span>
+<span class="sd">        :param mm: amount to move in millimeters. Positive means increase aperture, negative means decrease aperture</span>
+<span class="sd">        :param addr: address</span>
+<span class="sd">        :param blocking: if True, wait for move to finish stopping before continuing execution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># destination, in millimeters</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="n">mm</span>
+        <span class="n">pulses</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dest</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulse_per_mm</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pulses</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_pulse</span> <span class="ow">or</span> <span class="n">pulses</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_pulse</span><span class="p">:</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ELL15.moverel(): Out of bounds (</span><span class="si">{</span><span class="n">dest</span><span class="si">}</span><span class="s1">mm)&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">hexstr</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">pulses</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;ma&#39;</span> <span class="o">+</span> <span class="n">hexstr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">blocking</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">()</span>
+            <span class="c1"># return self._process_pos(resp)</span>
+            <span class="n">puts</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Moved iris to </span><span class="si">{</span><span class="n">dest</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Current position</span>
+<span class="sd">        </span>
+<span class="sd">        :param addr: address</span>
+<span class="sd">        :returns: current aperture size in millimeters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="o">.</span><span class="n">reset_input_buffer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;gp&#39;</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;PO&#39;</span>
+
+        <span class="n">pulse</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">11</span><span class="p">],</span><span class="mi">16</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pulse</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_pulse_per_mm</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_aperture</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Maximum aperture size</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: maximum aperture size in millimeters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_pulse</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulse_per_mm</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">min_aperture</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Minimum aperture size</span>
+
+<span class="sd">        :returns: minimum aperture size in millimeters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_pulse</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulse_per_mm</span></div>
+
+    <span class="c1"># TODO handle non-0 address</span>
+
+    <span class="c1"># not implemented:</span>
+    <span class="c1"># &#39;us&#39; (save user data)</span>
+    <span class="c1"># &#39;ca&#39; (change address)</span>
+    <span class="c1"># &#39;i1&#39;, &#39;i2&#39; (motor 1 info)</span>
+    <span class="c1"># &#39;f1&#39;, &#39;f2&#39; (forward parameter 1)</span>
+    <span class="c1"># &#39;b1&#39;, &#39;b2&#39; (backward parameter 1)</span>
+    <span class="c1"># &#39;s1&#39;, &#39;s2&#39; (frequency search 1)</span>
+    <span class="c1"># &#39;c1&#39;, &#39;c2&#39; (scan current curve 1)</span>
+    <span class="c1"># &#39;is&#39; (isolate)</span>
+    <span class="c1"># &#39;ah&#39; (autohoming)</span>
+    <span class="c1"># &#39;mr&#39; (move relative)</span>
+    <span class="c1"># &#39;go&#39;, &#39;so&#39; (get/set home offset)</span>
+    <span class="c1"># &#39;gj&#39;, &#39;sj&#39; (get/set jog step size)</span>
+    <span class="c1"># &#39;fw&#39;, &#39;bw&#39; (forward/backward)</span>
+
+<span class="c1">#sn = &#39;DK0BJ258&#39;</span>
+<span class="c1">#iris = ELL15(sn)</span>
+<span class="c1"># port = iris._port</span>
+
+<span class="c1"># computer does not terminate with \r\n, simply sends the 3 byte command</span>
+<span class="c1"># port.write(bytearray(&#39;0in&#39;, &#39;ascii&#39;))</span>
+<span class="c1"># time.sleep(1)</span>
+<span class="c1"># l = port.inWaiting()</span>
+<span class="c1"># print(l)</span>
+<span class="c1"># s = port.read(l)</span>
+<span class="c1"># print(s)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

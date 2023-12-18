@@ -1,0 +1,35 @@
+control.gui.controls
+====================
+
+.. automodule:: control.gui.controls
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      makeDDR25Controls
+      makeELL15Controls
+      makeGAEA2Controls
+      makeMG90SControls
+      makeSC10Controls
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

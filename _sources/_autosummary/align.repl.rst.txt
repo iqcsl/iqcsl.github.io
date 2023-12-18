@@ -1,0 +1,6 @@
+align.repl
+==========
+
+.. currentmodule:: align
+
+.. autofunction:: repl

@@ -1,0 +1,6 @@
+align.fit\_cos
+==============
+
+.. currentmodule:: align
+
+.. autofunction:: fit_cos

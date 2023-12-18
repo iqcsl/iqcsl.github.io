@@ -1,0 +1,33 @@
+control.gui.devices
+===================
+
+.. automodule:: control.gui.devices
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      DeviceWidget
+      DevicesFrame
+   
+   
+
+   
+   
+   
+
+
+

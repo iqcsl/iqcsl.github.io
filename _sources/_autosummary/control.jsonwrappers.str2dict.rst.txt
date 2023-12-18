@@ -1,0 +1,6 @@
+control.jsonwrappers.str2dict
+=============================
+
+.. currentmodule:: control.jsonwrappers
+
+.. autofunction:: str2dict

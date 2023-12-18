@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.gui.famil &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.gui.famil</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.gui.famil</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
+
+<span class="kn">from</span> <span class="nn">control.tkwrappers</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.settings</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hwpstair.basic</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hwpstair.complicated</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.gui.experiment</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.myio</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hwpstair.interface</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hwpstair.familiarize</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># hacky but it works</span>
+<span class="c1"># TODO fix this</span>
+<span class="c1"># class FamilExp(HWPComplicated):</span>
+<span class="c1">#     def __init__(self, settings):</span>
+<span class="c1">#         raise Exception(&#39;under renovation&#39;)</span>
+<span class="c1">#         HWPComplicated.__init__(self, settings)</span>
+
+<span class="c1">#         # disable saving</span>
+<span class="c1">#         self.settings[&#39;save?&#39;] = False</span>
+<span class="c1">#         log(self.settings[&#39;save?&#39;])</span>
+
+<span class="c1">#         # modify other settings</span>
+<span class="c1">#         self.settings[&#39;shutdur&#39;] = 2000 # 2s</span>
+
+<span class="c1">#     def exp(self):</span>
+<span class="c1">#         log(self.settings[&#39;save?&#39;])</span>
+<span class="c1">#         keys = self.get3keys()</span>
+
+<span class="c1">#         cwdir = self.settings[&#39;clockwise_dir&#39;]</span>
+<span class="c1">#         ccwdir = 1 if cwdir == 2 else 2</span>
+<span class="c1">#         dirdict = {&#39;cw&#39;:cwdir, &#39;ccw&#39;:ccwdir}</span>
+
+<span class="c1">#         apmax = self.settings[&#39;aperture_max&#39;]</span>
+<span class="c1">#         yield &#39;do&#39;, f&quot;gdevices[&#39;servo&#39;].goto({apmax})&quot;</span>
+
+<span class="c1">#         correct = yield from self.dotrial(keys, dirdict)</span>
+
+<span class="c1">#         s = &#39;Correct&#39; if correct else  &#39;Incorrect&#39;</span>
+<span class="c1">#         yield &#39;do&#39;, f&#39;say(&quot;{s}&quot;)&#39;</span>
+
+<span class="c1"># wrapper for an ExperimentFrame which just runs a special</span>
+<span class="c1"># familiarization experiment</span>
+<div class="viewcode-block" id="makeFamil"><a class="viewcode-back" href="../../../_autosummary/control.gui.famil.makeFamil.html#control.gui.famil.makeFamil">[docs]</a><span class="k">def</span> <span class="nf">makeFamil</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+    <span class="n">expfr</span> <span class="o">=</span> <span class="n">ExperimentFrame</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">HWPFamiliarize</span><span class="p">,</span> <span class="n">gfr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">expfr</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

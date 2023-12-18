@@ -1,0 +1,6 @@
+control.settings.validate
+=========================
+
+.. currentmodule:: control.settings
+
+.. autofunction:: validate

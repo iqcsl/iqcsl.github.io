@@ -1,0 +1,6 @@
+control.hardware.motors\_linux.initMotor
+========================================
+
+.. currentmodule:: control.hardware.motors_linux
+
+.. autofunction:: initMotor

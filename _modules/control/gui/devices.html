@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.gui.devices &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.gui.devices</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.gui.devices</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
+
+<span class="kn">from</span> <span class="nn">control.tkwrappers</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.settings</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.motors</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.iris</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.servo</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.hardware.shutter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">control.myio</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">puterr</span> <span class="o">=</span> <span class="nb">print</span>
+    <span class="n">putwarning</span> <span class="o">=</span> <span class="nb">print</span>
+    <span class="n">puts</span> <span class="o">=</span> <span class="nb">print</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="nb">print</span>
+<span class="kn">from</span> <span class="nn">control.devices</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.gui.controls</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">control.gui.settings</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># a frame containing buttons &amp; status indicators for the given device</span>
+<div class="viewcode-block" id="DeviceWidget"><a class="viewcode-back" href="../../../_autosummary/control.gui.devices.DeviceWidget.html#control.gui.devices.DeviceWidget">[docs]</a><span class="k">class</span> <span class="nc">DeviceWidget</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cls</span> <span class="o">=</span> <span class="bp">cls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lname</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fheader</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bpoll</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fheader</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Check connectivity&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">poll</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lpoll</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fheader</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bconnect</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fheader</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Connect&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdisconnect</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fheader</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Disconnect&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fcontrols</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">tkgrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bpoll</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">tkgrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lpoll</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">tkgrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bconnect</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">tkgrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bdisconnect</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">tkpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lname</span><span class="p">)</span>
+        <span class="n">tkpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fheader</span><span class="p">)</span>
+
+    <span class="c1"># puts connection status in poll label</span>
+    <span class="k">def</span> <span class="nf">poll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">gdevices</span> <span class="ow">and</span> <span class="n">gdevices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">gdevices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">is_connected</span><span class="p">:</span>
+                    <span class="n">labelset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lpoll</span><span class="p">,</span> <span class="s1">&#39;Connected&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span> <span class="c1"># if is_connected not defined, print error</span>
+                <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot check connectivity of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="c1">#elif find_device_with_serial(self.ser) != None:</span>
+        <span class="c1">#    labelset(self.lpoll, &#39;Disconnected but visible&#39;, &#39;yellow&#39;)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">labelset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lpoll</span><span class="p">,</span> <span class="s1">&#39;Disconnected&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">)</span>
+
+    <span class="c1"># TODO thread these, maybe</span>
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">CurrentSettings</span><span class="o">.</span><span class="n">getHardwareSettings</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">settings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">gdevices</span> <span class="ow">or</span> <span class="n">gdevices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dev</span> <span class="o">=</span> <span class="n">tryConnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="n">settings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">dev</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># destroy controls before changing device so that nothing sketchy happens</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">destroyControls</span><span class="p">()</span>
+                <span class="n">gdevices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dev</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">makeControls</span><span class="p">()</span>
+                <span class="n">puts</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">putwarning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> already connected&#39;</span><span class="p">)</span>
+
+        <span class="c1">#self.poll()</span>
+
+    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># not sure if this works</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">gdevices</span> <span class="ow">and</span> <span class="n">gdevices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># destroy controls before erasing device so that nothing sketchy happens</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">destroyControls</span><span class="p">()</span>
+            <span class="k">del</span> <span class="n">gdevices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">puts</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;disconnected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">putwarning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> already disconnected&#39;</span><span class="p">)</span>
+
+        <span class="c1">#self.poll()</span>
+
+    <span class="n">class2controls</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">ELL15</span><span class="p">:</span> <span class="n">makeELL15Controls</span><span class="p">,</span>
+            <span class="n">DDR25</span><span class="p">:</span> <span class="n">makeDDR25Controls</span><span class="p">,</span>
+            <span class="n">MG90S</span><span class="p">:</span> <span class="n">makeMG90SControls</span><span class="p">,</span>
+            <span class="n">SC10</span><span class="p">:</span> <span class="n">makeSC10Controls</span><span class="p">,</span>
+            <span class="n">GAEA2</span><span class="p">:</span> <span class="n">makeGAEA2Controls</span><span class="p">,</span>
+            <span class="p">}</span>
+
+    <span class="c1"># create a subframe with buttons and stuff for controlling this particular device</span>
+    <span class="k">def</span> <span class="nf">makeControls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cls</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">class2controls</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fcontrols</span> <span class="o">=</span> <span class="n">makeFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+
+            <span class="n">makeControls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class2controls</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="p">]</span>
+            <span class="n">makeControls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fcontrols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="n">tkpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fcontrols</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;makeControls(): Device class </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="si">}</span><span class="s1"> not supported&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">destroyControls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fcontrols</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fcontrols</span><span class="o">.</span><span class="n">pack_forget</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fcontrols</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fcontrols</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DevicesFrame"><a class="viewcode-back" href="../../../_autosummary/control.gui.devices.DevicesFrame.html#control.gui.devices.DevicesFrame">[docs]</a><span class="k">class</span> <span class="nc">DevicesFrame</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">experiment_class</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">experiment_class</span> <span class="o">=</span> <span class="n">experiment_class</span>
+
+
+        <span class="c1"># create the tab</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devframe</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
+        <span class="c1"># add buttons for managing devices in general</span>
+        <span class="n">buttonframe</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devframe</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bconnectall</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Connect all&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">connectall</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdisconnectall</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Disconnect all&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">disconnectall</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">breload</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Reload&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reload</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blist</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">buttonframe</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;List visible&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">list_visible</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">devwidgets</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lvisible</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devframe</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+
+        <span class="n">tkpackleft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bconnectall</span><span class="p">)</span>
+        <span class="n">tkpackleft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bdisconnectall</span><span class="p">)</span>
+        <span class="n">tkpackleft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">breload</span><span class="p">)</span>
+        <span class="n">tkpackleft</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blist</span><span class="p">)</span>
+
+        <span class="c1"># make a frame to put the list of devices with buttons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devlistframe</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devframe</span><span class="p">)</span>
+        <span class="c1">#self.populate(self.devlistframe)</span>
+
+        <span class="n">tkpack</span><span class="p">(</span><span class="n">buttonframe</span><span class="p">)</span>
+        <span class="n">tkpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lvisible</span><span class="p">)</span>
+        <span class="n">tkpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devlistframe</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">list_visible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">vis</span> <span class="o">=</span> <span class="n">list_devices</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">dev</span> <span class="ow">in</span> <span class="n">vis</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dev</span><span class="p">[</span><span class="s1">&#39;manufacturer&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">dev</span><span class="p">[</span><span class="s1">&#39;product&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">dev</span><span class="p">[</span><span class="s1">&#39;serial_number&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">) on </span><span class="si">{</span><span class="n">dev</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">txt</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="n">labelset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lvisible</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">disconnectall</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">dw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devwidgets</span><span class="p">:</span>
+            <span class="n">dw</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">connectall</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">dw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devwidgets</span><span class="p">:</span>
+            <span class="n">dw</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+    <span class="c1"># populate given frame devices list</span>
+    <span class="k">def</span> <span class="nf">populate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devwidgets</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># figure out what devices we are supposed to list</span>
+        <span class="n">devices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_class</span><span class="o">.</span><span class="n">devices</span>
+
+        <span class="c1"># extract the current settings (which contain serial numbers for the devices)</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">CurrentSettings</span><span class="o">.</span><span class="n">getHardwareSettings</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">settings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
+            <span class="n">dframe</span> <span class="o">=</span> <span class="n">makeFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devlistframe</span><span class="p">)</span>
+            <span class="n">devwidget</span> <span class="o">=</span> <span class="n">DeviceWidget</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+            <span class="n">tkpackleft</span><span class="p">(</span><span class="n">dframe</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">devwidgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">devwidget</span><span class="p">)</span>
+
+    <span class="c1"># reload the devices list</span>
+    <span class="k">def</span> <span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># unpack and destroy current devices list frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devlistframe</span><span class="o">.</span><span class="n">pack_forget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devlistframe</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+
+        <span class="c1"># create a new one, populate it, and pack it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devlistframe</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devframe</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">populate</span><span class="p">()</span>
+        <span class="n">tkpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">devlistframe</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

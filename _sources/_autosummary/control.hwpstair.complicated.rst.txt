@@ -1,0 +1,32 @@
+control.hwpstair.complicated
+============================
+
+.. automodule:: control.hwpstair.complicated
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      HWPComplicated
+   
+   
+
+   
+   
+   
+
+
+

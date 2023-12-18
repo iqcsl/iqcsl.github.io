@@ -1,0 +1,6 @@
+control.devices.HardwareException
+=================================
+
+.. currentmodule:: control.devices
+
+.. autoexception:: HardwareException

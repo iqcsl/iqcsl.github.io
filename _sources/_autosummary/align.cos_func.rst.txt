@@ -1,0 +1,6 @@
+align.cos\_func
+===============
+
+.. currentmodule:: align
+
+.. autofunction:: cos_func

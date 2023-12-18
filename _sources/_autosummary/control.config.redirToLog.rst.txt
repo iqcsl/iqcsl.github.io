@@ -1,0 +1,6 @@
+control.config.redirToLog
+=========================
+
+.. currentmodule:: control.config
+
+.. autofunction:: redirToLog

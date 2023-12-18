@@ -1,0 +1,6 @@
+control.decorategraph.hwp\_decorate
+===================================
+
+.. currentmodule:: control.decorategraph
+
+.. autofunction:: hwp_decorate

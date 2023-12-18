@@ -1,0 +1,6 @@
+control.messages.makeMsgTab
+===========================
+
+.. currentmodule:: control.messages
+
+.. autofunction:: makeMsgTab

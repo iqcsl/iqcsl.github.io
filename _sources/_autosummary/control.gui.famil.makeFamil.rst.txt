@@ -1,0 +1,6 @@
+control.gui.famil.makeFamil
+===========================
+
+.. currentmodule:: control.gui.famil
+
+.. autofunction:: makeFamil

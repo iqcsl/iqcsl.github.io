@@ -1,0 +1,6 @@
+control.messages.makeMsgBar
+===========================
+
+.. currentmodule:: control.messages
+
+.. autofunction:: makeMsgBar

@@ -1,0 +1,6 @@
+control.myio.getchar
+====================
+
+.. currentmodule:: control.myio
+
+.. autofunction:: getchar

@@ -1,0 +1,6 @@
+control.myio.putwarning
+=======================
+
+.. currentmodule:: control.myio
+
+.. autofunction:: putwarning

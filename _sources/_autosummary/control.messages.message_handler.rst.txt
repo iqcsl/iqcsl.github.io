@@ -1,0 +1,6 @@
+control.messages.message\_handler
+=================================
+
+.. currentmodule:: control.messages
+
+.. autofunction:: message_handler

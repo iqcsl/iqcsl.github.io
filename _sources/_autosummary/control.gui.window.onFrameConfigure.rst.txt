@@ -1,0 +1,6 @@
+control.gui.window.onFrameConfigure
+===================================
+
+.. currentmodule:: control.gui.window
+
+.. autofunction:: onFrameConfigure

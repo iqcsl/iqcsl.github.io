@@ -1,0 +1,6 @@
+control.experiments.record\_header
+==================================
+
+.. currentmodule:: control.experiments
+
+.. autofunction:: record_header

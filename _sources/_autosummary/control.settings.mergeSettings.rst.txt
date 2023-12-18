@@ -1,0 +1,6 @@
+control.settings.mergeSettings
+==============================
+
+.. currentmodule:: control.settings
+
+.. autofunction:: mergeSettings

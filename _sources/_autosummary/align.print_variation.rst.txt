@@ -1,0 +1,6 @@
+align.print\_variation
+======================
+
+.. currentmodule:: align
+
+.. autofunction:: print_variation

@@ -1,0 +1,6 @@
+control.tkwrappers.makeLabel
+============================
+
+.. currentmodule:: control.tkwrappers
+
+.. autofunction:: makeLabel

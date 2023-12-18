@@ -1,0 +1,40 @@
+﻿control.hardware.motors\_linux
+==============================
+
+.. automodule:: control.hardware.motors_linux
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      initMotor
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      DDR25
+   
+   
+
+   
+   
+   
+
+
+

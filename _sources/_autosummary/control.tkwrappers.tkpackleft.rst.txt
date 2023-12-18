@@ -1,0 +1,6 @@
+control.tkwrappers.tkpackleft
+=============================
+
+.. currentmodule:: control.tkwrappers
+
+.. autofunction:: tkpackleft

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hardware.slm &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.hardware.slm</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.hardware.slm</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Spatial Light Modulator (SLM) module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1"># Import the SLM Display SDK:</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">control.hardware.detect_heds_module_path</span> <span class="k">as</span> <span class="nn">detect_heds_module_path</span>
+    <span class="kn">from</span> <span class="nn">holoeye</span> <span class="kn">import</span> <span class="n">slmdisplaysdk</span>
+    <span class="n">SLM_SUPPORTED</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">SLM_SUPPORTED</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="kn">from</span> <span class="nn">control.hardware.pattern</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="SLMException"><a class="viewcode-back" href="../../../_autosummary/control.hardware.slm.SLMException.html#control.hardware.slm.SLMException">[docs]</a><span class="k">class</span> <span class="nc">SLMException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised by :class:`GAEA2` when something goes wrong&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="GAEA2"><a class="viewcode-back" href="../../../_autosummary/control.hardware.slm.GAEA2.html#control.hardware.slm.GAEA2">[docs]</a><span class="k">class</span> <span class="nc">GAEA2</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    HOLOEYE GAEA-2 spatial light modulator</span>
+
+<span class="sd">    Uses the HOLOEYE SLM software development kit (SDK)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Initializes the SLM library</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slm</span> <span class="o">=</span> <span class="n">slmdisplaysdk</span><span class="o">.</span><span class="n">SLMInstance</span><span class="p">()</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The underlying SLM SDK object&quot;&quot;&quot;</span>
+     
+        <span class="c1"># Check if the library implements the required version</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">slm</span><span class="o">.</span><span class="n">requiresVersion</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">SLMException</span><span class="p">(</span><span class="s1">&#39;ERROR: incompatible SLM library version&#39;</span><span class="p">)</span>
+     
+        <span class="c1"># Detect SLMs and open a window on the selected SLM</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slm</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">error</span> <span class="o">==</span> <span class="n">slmdisplaysdk</span><span class="o">.</span><span class="n">ErrorCode</span><span class="o">.</span><span class="n">NoError</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slm</span><span class="o">.</span><span class="n">errorString</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slm</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The width of the SLM&#39;s display in pixels&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">slm</span><span class="o">.</span><span class="n">width_px</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The height of the SLM&#39;s display in pixels&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">slm</span><span class="o">.</span><span class="n">height_px</span>
+
+    <span class="c1"># mat is a matrix with dimensions matching the SLM&#39;s height and width,</span>
+    <span class="c1"># containing of integers from 0 to 255 inclusive</span>
+<div class="viewcode-block" id="GAEA2.displayMatrix"><a class="viewcode-back" href="../../../_autosummary/control.hardware.slm.GAEA2.html#control.hardware.slm.GAEA2.displayMatrix">[docs]</a>    <span class="k">def</span> <span class="nf">displayMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display an arbitrary image on the SLM</span>
+
+<span class="sd">        :type mat: 2d numpy array with dimensions matching the SLM&#39;s height and width</span>
+<span class="sd">        :param mat: The gray values of each pixel (integers from 0 to 255)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#mat = np.uint8(mat)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">slmdisplaysdk</span><span class="o">.</span><span class="n">createFieldUChar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;starting&#39;</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[:,:]</span> <span class="o">=</span> <span class="n">mat</span>
+        <span class="c1">#assert len(mat) == self.height</span>
+        <span class="c1">#for i in range(self.height):</span>
+        <span class="c1">#    assert len(mat[i]) == self.width</span>
+        <span class="c1">#    for j in range(self.width):</span>
+        <span class="c1">#        data[i][j] = mat[i][j]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;stopping&#39;</span><span class="p">)</span>
+
+        <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slm</span><span class="o">.</span><span class="n">showData</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">error</span> <span class="o">==</span> <span class="n">slmdisplaysdk</span><span class="o">.</span><span class="n">ErrorCode</span><span class="o">.</span><span class="n">NoError</span><span class="p">,</span> <span class="n">slm</span><span class="o">.</span><span class="n">errorString</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
+
+    <span class="c1">#def showCheckerboard(self, sideLen):</span>
+    <span class="c1">#    Z = makeImage(self.width, self.height, 0, 0, lambda x, y: checkerboard(x,y,side=sideLen))</span>
+    <span class="c1">#    self.displayMatrix(Z)</span>
+
+    <span class="c1"># pattern: int int -&gt; [0,255]</span>
+    <span class="c1"># ex checkerboard, vortex, etc.</span>
+<div class="viewcode-block" id="GAEA2.showPattern"><a class="viewcode-back" href="../../../_autosummary/control.hardware.slm.GAEA2.html#control.hardware.slm.GAEA2.showPattern">[docs]</a>    <span class="k">def</span> <span class="nf">showPattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display a pattern on the SLM</span>
+
+<span class="sd">        Every pixel on the image is associated with an (x,y) coordinate.  These</span>
+<span class="sd">        coordinates are passed to the provided function to produce the pattern.</span>
+
+<span class="sd">        For example::</span>
+<span class="sd">        </span>
+<span class="sd">            from control.hardware.slm import GAEA2</span>
+<span class="sd">            from control.hardware.pattern import vortex</span>
+<span class="sd">            </span>
+<span class="sd">            slm = GAEA2()</span>
+<span class="sd">            pat = lambda x, y: vortex(x, y, OAM=5)</span>
+<span class="sd">            slm.showPattern(pat)</span>
+
+<span class="sd">        will display a vortex pattern with OAM 5 on the SLM</span>
+
+<span class="sd">        :type pattern: function consuming 2 ints and producing a gray value (integer from 0 to 255)</span>
+<span class="sd">        :param pattern: the function which produces the pattern</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="n">makeImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+        <span class="c1">#minval = min([min(row) for row in Z])</span>
+        <span class="c1">#maxval = max([max(row) for row in Z])</span>
+        <span class="c1">#print(minval)</span>
+        <span class="c1">#print(maxval)</span>
+        <span class="c1">#mat = discretize(Z, minval, maxval, 0, 255)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">displayMatrix</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GAEA2.showVortex"><a class="viewcode-back" href="../../../_autosummary/control.hardware.slm.GAEA2.html#control.hardware.slm.GAEA2.showVortex">[docs]</a>    <span class="k">def</span> <span class="nf">showVortex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vortexOrder</span><span class="p">,</span> <span class="n">innerRadius</span><span class="p">,</span> <span class="n">centerX</span><span class="p">,</span> <span class="n">centerY</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper function for displaying a vortex phase</span>
+
+<span class="sd">        Uses the SLM SDK&#39;s built-in vortex phase functionality</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slm</span><span class="o">.</span><span class="n">showPhasefunctionVortex</span><span class="p">(</span><span class="n">vortexOrder</span><span class="p">,</span> <span class="n">innerRadius</span><span class="p">,</span> <span class="n">centerX</span><span class="p">,</span> <span class="n">centerY</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">error</span> <span class="o">==</span> <span class="n">slmdisplaysdk</span><span class="o">.</span><span class="n">ErrorCode</span><span class="o">.</span><span class="n">NoError</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slm</span><span class="o">.</span><span class="n">errorString</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

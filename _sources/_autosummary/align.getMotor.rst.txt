@@ -1,0 +1,6 @@
+align.getMotor
+==============
+
+.. currentmodule:: align
+
+.. autofunction:: getMotor

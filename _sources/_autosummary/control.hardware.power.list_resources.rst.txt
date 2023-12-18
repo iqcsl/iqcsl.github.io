@@ -1,0 +1,6 @@
+control.hardware.power.list\_resources
+======================================
+
+.. currentmodule:: control.hardware.power
+
+.. autofunction:: list_resources

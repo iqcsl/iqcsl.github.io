@@ -1,0 +1,6 @@
+control.typechecking.is\_angle
+==============================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: is_angle

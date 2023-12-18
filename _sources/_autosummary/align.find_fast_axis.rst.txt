@@ -1,0 +1,6 @@
+align.find\_fast\_axis
+======================
+
+.. currentmodule:: align
+
+.. autofunction:: find_fast_axis

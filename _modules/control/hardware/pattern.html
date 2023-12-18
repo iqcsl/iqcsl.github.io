@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hardware.pattern &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.hardware.pattern</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.hardware.pattern</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">clr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># A: numpy array of arrays</span>
+<div class="viewcode-block" id="discretize"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.discretize.html#control.hardware.pattern.discretize">[docs]</a><span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">loIn</span><span class="p">,</span> <span class="n">hiIn</span><span class="p">,</span> <span class="n">loOut</span><span class="p">,</span> <span class="n">hiOut</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">loIn</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">hiIn</span><span class="o">-</span><span class="n">loIn</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">hiOut</span><span class="o">-</span><span class="n">loOut</span><span class="p">)</span> <span class="o">+</span> <span class="n">loOut</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">hiOut</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">loOut</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">y</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="n">A</span><span class="p">)</span></div>
+    <span class="c1">#scaled = [[(z - minval) / (maxval-minval) *  for z in L] for L in A]</span>
+
+<span class="c1">#def vortex(x, y, OAM=1):</span>
+<span class="c1">#    return np.cos(OAM*np.arctan2(y,x))</span>
+<div class="viewcode-block" id="vortex"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.vortex.html#control.hardware.pattern.vortex">[docs]</a><span class="k">def</span> <span class="nf">vortex</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">OAM</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">OAM</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="checkerboard"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.checkerboard.html#control.hardware.pattern.checkerboard">[docs]</a><span class="k">def</span> <span class="nf">checkerboard</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">hi</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">side</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">//</span><span class="n">side</span> <span class="o">+</span> <span class="n">y</span><span class="o">//</span><span class="n">side</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">lo</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="n">hi</span><span class="o">*</span><span class="n">p</span></div>
+    <span class="c1">#return p*maxval</span>
+
+<div class="viewcode-block" id="blank"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.blank.html#control.hardware.pattern.blank">[docs]</a><span class="k">def</span> <span class="nf">blank</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">val</span></div>
+<div class="viewcode-block" id="circle"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.circle.html#control.hardware.pattern.circle">[docs]</a><span class="k">def</span> <span class="nf">circle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">radius</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="terrace"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.terrace.html#control.hardware.pattern.terrace">[docs]</a><span class="k">def</span> <span class="nf">terrace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">x</span> <span class="o">%</span> <span class="n">side</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">y</span> <span class="o">%</span> <span class="n">side</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">side</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="k">return</span> <span class="n">c</span> <span class="o">*</span> <span class="p">(</span><span class="mi">256</span><span class="o">/</span><span class="n">side</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="swatches"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.swatches.html#control.hardware.pattern.swatches">[docs]</a><span class="k">def</span> <span class="nf">swatches</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">side</span><span class="p">)</span> <span class="o">*</span> <span class="n">side</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">side</span><span class="p">)</span>
+    <span class="c1">#print(index)</span>
+    <span class="n">maxindex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">side</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">lo</span> <span class="o">+</span> <span class="p">(</span><span class="n">hi</span><span class="o">-</span><span class="n">lo</span><span class="p">)</span><span class="o">*</span><span class="n">index</span><span class="o">/</span><span class="n">maxindex</span></div>
+
+<div class="viewcode-block" id="grating"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.grating.html#control.hardware.pattern.grating">[docs]</a><span class="k">def</span> <span class="nf">grating</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">period</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;WARNING: period (</span><span class="si">{</span><span class="n">period</span><span class="si">}</span><span class="s1">) is not an even number&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">orient</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="s1">&#39;horizontal&#39;</span><span class="p">):</span>
+        <span class="n">parity</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">//</span> <span class="p">(</span><span class="n">period</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span> <span class="o">%</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="n">orient</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;v&#39;</span><span class="p">,</span><span class="s1">&#39;vertical&#39;</span><span class="p">):</span>
+        <span class="n">parity</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">//</span> <span class="p">(</span><span class="n">period</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span> <span class="o">%</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;invalid axis &quot;</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">parity</span><span class="o">+</span><span class="n">y</span><span class="o">-</span><span class="n">y</span><span class="o">+</span><span class="n">x</span><span class="o">-</span><span class="n">x</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span></div>
+
+<span class="c1"># mask is a grid of 1s and 0s</span>
+<span class="c1"># on and off are to be combined according to the mask</span>
+<div class="viewcode-block" id="combine_with_mask"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.combine_with_mask.html#control.hardware.pattern.combine_with_mask">[docs]</a><span class="k">def</span> <span class="nf">combine_with_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">off</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">mask</span><span class="o">*</span><span class="n">on</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">mask</span><span class="p">)</span><span class="o">*</span><span class="n">off</span></div>
+
+
+<div class="viewcode-block" id="make_vortex_with_obstruction"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.make_vortex_with_obstruction.html#control.hardware.pattern.make_vortex_with_obstruction">[docs]</a><span class="k">def</span> <span class="nf">make_vortex_with_obstruction</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">maxval</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">obstr_pattern</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;inner&#39;</span><span class="p">,</span> <span class="s1">&#39;outer&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;inner&#39;</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">makeImage</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">circle</span><span class="p">,</span><span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;outer&#39;</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">makeImage</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">circle</span><span class="p">,</span><span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span>
+
+    <span class="n">vort</span> <span class="o">=</span> <span class="p">(</span><span class="n">makeImage</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">vortex</span><span class="p">,</span> <span class="n">OAM</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">maxval</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">obstr</span> <span class="o">=</span> <span class="n">makeImage</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">obstr_pattern</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="n">combine_with_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">vort</span><span class="p">,</span> <span class="n">obstr</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">v</span></div>
+
+
+<div class="viewcode-block" id="makeImage"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.makeImage.html#control.hardware.pattern.makeImage">[docs]</a><span class="k">def</span> <span class="nf">makeImage</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">lx</span> <span class="o">=</span> <span class="n">cx</span><span class="o">-</span><span class="n">width</span><span class="o">//</span><span class="mi">2</span>
+    <span class="n">ly</span> <span class="o">=</span> <span class="n">cy</span><span class="o">-</span><span class="n">height</span><span class="o">//</span><span class="mi">2</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">lx</span><span class="p">,</span> <span class="n">lx</span><span class="o">+</span><span class="n">width</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ly</span><span class="p">,</span> <span class="n">ly</span><span class="o">+</span><span class="n">height</span><span class="p">)</span>
+
+    <span class="c1"># give any arguments following f to f</span>
+    <span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">Y</span><span class="p">[:,</span><span class="kc">None</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="kc">None</span><span class="p">,:])</span>
+    <span class="k">return</span> <span class="n">Z</span></div>
+
+<div class="viewcode-block" id="draw"><a class="viewcode-back" href="../../../_autosummary/control.hardware.pattern.draw.html#control.hardware.pattern.draw">[docs]</a><span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">Z</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">Y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Z</span><span class="p">))</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">pcolor</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">Z</span><span class="p">,</span><span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

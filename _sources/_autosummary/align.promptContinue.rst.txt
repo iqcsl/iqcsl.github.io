@@ -1,0 +1,6 @@
+align.promptContinue
+====================
+
+.. currentmodule:: align
+
+.. autofunction:: promptContinue

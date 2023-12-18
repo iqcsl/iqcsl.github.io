@@ -1,0 +1,6 @@
+align.get\_min\_intensity\_angle
+================================
+
+.. currentmodule:: align
+
+.. autofunction:: get_min_intensity_angle

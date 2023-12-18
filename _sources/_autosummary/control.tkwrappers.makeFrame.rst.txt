@@ -1,0 +1,6 @@
+control.tkwrappers.makeFrame
+============================
+
+.. currentmodule:: control.tkwrappers
+
+.. autofunction:: makeFrame

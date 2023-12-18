@@ -1,0 +1,6 @@
+control.tkwrappers.makeEntry
+============================
+
+.. currentmodule:: control.tkwrappers
+
+.. autofunction:: makeEntry

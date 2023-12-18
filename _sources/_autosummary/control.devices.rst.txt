@@ -1,0 +1,42 @@
+control.devices
+===============
+
+.. automodule:: control.devices
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      find_device_with_serial
+      list_devices
+      list_devices_linux
+      list_devices_windows
+      tryConnect
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree:
+   
+      HardwareException
+   
+   
+
+
+

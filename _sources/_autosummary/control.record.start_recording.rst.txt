@@ -1,0 +1,6 @@
+control.record.start\_recording
+===============================
+
+.. currentmodule:: control.record
+
+.. autofunction:: start_recording

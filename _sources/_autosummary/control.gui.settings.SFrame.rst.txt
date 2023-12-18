@@ -1,0 +1,32 @@
+control.gui.settings.SFrame
+===========================
+
+.. currentmodule:: control.gui.settings
+
+.. autoclass:: SFrame
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~SFrame.getSettings
+      ~SFrame.loadDialog
+      ~SFrame.loadFilename
+      ~SFrame.loadSettings
+      ~SFrame.rememberCurrent
+      ~SFrame.saveAs
+      ~SFrame.saveDialog
+      ~SFrame.tryGetConverted
+   
+   
+
+   
+   
+   

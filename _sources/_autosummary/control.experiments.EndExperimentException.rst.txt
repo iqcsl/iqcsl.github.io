@@ -1,0 +1,6 @@
+control.experiments.EndExperimentException
+==========================================
+
+.. currentmodule:: control.experiments
+
+.. autoexception:: EndExperimentException

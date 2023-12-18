@@ -1,0 +1,6 @@
+align.print\_devices
+====================
+
+.. currentmodule:: align
+
+.. autofunction:: print_devices

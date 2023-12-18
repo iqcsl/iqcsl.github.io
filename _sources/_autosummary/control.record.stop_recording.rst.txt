@@ -1,0 +1,6 @@
+control.record.stop\_recording
+==============================
+
+.. currentmodule:: control.record
+
+.. autofunction:: stop_recording

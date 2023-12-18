@@ -1,0 +1,6 @@
+control.record.record\_line
+===========================
+
+.. currentmodule:: control.record
+
+.. autofunction:: record_line

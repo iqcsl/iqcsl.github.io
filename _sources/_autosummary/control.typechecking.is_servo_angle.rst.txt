@@ -1,0 +1,6 @@
+control.typechecking.is\_servo\_angle
+=====================================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: is_servo_angle

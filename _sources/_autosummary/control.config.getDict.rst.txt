@@ -1,0 +1,6 @@
+control.config.getDict
+======================
+
+.. currentmodule:: control.config
+
+.. autofunction:: getDict

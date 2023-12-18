@@ -1,0 +1,6 @@
+control.tkwrappers.labelappend
+==============================
+
+.. currentmodule:: control.tkwrappers
+
+.. autofunction:: labelappend

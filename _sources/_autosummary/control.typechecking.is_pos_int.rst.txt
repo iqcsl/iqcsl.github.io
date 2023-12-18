@@ -1,0 +1,6 @@
+control.typechecking.is\_pos\_int
+=================================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: is_pos_int

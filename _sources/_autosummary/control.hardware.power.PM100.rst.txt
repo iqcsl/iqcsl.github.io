@@ -1,0 +1,38 @@
+control.hardware.power.PM100
+============================
+
+.. currentmodule:: control.hardware.power
+
+.. autoclass:: PM100
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~PM100.measure
+      ~PM100.measure_builtin
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PM100.auto
+      ~PM100.max_upper
+      ~PM100.max_wavelength
+      ~PM100.min_upper
+      ~PM100.min_wavelength
+      ~PM100.upper
+      ~PM100.wavelength
+   
+   

@@ -1,0 +1,6 @@
+control.hardware.pattern.swatches
+=================================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: swatches

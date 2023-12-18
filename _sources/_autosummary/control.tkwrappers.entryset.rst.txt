@@ -1,0 +1,6 @@
+control.tkwrappers.entryset
+===========================
+
+.. currentmodule:: control.tkwrappers
+
+.. autofunction:: entryset

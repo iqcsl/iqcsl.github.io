@@ -1,0 +1,6 @@
+align.printProgressBar
+======================
+
+.. currentmodule:: align
+
+.. autofunction:: printProgressBar

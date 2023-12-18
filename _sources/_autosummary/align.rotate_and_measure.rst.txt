@@ -1,0 +1,6 @@
+align.rotate\_and\_measure
+==========================
+
+.. currentmodule:: align
+
+.. autofunction:: rotate_and_measure

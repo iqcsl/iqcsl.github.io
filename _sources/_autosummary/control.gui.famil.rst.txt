@@ -1,0 +1,31 @@
+control.gui.famil
+=================
+
+.. automodule:: control.gui.famil
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      makeFamil
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

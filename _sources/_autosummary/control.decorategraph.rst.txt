@@ -1,0 +1,38 @@
+control.decorategraph
+=====================
+
+.. automodule:: control.decorategraph
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      hwp_decorate
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :toctree:
+   
+      BadHeaderException
+   
+   
+
+
+

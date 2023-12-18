@@ -1,0 +1,35 @@
+control.gui.settings.CurrentSettings
+====================================
+
+.. currentmodule:: control.gui.settings
+
+.. autoclass:: CurrentSettings
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~CurrentSettings.getExperimentSettings
+      ~CurrentSettings.getHardwareSettings
+      ~CurrentSettings.setExperimentSettings
+      ~CurrentSettings.setHardwareSettings
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CurrentSettings.exp_sfr
+      ~CurrentSettings.hw_sfr
+   
+   

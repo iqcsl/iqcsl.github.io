@@ -1,0 +1,6 @@
+control.hardware.pattern.circle
+===============================
+
+.. currentmodule:: control.hardware.pattern
+
+.. autofunction:: circle

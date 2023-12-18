@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.typechecking &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.typechecking</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.typechecking</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">ast</span>
+
+<div class="viewcode-block" id="is_alphachar"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_alphachar.html#control.typechecking.is_alphachar">[docs]</a><span class="k">def</span> <span class="nf">is_alphachar</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">s</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()</span></div>
+
+<span class="c1"># is existing path to dircetory</span>
+<div class="viewcode-block" id="is_dirpath"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_dirpath.html#control.typechecking.is_dirpath">[docs]</a><span class="k">def</span> <span class="nf">is_dirpath</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">s</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="is_filepath"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_filepath.html#control.typechecking.is_filepath">[docs]</a><span class="k">def</span> <span class="nf">is_filepath</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">s</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="is_list_or_tuple"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_list_or_tuple.html#control.typechecking.is_list_or_tuple">[docs]</a><span class="k">def</span> <span class="nf">is_list_or_tuple</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<span class="c1">#def is_list_of_numbers(s):</span>
+<span class="c1">#    return all([is_number(x) for x in s])</span>
+
+<span class="c1"># the physical pin numbers for the GPIO pins on the raspberry pi</span>
+<span class="c1"># not sure if others are also fine, so I&#39;m not including them</span>
+<span class="n">GPIO_PINS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">37</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">18</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">36</span><span class="p">)</span>
+<div class="viewcode-block" id="is_GPIO_pin"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_GPIO_pin.html#control.typechecking.is_GPIO_pin">[docs]</a><span class="k">def</span> <span class="nf">is_GPIO_pin</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">is_int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="n">GPIO_PINS</span></div>
+
+<div class="viewcode-block" id="is_number"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_number.html#control.typechecking.is_number">[docs]</a><span class="k">def</span> <span class="nf">is_number</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="is_int"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_int.html#control.typechecking.is_int">[docs]</a><span class="k">def</span> <span class="nf">is_int</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="is_pos_int"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_pos_int.html#control.typechecking.is_pos_int">[docs]</a><span class="k">def</span> <span class="nf">is_pos_int</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">is_int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="is_pos_number"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_pos_number.html#control.typechecking.is_pos_number">[docs]</a><span class="k">def</span> <span class="nf">is_pos_number</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">is_number</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="is_nonneg_int"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_nonneg_int.html#control.typechecking.is_nonneg_int">[docs]</a><span class="k">def</span> <span class="nf">is_nonneg_int</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">is_int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="is_nonneg_number"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_nonneg_number.html#control.typechecking.is_nonneg_number">[docs]</a><span class="k">def</span> <span class="nf">is_nonneg_number</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">is_number</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span></div>
+
+<span class="c1"># [-360,360]</span>
+<div class="viewcode-block" id="is_angle"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_angle.html#control.typechecking.is_angle">[docs]</a><span class="k">def</span> <span class="nf">is_angle</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">is_number</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">360</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">360</span></div>
+
+<span class="c1"># [0,180]</span>
+<div class="viewcode-block" id="is_servo_angle"><a class="viewcode-back" href="../../_autosummary/control.typechecking.is_servo_angle.html#control.typechecking.is_servo_angle">[docs]</a><span class="k">def</span> <span class="nf">is_servo_angle</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">is_number</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">180</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span></div>
+
+<span class="c1"># DEPRECATED</span>
+<span class="c1"># takes in:</span>
+<span class="c1"># - s: string</span>
+<span class="c1"># - f: string -&gt; boolean</span>
+<span class="c1"># - err: string</span>
+<span class="c1"># notifies if input not valid, returns True or False accordingly</span>
+<div class="viewcode-block" id="validate"><a class="viewcode-back" href="../../_autosummary/control.typechecking.validate.html#control.typechecking.validate">[docs]</a><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">err</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Deprecated&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">notify</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+<span class="c1"># DEPRECATED</span>
+<span class="c1"># passed in 1 motor and 3 strings</span>
+<span class="c1"># all 3 strings must be numbers</span>
+<span class="c1"># minvel must be non-negative</span>
+<span class="c1"># accel and maxvel must be positive and within hardware-defined limits</span>
+<div class="viewcode-block" id="validateVelparams"><a class="viewcode-back" href="../../_autosummary/control.typechecking.validateVelparams.html#control.typechecking.validateVelparams">[docs]</a><span class="k">def</span> <span class="nf">validateVelparams</span><span class="p">(</span><span class="n">mot</span><span class="p">,</span> <span class="n">minvel</span><span class="p">,</span> <span class="n">accel</span><span class="p">,</span> <span class="n">maxvel</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Deprecated&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="n">minvel</span><span class="p">,</span><span class="n">accel</span><span class="p">,</span><span class="n">maxvel</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_number</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1"> is not a number&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">minvel</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">minvel</span><span class="p">)</span>
+    <span class="n">accel</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">accel</span><span class="p">)</span>
+    <span class="n">maxvel</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">maxvel</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">minvel</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">puterr</span><span class="p">(</span><span class="s1">&#39;Minimum velocity must be non-negative&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">accel</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">puterr</span><span class="p">(</span><span class="s1">&#39;Acceleration must be positive&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">maxvel</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">puterr</span><span class="p">(</span><span class="s1">&#39;Maximum velocity must be positive&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1">#limits = mot.get_velocity_parameter_limits()</span>
+    <span class="c1">#if accel &gt; limits[0]:</span>
+    <span class="c1">#    message(&#39;Maximum allowed acceleration is &#39; + str(limits[0]), True)</span>
+    <span class="c1">#    return False</span>
+    <span class="c1">#if maxvel &gt; limits[1]:</span>
+    <span class="c1">#    message(&#39;Maximum allowed velocity is &#39; + str(limits[1]), True)</span>
+    <span class="c1">#    return False</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+<span class="c1">#def validatePosInt(s):</span>
+<span class="c1">#    if not is_int(s):</span>
+<span class="c1">#        #message(&quot;&#39;&quot; + s + &#39;\&#39; is not an integer&#39;, True)</span>
+<span class="c1">#        return False</span>
+<span class="c1">#    elif int(s) &lt;= 0:</span>
+<span class="c1">#        #message(s + &#39; is not positive&#39;, True)</span>
+<span class="c1">#        return False</span>
+<span class="c1">#    else:</span>
+<span class="c1">#        return True</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">## takes in a string, shows error dialog if not number</span>
+<span class="c1">## returns True if number, False otherwise</span>
+<span class="c1">#def validateNumber(s):</span>
+<span class="c1">#    if is_number(s):</span>
+<span class="c1">#        return True</span>
+<span class="c1">#    else:</span>
+<span class="c1">#        #message(&quot;&#39;&quot; + s + &#39;\&#39; is not a number&#39;, True)</span>
+<span class="c1">#        return False</span>
+<span class="c1">#</span>
+<span class="c1"># takes in a number, shows error dialog if negative</span>
+<span class="c1"># returns True of non-negative, False otherwise</span>
+<span class="c1">#def validateNonNeg(n):</span>
+<span class="c1">#    if n &gt;= 0:</span>
+<span class="c1">#        return True</span>
+<span class="c1">#    else:</span>
+<span class="c1">#        #message(str(n) + &#39; is not 0 or positive&#39;, True)</span>
+<span class="c1">#        return False</span>
+<span class="c1">#</span>
+<span class="c1">#def validateParamsPos(n):</span>
+<span class="c1">#    if n &gt; 0:</span>
+<span class="c1">#        return True</span>
+<span class="c1">#    else:</span>
+<span class="c1">#        #message(str(n) + &#39; is not valid acceleration or maximum velocity&#39;, True)</span>
+<span class="c1">#        return False</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

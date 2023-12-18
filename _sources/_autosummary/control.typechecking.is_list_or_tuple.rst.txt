@@ -1,0 +1,6 @@
+control.typechecking.is\_list\_or\_tuple
+========================================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: is_list_or_tuple

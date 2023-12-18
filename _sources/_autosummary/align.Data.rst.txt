@@ -1,0 +1,26 @@
+align.Data
+==========
+
+.. currentmodule:: align
+
+.. autoclass:: Data
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~Data.graph
+      ~Data.print
+   
+   
+
+   
+   
+   
