@@ -1,4 +1,4 @@
-control.typechecking
+﻿control.typechecking
 ====================
 
 .. automodule:: control.typechecking
@@ -27,6 +27,7 @@ control.typechecking
       is_number
       is_pos_int
       is_pos_number
+      is_print
       is_servo_angle
       validate
       validateVelparams

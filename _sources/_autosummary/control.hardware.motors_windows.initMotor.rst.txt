@@ -1,0 +1,6 @@
+control.hardware.motors\_windows.initMotor
+==========================================
+
+.. currentmodule:: control.hardware.motors_windows
+
+.. autofunction:: initMotor

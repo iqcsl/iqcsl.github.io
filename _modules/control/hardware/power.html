@@ -79,7 +79,8 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pyvisa</span> <span class="k">as</span> <span class="nn">visa</span>
-<span class="kn">from</span> <span class="nn">ThorlabsPM100</span> <span class="kn">import</span> <span class="n">ThorlabsPM100</span>
+<span class="c1">#from ThorlabsPM100 import ThorlabsPM100 as TPM100</span>
+<span class="kn">from</span> <span class="nn">ThorlabsPM100.ThorlabsPM100</span> <span class="kn">import</span> <span class="n">ThorlabsPM100</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
@@ -104,7 +105,7 @@
 
 <span class="sd">    Example::</span>
 
-<span class="sd">        from control.hardware.power import PM100</span>
+<span class="sd">        from control.hardware.power import PM100, list_resources</span>
 <span class="sd">        </span>
 <span class="sd">        print(list_resources())</span>
 <span class="sd">        pm = PM100() # connect to first visible resource by default</span>
@@ -153,6 +154,11 @@
     <span class="c1"># read and write</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">upper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Read-and-write) Upper power limit (W)</span>
+<span class="sd">        </span>
+<span class="sd">        When the power measured by the power meter goes above this value, methods such as ``PM100.measure_builtin``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pm</span><span class="o">.</span><span class="n">sense</span><span class="o">.</span><span class="n">power</span><span class="o">.</span><span class="n">dc</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">upper</span>
 
     <span class="nd">@upper</span><span class="o">.</span><span class="n">setter</span>

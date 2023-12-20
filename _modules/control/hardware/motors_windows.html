@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>control.hardware.motors_windows &mdash; Control v2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=84f4f85f"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Control
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/control.html">control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/structuredlight.html">structuredlight</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/align.html">align</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Control</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">control.hardware.motors_windows</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for control.hardware.motors_windows</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Winows motor module</span>
+
+<span class="sd">Should not be directly imported for portability</span>
+
+<span class="sd">Uses `pyLabLib_en &lt;https://github.com/iqcsl/pyLabLib_en&gt;`_, a fork of `pyLabLib &lt;https://github.com/AlexShkarin/pyLabLib&gt;`_</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="kn">from</span> <span class="nn">control.devices</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">control.myio</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">puterr</span> <span class="o">=</span> <span class="nb">print</span>
+    <span class="n">putwarning</span> <span class="o">=</span> <span class="nb">print</span>
+    <span class="n">puts</span> <span class="o">=</span> <span class="nb">print</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="nb">print</span>
+
+<span class="kn">from</span> <span class="nn">pyLabLib_en.pylablib.devices.Thorlabs</span> <span class="kn">import</span> <span class="n">kinesis</span> <span class="k">as</span> <span class="n">kin</span>
+<span class="kn">from</span> <span class="nn">pyLabLib_en.pylablib.devices.Thorlabs.base</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># https://pylablib.readthedocs.io/en/stable/.apidoc/pylablib.devices.Thorlabs.html#module-pylablib.devices.Thorlabs.kinesis</span>
+
+<div class="viewcode-block" id="initMotor"><a class="viewcode-back" href="../../../_autosummary/control.hardware.motors_windows.initMotor.html#control.hardware.motors_windows.initMotor">[docs]</a><span class="k">def</span> <span class="nf">initMotor</span><span class="p">(</span><span class="n">sn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">kin</span><span class="o">.</span><span class="n">KinesisMotor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Search for motor with given serial number and connect to it</span>
+
+<span class="sd">    :type sn: str or int</span>
+<span class="sd">    :param sn: serial number</span>
+<span class="sd">    :returns: pyLabLib KinesisMotor object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mot</span> <span class="o">=</span> <span class="n">kin</span><span class="o">.</span><span class="n">KinesisMotor</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sn</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">mot</span></div>
+
+<span class="c1"># in pylablib, if the motor is disabled and you send it a movement command, the program will hang</span>
+<span class="c1"># methods decorated by @enable_first will always try to enable the motor before proceeding</span>
+<div class="viewcode-block" id="enable_first"><a class="viewcode-back" href="../../../_autosummary/control.hardware.motors_windows.enable_first.html#control.hardware.motors_windows.enable_first">[docs]</a><span class="k">def</span> <span class="nf">enable_first</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">inner</span></div>
+
+<div class="viewcode-block" id="DDR25"><a class="viewcode-back" href="../../../_autosummary/control.hardware.motors_windows.DDR25.html#control.hardware.motors_windows.DDR25">[docs]</a><span class="k">class</span> <span class="nc">DDR25</span><span class="p">:</span>
+    <span class="n">encs_per_rev</span> <span class="o">=</span> <span class="mi">1440000</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">enc2deg</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">enc</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">enc</span> <span class="o">/</span> <span class="bp">cls</span><span class="o">.</span><span class="n">encs_per_rev</span> <span class="o">*</span> <span class="mi">360</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">deg2enc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">deg</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">deg</span> <span class="o">/</span> <span class="mi">360</span> <span class="o">*</span> <span class="bp">cls</span><span class="o">.</span><span class="n">encs_per_rev</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sn</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span> <span class="o">=</span> <span class="n">initMotor</span><span class="p">(</span><span class="n">sn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">serial_number</span> <span class="o">=</span> <span class="n">sn</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">identify</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="p">(</span><span class="s1">&#39;DDR25.is_connected() encountered the following exception (returning False):&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">log</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Disconnected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> with serial number </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">serial_number</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">identify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">puts</span><span class="p">(</span><span class="s1">&#39;Identifying motor...&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">blink</span><span class="p">()</span>
+
+    <span class="nd">@enable_first</span>
+    <span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">puts</span><span class="p">(</span><span class="s1">&#39;Homing motor...&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_motion</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">home</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="n">blocking</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+
+    <span class="nd">@enable_first</span>
+    <span class="k">def</span> <span class="nf">goto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_motion</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="c1"># mod the result so goto(1000000) doesn&#39;t move forever</span>
+        <span class="n">encs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">encs_per_rev</span>
+
+        <span class="n">puts</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Moving motor to </span><span class="si">{</span><span class="n">pos</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">encs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">blocking</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">wait_move</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ThorlabsTimeoutError</span><span class="p">:</span>
+                <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exceeded time limit waiting for motor to goto position </span><span class="si">{</span><span class="n">pos</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">puts</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Moved motor to </span><span class="si">{</span><span class="n">pos</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@enable_first</span>
+    <span class="k">def</span> <span class="nf">moveby</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amt</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_motion</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="n">puts</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Moving motor by </span><span class="si">{</span><span class="n">amt</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+
+        <span class="n">encs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">amt</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">move_by</span><span class="p">(</span><span class="n">encs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;moveby(): out of bounds </span><span class="si">{</span><span class="n">amt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">blocking</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">wait_move</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ThorlabsTimeoutError</span><span class="p">:</span>
+                <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exceeded time limit waiting for motor to move by </span><span class="si">{</span><span class="n">amt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">puts</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Moved motor by </span><span class="si">{</span><span class="n">amt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># d=1: forward</span>
+    <span class="c1"># d=2: backward</span>
+    <span class="nd">@enable_first</span>
+    <span class="k">def</span> <span class="nf">jog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;builtin&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">puterr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Given invalid direction </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">. Must be 1 or 2&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_motion</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="n">puts</span><span class="p">(</span><span class="s1">&#39;Jogging motor &#39;</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;forward&#39;</span> <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;backward&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;...&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">jog</span><span class="p">(</span><span class="s1">&#39;+&#39;</span> <span class="k">if</span> <span class="n">d</span><span class="o">==</span><span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
+
+    <span class="nd">@enable_first</span>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">immediately</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">blocking</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">puts</span><span class="p">(</span><span class="s1">&#39;Stopping motor...&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">immediate</span><span class="o">=</span><span class="n">immediately</span><span class="p">,</span> <span class="n">sync</span><span class="o">=</span><span class="n">blocking</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">enable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">_enable_channel</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">disable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">_enable_channel</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;enabled&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">in_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">is_moving</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">is_homing</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_homing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">is_homing</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_jogging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;jogging_fw&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">get_status</span><span class="p">())</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;jogging_bk&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">get_status</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">enc2deg</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO this is still broken</span>
+        <span class="n">vel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">get_velocity</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">enc2deg</span><span class="p">(</span><span class="n">vel</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">min_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_velocity_parameters</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">acceleration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_velocity_parameters</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_velocity_parameters</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nd">@min_velocity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">min_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="n">scaled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">setup_velocity</span><span class="p">(</span><span class="n">min_velocity</span><span class="o">=</span><span class="n">scaled</span><span class="p">)</span>
+
+    <span class="nd">@acceleration</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">acceleration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="n">scaled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">setup_velocity</span><span class="p">(</span><span class="n">acceleration</span><span class="o">=</span><span class="n">scaled</span><span class="p">)</span>
+
+    <span class="nd">@max_velocity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">max_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="n">scaled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">setup_velocity</span><span class="p">(</span><span class="n">max_velocity</span><span class="o">=</span><span class="n">scaled</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_velocity_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">get_velocity_parameters</span><span class="p">()</span>
+        <span class="c1"># scale everything</span>
+        <span class="n">scaled_vp</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc2deg</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scaled_vp</span>
+
+    <span class="k">def</span> <span class="nf">set_velocity_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minvel</span><span class="p">,</span> <span class="n">accel</span><span class="p">,</span> <span class="n">maxvel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">setup_velocity</span><span class="p">(</span>
+                <span class="n">min_velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">minvel</span><span class="p">),</span>
+                <span class="n">acceleration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">accel</span><span class="p">),</span>
+                <span class="n">max_velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">maxvel</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">set_jog_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minvel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">accel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxvel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stopmode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">setup_jog</span><span class="p">(</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span><span class="p">,</span>
+                <span class="n">step_size</span> <span class="o">=</span> <span class="n">step</span><span class="p">,</span>
+                <span class="n">min_velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">minvel</span><span class="p">)</span> <span class="k">if</span> <span class="n">minvel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">acceleration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">accel</span><span class="p">)</span> <span class="k">if</span> <span class="n">accel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">max_velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">maxvel</span><span class="p">)</span> <span class="k">if</span> <span class="n">maxvel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">stop_mode</span> <span class="o">=</span> <span class="n">stopmode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_jog_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">jp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">get_jog_parameters</span><span class="p">()</span>
+        <span class="n">scaled_jp</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">jp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">jp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">enc2deg</span><span class="p">(</span><span class="n">jp</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">enc2deg</span><span class="p">(</span><span class="n">jp</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">enc2deg</span><span class="p">(</span><span class="n">jp</span><span class="p">[</span><span class="mi">4</span><span class="p">]),</span>
+                <span class="n">jp</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">scaled_jp</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">jog_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_jog_parameters</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">jog_step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_jog_parameters</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">jog_min_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_jog_parameters</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">jog_acceleration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_jog_parameters</span><span class="p">()[</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">jog_max_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_jog_parameters</span><span class="p">()[</span><span class="mi">4</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">jog_stop_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_jog_parameters</span><span class="p">()[</span><span class="mi">5</span><span class="p">]</span>
+
+    <span class="nd">@jog_mode</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">jog_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_jog_parameters</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">new_value</span><span class="p">)</span>
+
+    <span class="nd">@jog_step_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">jog_step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_jog_parameters</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="n">new_value</span><span class="p">)</span>
+
+    <span class="nd">@jog_min_velocity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">jog_min_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_jog_parameters</span><span class="p">(</span><span class="n">minvel</span><span class="o">=</span><span class="n">new_value</span><span class="p">)</span>
+
+    <span class="nd">@jog_acceleration</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">jog_acceleration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_jog_parameters</span><span class="p">(</span><span class="n">accel</span><span class="o">=</span><span class="n">new_value</span><span class="p">)</span>
+
+    <span class="nd">@jog_max_velocity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">jog_max_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_jog_parameters</span><span class="p">(</span><span class="n">maxvel</span><span class="o">=</span><span class="n">new_value</span><span class="p">)</span>
+
+    <span class="nd">@jog_stop_mode</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">jog_stop_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_jog_parameters</span><span class="p">(</span><span class="n">stopmode</span><span class="o">=</span><span class="n">new_value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">home_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">get_homing_parameters</span><span class="p">()</span><span class="o">.</span><span class="n">home_direction</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">home_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">get_homing_parameters</span><span class="p">()</span><span class="o">.</span><span class="n">velocity</span>
+        <span class="n">scaled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">enc2deg</span><span class="p">(</span><span class="n">vel</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scaled</span>
+
+    <span class="nd">@home_velocity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">home_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="n">scaled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deg2enc</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">setup_homing</span><span class="p">(</span><span class="n">velocity</span><span class="o">=</span><span class="n">scaled</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Daniel Yu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+align.main
+==========
+
+.. currentmodule:: align
+
+.. autofunction:: main

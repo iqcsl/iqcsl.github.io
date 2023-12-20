@@ -1,0 +1,6 @@
+control.typechecking.is\_print
+==============================
+
+.. currentmodule:: control.typechecking
+
+.. autofunction:: is_print

@@ -1,0 +1,41 @@
+﻿control.hardware.motors\_windows
+================================
+
+.. automodule:: control.hardware.motors_windows
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      enable_first
+      initMotor
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+      :nosignatures:
+   
+      DDR25
+   
+   
+
+   
+   
+   
+
+
+

@@ -118,7 +118,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Thorlabs PM100 class</p>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">control.hardware.power</span> <span class="kn">import</span> <span class="n">PM100</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">control.hardware.power</span> <span class="kn">import</span> <span class="n">PM100</span><span class="p">,</span> <span class="n">list_resources</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">list_resources</span><span class="p">())</span>
 <span class="n">pm</span> <span class="o">=</span> <span class="n">PM100</span><span class="p">()</span> <span class="c1"># connect to first visible resource by default</span>
@@ -161,8 +161,8 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_wavelength</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">upper</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#control.hardware.power.PM100.upper" title="control.hardware.power.PM100.upper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">upper</span></code></a></p></td>
+<td><p>(Read-and-write) Upper power limit (W)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">wavelength</span></code></p></td>
 <td><p></p></td>
@@ -174,6 +174,13 @@
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_upper</span></span><a class="headerlink" href="#control.hardware.power.PM100.max_upper" title="Permalink to this definition"></a></dt>
 <dd><p>(Read-only) Maximum upper power limit (W)</p>
 <p><code class="docutils literal notranslate"><span class="pre">PM100.upper</span></code> may not be set higher than this</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="control.hardware.power.PM100.upper">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">upper</span></span><a class="headerlink" href="#control.hardware.power.PM100.upper" title="Permalink to this definition"></a></dt>
+<dd><p>(Read-and-write) Upper power limit (W)</p>
+<p>When the power measured by the power meter goes above this value, methods such as <code class="docutils literal notranslate"><span class="pre">PM100.measure_builtin</span></code></p>
 </dd></dl>
 
 <dl class="py property">

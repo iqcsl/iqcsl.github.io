@@ -1,0 +1,6 @@
+control.hardware.motors\_windows.enable\_first
+==============================================
+
+.. currentmodule:: control.hardware.motors_windows
+
+.. autofunction:: enable_first

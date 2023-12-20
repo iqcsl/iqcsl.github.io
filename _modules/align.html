@@ -342,6 +342,9 @@
             <span class="n">lab2ser</span><span class="p">[</span><span class="n">lab</span><span class="p">]</span> <span class="o">=</span> <span class="n">ser</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">lab</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">ser</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">visible_motors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: there are no visible motors&#39;</span><span class="p">)</span>
+
         <span class="n">inp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
 
         <span class="c1"># user should input either a label or a serial number</span>
@@ -896,7 +899,7 @@
         <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending LP to to </span><span class="si">{</span><span class="n">horizontal_theta</span><span class="o">+</span><span class="mi">90</span><span class="si">}</span><span class="s1"> (vertical)&#39;</span><span class="p">)</span>
         <span class="n">pol</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
-        <span class="n">pol</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">horizontal_theta</span><span class="p">)</span>
+        <span class="n">pol</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">horizontal_theta</span><span class="o">+</span><span class="mi">90</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">horizontal_theta</span> <span class="o">=</span> <span class="n">pol</span><span class="o">.</span><span class="n">position</span>
 
@@ -918,6 +921,8 @@
             <span class="n">theta</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">find_fast_axis</span><span class="p">(</span><span class="n">qwp</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">data</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending QWP to </span><span class="si">{</span><span class="n">theta</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">45</span><span class="si">}</span><span class="s1"> (diagonal)&#39;</span><span class="p">)</span>
+            <span class="n">qwp</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+            <span class="n">qwp</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">theta</span><span class="o">+</span><span class="mi">45</span><span class="p">)</span>
 
         <span class="n">check</span> <span class="o">=</span> <span class="n">Yesno</span><span class="p">(</span><span class="s1">&#39;Check quality of circular polarization?&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
@@ -1007,7 +1012,7 @@
         <span class="s1">&#39;P&#39;</span><span class="p">:(</span><span class="s1">&#39;Polarizer alignment routine&#39;</span><span class="p">,</span> <span class="n">pol_alignment_routine</span><span class="p">),</span>
         <span class="p">}</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../_autosummary/align.main.html#align.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="c1"># there is always a power meter</span>
     <span class="n">getPowerMeter</span><span class="p">()</span>
 
@@ -1018,6 +1023,9 @@
 
         <span class="c1"># prompt for one</span>
         <span class="n">act</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;What to do? &#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">act</span> <span class="o">==</span> <span class="s1">&#39;q&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
 
         <span class="c1"># do the thing</span>
         <span class="k">if</span> <span class="n">act</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
@@ -1030,7 +1038,10 @@
                 <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not command. Try again&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not command. Try again&#39;</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
 </pre></div>
 
            </div>

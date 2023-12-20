@@ -30,6 +30,7 @@
       get_min_intensity_angle
       get_r2
       hwp_alignment_routine
+      main
       max_index
       min_index
       pol_alignment_routine

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>align.Data &mdash; Control v2 documentation</title>
+  <title>align.main &mdash; Control v2 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="align.showgrating" href="align.showgrating.html" /> 
+    <link rel="next" title="align.max_index" href="align.max_index.html" />
+    <link rel="prev" title="align.hwp_alignment_routine" href="align.hwp_alignment_routine.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -60,7 +61,10 @@
 <li class="toctree-l2"><a class="reference internal" href="align.get_min_intensity_angle.html">align.get_min_intensity_angle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="align.get_r2.html">align.get_r2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="align.hwp_alignment_routine.html">align.hwp_alignment_routine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="align.main.html">align.main</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">align.main</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#align.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="align.max_index.html">align.max_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="align.min_index.html">align.min_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="align.pol_alignment_routine.html">align.pol_alignment_routine</a></li>
@@ -76,14 +80,7 @@
 <li class="toctree-l2"><a class="reference internal" href="align.send_motor.html">align.send_motor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="align.setup_motor.html">align.setup_motor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="align.showgrating.html">align.showgrating</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">align.Data</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#align.Data"><code class="docutils literal notranslate"><span class="pre">Data</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#align.Data.graph"><code class="docutils literal notranslate"><span class="pre">Data.graph()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#align.Data.print"><code class="docutils literal notranslate"><span class="pre">Data.print()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="align.Data.html">align.Data</a></li>
 </ul>
 </li>
 </ul>
@@ -103,9 +100,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="align.html">align</a></li>
-      <li class="breadcrumb-item active">align.Data</li>
+      <li class="breadcrumb-item active">align.main</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/_autosummary/align.Data.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/_autosummary/align.main.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -113,48 +110,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="align-data">
-<h1>align.Data<a class="headerlink" href="#align-data" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="align.Data">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">align.</span></span><span class="sig-name descname"><span class="pre">Data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/align.html#Data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#align.Data" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for holding measurements &amp; related data</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</span>) – X-values (typically angles in degrees)</p></li>
-<li><p><strong>scatter</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</span>) – tuple of lists of Y-values to be drawn with plt.scatter() (typically Y-values, e.x. intensity in watts)</p></li>
-<li><p><strong>plot</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</span>) – tuple of lists of Y-values to be drawn with plt.plot() (typically fit data)</p></li>
-<li><p><strong>theta</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</span>) – usually an angle which minimizes/maximizes y</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#align.Data.graph" title="align.Data.graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">graph</span></code></a></p></td>
-<td><p>Graph the data and show it using matplotlib</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#align.Data.print" title="align.Data.print"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print</span></code></a></p></td>
-<td><p>Print all the data to the terminal and offers to show a graph</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py method">
-<dt class="sig sig-object py" id="align.Data.graph">
-<span class="sig-name descname"><span class="pre">graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/align.html#Data.graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#align.Data.graph" title="Permalink to this definition"></a></dt>
-<dd><p>Graph the data and show it using matplotlib</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="align.Data.print">
-<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/align.html#Data.print"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#align.Data.print" title="Permalink to this definition"></a></dt>
-<dd><p>Print all the data to the terminal and offers to show a graph</p>
-<p>Additionally calculates and prints r-squared value if applicable</p>
-</dd></dl>
-
-</dd></dl>
+  <section id="align-main">
+<h1>align.main<a class="headerlink" href="#align-main" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="align.main">
+<span class="sig-prename descclassname"><span class="pre">align.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/align.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#align.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 
@@ -162,7 +123,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="align.showgrating.html" class="btn btn-neutral float-left" title="align.showgrating" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="align.hwp_alignment_routine.html" class="btn btn-neutral float-left" title="align.hwp_alignment_routine" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="align.max_index.html" class="btn btn-neutral float-right" title="align.max_index" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
